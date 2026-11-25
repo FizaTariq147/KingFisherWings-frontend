@@ -1,6 +1,10 @@
 import { organizationService } from '@/features/organization/services/organization.service';
 import type { OrganizationProfile } from '@/features/organization/types/organization.types';
-import { REPORT_BRANDING, resolveReportLogoUrl } from '../constants/reportBranding.constants';
+import {
+  REPORT_BRANDING,
+  resolveCommercialPdfLogoUrl,
+  resolveReportLogoUrl,
+} from '../constants/reportBranding.constants';
 import {
   SHARED_LAYOUT_CHROME,
   type SharedLayoutChrome,
@@ -28,7 +32,10 @@ function buildAddress(profile: OrganizationProfile): string {
 
 function profileToChrome(profile: OrganizationProfile): ReportOrgChrome {
   const company = profile.display_name?.trim() || profile.name?.trim() || '';
-  const logoUrl = resolveReportLogoUrl(profile.logo_url) || '';
+  // Prefer registered org logo; fall back to bundled commercial logo so every
+  // report still paints a header mark when the profile has no logo_url.
+  const logoUrl =
+    resolveReportLogoUrl(profile.logo_url) || resolveCommercialPdfLogoUrl() || '';
   const website = profile.website?.trim() || '';
   const web = website ? website.replace(/^https?:\/\//i, '').replace(/\/$/, '') : '';
 
@@ -50,7 +57,7 @@ function profileToChrome(profile: OrganizationProfile): ReportOrgChrome {
       web: website || undefined,
       tax_id: profile.vat_number?.trim() || undefined,
       vat_number: profile.vat_number?.trim() || undefined,
-      logo_url: profile.logo_url?.trim() || undefined,
+      logo_url: profile.logo_url?.trim() || logoUrl || undefined,
     },
   };
 }
@@ -61,7 +68,7 @@ export function chromeFromOrganizationProfile(
   if (!profile) {
     return {
       ...SHARED_LAYOUT_CHROME,
-      logoUrl: '',
+      logoUrl: resolveCommercialPdfLogoUrl() || '',
       profileLoaded: false,
       packFields: {},
     };

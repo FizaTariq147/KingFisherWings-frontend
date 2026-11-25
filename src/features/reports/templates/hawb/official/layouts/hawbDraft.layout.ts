@@ -15,7 +15,7 @@ export const HAWB_DRAFT_LAYOUT: HawbOfficialLayoutConfig = {
   showAccountNumberLabels: true,
   showJobNoInHeader: false,
   showMawbInRibbon: true,
-  showIataAgentCells: false,
+  showIataAgentCells: true,
   preprinted: false,
   sparseOverlay: false,
   customsDefaultWhenEmpty: '',
@@ -23,5 +23,6 @@ export const HAWB_DRAFT_LAYOUT: HawbOfficialLayoutConfig = {
   statusRibbon: 'DRAFT',
   copiesValidityLine:
     'Copies 1,2 and 3 of this Air Waybill are originals and have the same validity',
-  legalVariant: 'house',
+  // Fresa draft face uses the longer AIR legal block (ALL GOODS MAY BE CARRIED…).
+  legalVariant: 'air',
 };

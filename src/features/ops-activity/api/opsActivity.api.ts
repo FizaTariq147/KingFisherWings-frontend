@@ -19,6 +19,8 @@ export const OPS_ACTIVITY_API = {
     `${opsEntityBase('/ops', entityType, entityId)}/complaints/${encodeURIComponent(complaintId)}`,
   followUps: (entityType: string, entityId: string) =>
     `${opsEntityBase('/ops', entityType, entityId)}/follow-ups`,
+  followUp: (entityType: string, entityId: string, followUpId: string) =>
+    `${opsEntityBase('/ops', entityType, entityId)}/follow-ups/${encodeURIComponent(followUpId)}`,
   history: (entityType: string, entityId: string) =>
     `${opsEntityBase('/ops', entityType, entityId)}/history`,
   likes: (entityType: string, entityId: string) =>

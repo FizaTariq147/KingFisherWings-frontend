@@ -8,7 +8,6 @@ import {
   catalogContextCacheKey,
   resolveCatalogContextPdfData,
 } from '../../utils/resolveCatalogContextPdfData';
-import { generateHawbSamplePdf } from '../../utils/generateHawbSamplePdf';
 import { generateCatalogLayoutPdf } from '../../utils/generateCatalogLayoutPdf';
 import { resolveReportOrgChrome } from '../../utils/resolveReportOrgChrome';
 import { catalogPreviewSourceLabel } from '../../utils/catalogFormatStatus';
@@ -23,8 +22,7 @@ type Props = {
 
 /**
  * HAWB catalogue preview.
- * Unbound browse: unmodified official Fresa reference sample (labelled).
- * Entity-bound: Freightnest native layout + org branding — never a Fresa sample PDF.
+ * Always Freightnest native + org branding — never a Fresa CDN sample PDF.
  */
 export function HawbFormatAutoPdf({ code, context, autoOpen = true }: Props) {
   const spec = getHawbFormatSpec(code);
@@ -54,7 +52,7 @@ export function HawbFormatAutoPdf({ code, context, autoOpen = true }: Props) {
             const shared = getSharedLayoutSource(spec.code);
             const source = catalogPreviewSourceLabel({
               entityBound: data.entityBound,
-              preferOfficialSample: !data.entityBound,
+              preferOfficialSample: false,
               isNativePilot: Boolean(data.entityBound),
               isSharedLayout: Boolean(shared?.isSharedLayout),
             });
@@ -66,23 +64,11 @@ export function HawbFormatAutoPdf({ code, context, autoOpen = true }: Props) {
             setBoundLabel(
               data.entityBound
                 ? `${source.label}${record ? ` · ${record}` : ''} — ${source.detail}`
-                : FRESA_REFERENCE_SAMPLE_LABEL,
+                : `${FRESA_REFERENCE_SAMPLE_LABEL}. Preview uses Freightnest native with your organization branding.`,
             );
           }
 
-          // Phase 3 browse: unmodified Fresa reference (skip org stamp).
-          if (!data.entityBound) {
-            try {
-              const { blob } = await generateHawbSamplePdf(spec.code, {
-                skipOrgStamp: true,
-                appendCustomerTerms: false,
-              });
-              return blob;
-            } catch {
-              /* fall through to Freightnest native */
-            }
-          }
-
+          // Always Freightnest generate — never open a Fresa CDN sample as the document.
           const generated = await generateCatalogLayoutPdf(
             spec.code,
             {
@@ -103,13 +89,9 @@ export function HawbFormatAutoPdf({ code, context, autoOpen = true }: Props) {
             },
           );
           if (!generated) {
-            throw new Error(
-              data.entityBound
-                ? 'No Freightnest HAWB generate path for this format.'
-                : 'Could not load official HAWB reference sample or Freightnest layout.',
-            );
+            throw new Error('No Freightnest HAWB generate path for this format.');
           }
-          if (!cancelled && data.entityBound) {
+          if (!cancelled) {
             setBoundLabel(
               `Native Layout · Freightnest generate — registered organization branding`,
             );

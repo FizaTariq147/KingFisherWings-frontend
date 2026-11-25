@@ -151,6 +151,14 @@ export const documentationMenu: MenuTile[] = [
     iconColor: 'bg-orange-500',
     path: '/documentation/update-do-closed-job',
   },
+  {
+    id: 'update-shipment-bl-closed-job',
+    title: 'Update Shipment & BL — Closed Job',
+    description: 'Update Shipment Status and BL Status for closed jobs without reopening them.',
+    icon: CheckSquare,
+    iconColor: 'bg-amber-600',
+    path: '/documentation/update-shipment-bl-closed-job',
+  },
 ];
 
 export const reportsDocsTile: MenuTile = {

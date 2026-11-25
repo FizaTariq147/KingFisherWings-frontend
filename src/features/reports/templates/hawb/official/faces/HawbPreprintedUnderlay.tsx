@@ -11,16 +11,16 @@ type Props = {
  * Physical print may use real preprinted paper; this underlay stands in digitally.
  */
 export function HawbPreprintedUnderlay({ variant }: Props) {
-  const line = '#b8b8b8';
+  // Crisp black grid like dense faces (gray wash looked unfinished on screen/PDF).
+  const line = '#000000';
   const label: CSSProperties = {
     position: 'absolute',
-    fontSize: variant === 'original1' ? 5.5 : 5.5,
+    fontSize: 6,
     fontFamily: 'Arial, Helvetica, sans-serif',
-    color: '#8a8a8a',
-    letterSpacing: '0.02em',
-    textTransform: 'uppercase',
+    fontWeight: 700,
+    color: '#000000',
     margin: 0,
-    lineHeight: 1.15,
+    lineHeight: 1.1,
     pointerEvents: 'none',
   };
   const box = (t: number, l: number, w: number, h: number): CSSProperties => ({
@@ -29,7 +29,7 @@ export function HawbPreprintedUnderlay({ variant }: Props) {
     left: `${l}%`,
     width: `${w}%`,
     height: `${h}%`,
-    border: `0.6px solid ${line}`,
+    border: `1px solid ${line}`,
     boxSizing: 'border-box',
     pointerEvents: 'none',
   });
@@ -46,8 +46,8 @@ export function HawbPreprintedUnderlay({ variant }: Props) {
         overflow: 'hidden',
       }}
     >
-      {/* Outer form edge — light, not a heavy capture border */}
-      <div style={{ ...box(1, 1.2, 97.6, 97.5), borderWidth: 1, borderColor: '#9a9a9a' }} />
+      {/* Outer form edge — slightly heavier like Fresa pre-printed frame */}
+      <div style={{ ...box(1, 1.2, 97.6, 97.5), border: `1.5px solid ${line}` }} />
 
       {/* Shipper / issued-by band */}
       <div style={box(2.5, 2, 46, 11)} />

@@ -1,7 +1,12 @@
 import { PDFDocument, StandardFonts, degrees, rgb, type PDFFont, type PDFPage } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
-import { getReportBrandingSlots } from './brandingSlots';
+import { resolveCommercialPdfLogoUrl } from '../../constants/reportBranding.constants';
+import {
+  defaultFresaLogoSlot,
+  ensureReportBrandingChrome,
+  getReportBrandingSlots,
+} from './brandingSlots';
 import {
   assertNoFresaIdentity,
   isFresaIdentityText,
@@ -15,6 +20,20 @@ import type {
   ReportBrandingBox,
   ReportBrandingSlots,
 } from './officialFace.types';
+import { code128BitString } from '../referenceAccurate/code128Vector';
+
+function defaultLogoFallback(
+  face: OfficialMeasuredFace,
+  rotateDeg: number,
+): { x: number; y: number; width: number; height: number } {
+  const slot = defaultFresaLogoSlot(face.widthPt, face.heightPt, rotateDeg);
+  return {
+    x: slot.x,
+    y: slot.y,
+    width: slot.width,
+    height: slot.height,
+  };
+}
 
 function ink(r = 20, g = 20, b = 24) {
   return rgb(Math.min(1, r / 255), Math.min(1, g / 255), Math.min(1, b / 255));
@@ -148,13 +167,283 @@ function drawCheckMark(
   });
 }
 
-function wipeBox(page: PDFPage, box: ReportBrandingBox | null | undefined, pad = 1): void {
-  if (!box) return;
+type PageFrame = { left: number; right: number; top: number; bottom: number };
+
+/** Infer the outer content box from long near-edge measured lines. */
+function inferOuterFrame(
+  facePage: OfficialMeasuredFace['pages'][number],
+  widthPt: number,
+  heightPt: number,
+): PageFrame | null {
+  const lines = facePage.lines || [];
+  const longH = lines
+    .filter((l) => Math.abs(l[1] - l[3]) < 0.75 && Math.abs(l[2] - l[0]) > widthPt * 0.55)
+    .map((l) => ({ y: (l[1] + l[3]) / 2, x1: Math.min(l[0], l[2]), x2: Math.max(l[0], l[2]) }));
+  const longV = lines
+    .filter((l) => Math.abs(l[0] - l[2]) < 0.75 && Math.abs(l[3] - l[1]) > heightPt * 0.45)
+    .map((l) => ({ x: (l[0] + l[2]) / 2, y1: Math.min(l[1], l[3]), y2: Math.max(l[1], l[3]) }));
+  if (longH.length < 2 || longV.length < 2) return null;
+  const top = longH.reduce((best, row) => (row.y > best.y ? row : best), longH[0]);
+  const bottom = longH.reduce((best, row) => (row.y < best.y ? row : best), longH[0]);
+  const left = longV.reduce((best, col) => (col.x < best.x ? col : best), longV[0]);
+  const right = longV.reduce((best, col) => (col.x > best.x ? col : best), longV[0]);
+  if (top.y - bottom.y < heightPt * 0.4) return null;
+  if (right.x - left.x < widthPt * 0.4) return null;
+  return { left: left.x, right: right.x, top: top.y, bottom: bottom.y };
+}
+
+/** Re-stroke the outer frame so branding wipes cannot leave a broken box. */
+function strokeOuterFrame(page: PDFPage, frame: PageFrame, thickness = 0.6): void {
+  const color = ink(0, 0, 0);
+  const { left, right, top, bottom } = frame;
+  page.drawLine({ start: { x: left, y: top }, end: { x: right, y: top }, thickness, color });
+  page.drawLine({ start: { x: left, y: bottom }, end: { x: right, y: bottom }, thickness, color });
+  page.drawLine({ start: { x: left, y: bottom }, end: { x: left, y: top }, thickness, color });
+  page.drawLine({ start: { x: right, y: bottom }, end: { x: right, y: top }, thickness, color });
+}
+
+/** Re-stroke letterhead band edges after logo/company wipes nick the box. */
+function strokeHeaderBandBox(
+  page: PDFPage,
+  band: ReportBrandingBox | null | undefined,
+  thickness = 0.55,
+): void {
+  if (!band || (band.width || 0) < 40 || (band.height || 0) < 20) return;
+  if (isRotatedTallHeader(band)) return;
+  const color = ink(0, 0, 0);
+  const x = band.x;
+  const y = band.y;
+  const w = band.width;
+  const h = band.height;
   page.drawRectangle({
-    x: Math.max(0, box.x - pad),
-    y: Math.max(0, box.y - pad),
-    width: Math.max(4, (box.width || 40) + pad * 2),
-    height: Math.max(4, (box.height || box.size || 8) + pad * 2),
+    x,
+    y,
+    width: w,
+    height: h,
+    borderWidth: thickness,
+    borderColor: color,
+  });
+}
+
+/** True when a glyph sits inside a branding chrome box (sample would double-print). */
+function overlapsBrandingChromeBox(
+  x: number,
+  y: number,
+  size: number,
+  box: ReportBrandingBox | null | undefined,
+  pad = 3,
+): boolean {
+  if (!box) return false;
+  const bw = Math.max(box.width || 40, 24);
+  const bh = Math.max(box.height || box.size || size || 8, size || 8);
+  return x >= box.x - pad && x <= box.x + bw + pad && y >= box.y - pad && y <= box.y + bh + pad;
+}
+
+function shouldSkipSampleBrandingGlyph(
+  x: number,
+  y: number,
+  size: number,
+  text: string,
+  face: OfficialMeasuredFace,
+  slots: ReportBrandingSlots | undefined,
+  textRotateDeg: number,
+): boolean {
+  if (!slots?.company && !slots?.logo) return false;
+  // Keep form titles / section labels.
+  if (
+    /^(tax\s*invoice|invoice|quotation|bill of lading|multimodal|shipper|consignee|notify|client|bill\s*to)$/i.test(
+      text,
+    )
+  ) {
+    return false;
+  }
+  const boxes: Array<ReportBrandingBox | null | undefined> = [
+    slots.logo,
+    slots.company,
+    ...(slots.addressLines || []),
+    ...(slots.companyWipes || []),
+    slots.issuerCompany,
+    ...(slots.issuerAddressLines || []),
+    slots.preparedByValue,
+  ];
+  if (boxes.some((b) => overlapsBrandingChromeBox(x, y, size, b))) return true;
+
+  // Invoice / ASN letterhead: right-side sample company+address under the header band.
+  // Do not drop form field labels (Invoice No., Job No., Shipper, …).
+  if (!textRotateDeg && slots.company && y > face.heightPt * 0.78 && x > face.widthPt * 0.42) {
+    if (
+      /^(Invoice|Job|Shipper|Consignee|Bill|Client|Due|MBL|MAWB|HAWB|HBL|Shipment|Date|Department|Currency|Reference|IGM|TRN)/i.test(
+        text,
+      )
+    ) {
+      return false;
+    }
+    return true;
+  }
+  // Ocean HBL agent column sample address (MAGIC FRESA DEMO block) — not legal body.
+  if (
+    /^(HBL_|FG_HBL_)/i.test(face.code) &&
+    x > face.widthPt * 0.48 &&
+    y > face.heightPt * 0.68 &&
+    y < face.heightPt * 0.92
+  ) {
+    return !/^(F\/Agent|Bill of Lading|B\/L No|Delivery Agent)/i.test(text);
+  }
+  return false;
+}
+
+/** Tall left strip used by /Rotate 90 landscape samples (Format-2 Tax Invoice India). */
+function isRotatedTallHeader(band: ReportBrandingBox | null | undefined): boolean {
+  return Boolean(band && (band.height || 0) > (band.width || 1) * 2);
+}
+
+/**
+ * Keep logo/company inside the letterhead band and below the outer top border
+ * so the page frame stays intact (Format-4 Standard Tax Invoice pattern).
+ * Skips /Rotate 90 tall strips — those use X as the visual vertical axis.
+ */
+function fitSlotsInsideHeaderBand(
+  slots: ReportBrandingSlots,
+  frame: PageFrame | null,
+): ReportBrandingSlots {
+  const band = slots.headerBand;
+  if (!band || (band.height || 0) < 24) return slots;
+  // Rotated landscape letterheads are already measured in mediaBox space.
+  if (isRotatedTallHeader(band)) return slots;
+  const bandTop = band.y + band.height;
+  const maxTop = Math.min(bandTop - 4, frame ? frame.top - 4 : bandTop - 4);
+  let logo = slots.logo;
+  if (logo) {
+    const height = Math.min(logo.height || 40, Math.max(24, band.height - 16));
+    let y = logo.y;
+    if (y + height > maxTop) y = maxTop - height;
+    if (y < band.y + 4) y = band.y + 4;
+    const x = Math.max(logo.x, band.x + 4);
+    logo = { ...logo, x, y, height };
+  }
+  let company = slots.company;
+  if (company) {
+    const size = company.size || company.height || 12;
+    let y = company.y;
+    if (y + size > maxTop) y = maxTop - size;
+    if (logo && y > logo.y + logo.height - 2) {
+      y = Math.min(y, logo.y + logo.height - 4);
+    }
+    if (y < band.y + 8) y = band.y + Math.min(band.height - 12, 48);
+    company = { ...company, y };
+  }
+  return { ...slots, logo, company };
+}
+
+/**
+ * Fresa footer: label then value along the footer axis, with a small gap.
+ * Prevents "Printed Date :" colliding with the timestamp (Format-2 / all faces).
+ */
+function footerValueBox(
+  label: ReportBrandingBox | null | undefined,
+  value: ReportBrandingBox | null | undefined,
+  text: string,
+  textRotateDeg: number,
+  maxAdvance?: number,
+): ReportBrandingBox | null {
+  if (!label && !value) return null;
+  const size = value?.size || label?.size || 7;
+  const needed = Math.max(36, text.length * size * 0.52 + 6);
+  const advance = maxAdvance && maxAdvance > 0 ? Math.min(needed, maxAdvance) : needed;
+  if (textRotateDeg === 90) {
+    const x = value?.x ?? label?.x ?? 0;
+    const labelEnd = label ? label.y + (label.width || Math.max(40, size * 6)) : null;
+    const y = Math.max(value?.y ?? 0, labelEnd != null ? labelEnd + 3 : 0);
+    return { x, y, width: advance, height: size, size };
+  }
+  const y = value?.y ?? label?.y ?? 0;
+  const labelEnd = label ? label.x + (label.width || Math.max(40, size * 6)) : null;
+  const x = Math.max(value?.x ?? 0, labelEnd != null ? labelEnd + 3 : 0);
+  return { x, y, width: advance, height: size, size };
+}
+
+/** True when a wipe box sits on the footer strip (not body content). */
+function isFooterStripWipe(
+  box: ReportBrandingBox | null | undefined,
+  textRotateDeg: number,
+  pageWidth: number,
+  pageHeight: number,
+): boolean {
+  if (!box) return false;
+  if (textRotateDeg === 90) return box.x > pageWidth - 55;
+  if (textRotateDeg === 270) return box.x < 55;
+  return box.y < 55 || box.y + (box.height || 0) < 60;
+}
+
+/** Light title strip between two long horizontals when a centred title sits there. */
+function paintTitleBands(
+  page: PDFPage,
+  facePage: OfficialMeasuredFace['pages'][number],
+  widthPt: number,
+  frame: PageFrame | null,
+): void {
+  const lines = facePage.lines || [];
+  const horiz = lines
+    .filter((l) => Math.abs(l[1] - l[3]) < 0.75 && Math.abs(l[2] - l[0]) > widthPt * 0.55)
+    .map((l) => (l[1] + l[3]) / 2)
+    .sort((a, b) => b - a);
+  const titles = (facePage.texts || []).filter((t) =>
+    /^(tax\s*invoice|invoice|quotation|delivery\s*order|arrival\s*notice|debit\s*note|credit\s*note)$/i.test(
+      plainLabel(t[0] || ''),
+    ),
+  );
+  if (!titles.length || horiz.length < 2) return;
+  const left = frame?.left ?? 20;
+  const right = frame?.right ?? widthPt - 20;
+  for (const title of titles) {
+    const ty = title[2];
+    let above: number | null = null;
+    let below: number | null = null;
+    for (const y of horiz) {
+      if (y > ty + 2 && (above === null || y < above)) above = y;
+      if (y < ty - 2 && (below === null || y > below)) below = y;
+    }
+    if (above === null || below === null) continue;
+    const height = above - below;
+    if (height < 12 || height > 36) continue;
+    page.drawRectangle({
+      x: left,
+      y: below,
+      width: Math.max(40, right - left),
+      height,
+      color: rgb(0.953, 0.953, 0.953),
+    });
+  }
+}
+
+function wipeBox(
+  page: PDFPage,
+  box: ReportBrandingBox | null | undefined,
+  pad = 1,
+  clamp?: PageFrame | null,
+): void {
+  if (!box) return;
+  let x = Math.max(0, box.x - pad);
+  let y = Math.max(0, box.y - pad);
+  let width = Math.max(4, (box.width || 40) + pad * 2);
+  let height = Math.max(4, (box.height || box.size || 8) + pad * 2);
+  // Never erase the outer page frame with branding wipes.
+  if (clamp) {
+    const inset = 1.25;
+    const maxX = clamp.right - inset;
+    const maxY = clamp.top - inset;
+    const minX = clamp.left + inset;
+    const minY = clamp.bottom + inset;
+    x = Math.max(x, minX);
+    y = Math.max(y, minY);
+    width = Math.min(width, Math.max(2, maxX - x));
+    height = Math.min(height, Math.max(2, maxY - y));
+  }
+  page.drawRectangle({
+    x,
+    y,
+    width,
+    height,
     color: rgb(1, 1, 1),
   });
 }
@@ -169,43 +458,85 @@ function wipeTextSlot(
   box: ReportBrandingBox | null | undefined,
   textRotateDeg = 0,
   pad = 1,
+  clamp?: PageFrame | null,
 ): void {
   if (!box) return;
   if (textRotateDeg === 90) {
     const band = Math.max(box.height || 0, box.size || 8, 8);
     const advance = Math.max(box.width || 40, 12);
-    page.drawRectangle({
-      x: Math.max(0, box.x - pad),
-      y: Math.max(0, box.y - pad),
-      width: Math.max(4, band + pad * 2),
-      height: Math.max(4, advance + pad * 2),
-      color: rgb(1, 1, 1),
-    });
+    wipeBox(
+      page,
+      { x: box.x, y: box.y, width: band, height: advance },
+      pad,
+      clamp,
+    );
     return;
   }
   if (textRotateDeg === 270) {
     const band = Math.max(box.height || 0, box.size || 8, 8);
     const advance = Math.max(box.width || 40, 12);
-    page.drawRectangle({
-      x: Math.max(0, box.x - pad),
-      y: Math.max(0, box.y - advance - pad),
-      width: Math.max(4, band + pad * 2),
-      height: Math.max(4, advance + pad * 2),
-      color: rgb(1, 1, 1),
-    });
+    wipeBox(
+      page,
+      { x: box.x, y: box.y - advance, width: band, height: advance },
+      pad,
+      clamp,
+    );
     return;
   }
-  wipeBox(page, box, pad);
+  wipeBox(page, box, pad, clamp);
 }
 
+/** Fresa footer timestamps look like `28-JAN-19 01:54PM`. */
 function defaultPrintedDate(): string {
   const now = new Date();
+  const months = [
+    'JAN',
+    'FEB',
+    'MAR',
+    'APR',
+    'MAY',
+    'JUN',
+    'JUL',
+    'AUG',
+    'SEP',
+    'OCT',
+    'NOV',
+    'DEC',
+  ];
   const dd = String(now.getDate()).padStart(2, '0');
-  const mm = String(now.getMonth() + 1).padStart(2, '0');
-  const yyyy = now.getFullYear();
-  const hh = String(now.getHours()).padStart(2, '0');
+  const mon = months[now.getMonth()];
+  const yy = String(now.getFullYear()).slice(-2);
+  let hours = now.getHours();
   const mi = String(now.getMinutes()).padStart(2, '0');
-  return `${dd}/${mm}/${yyyy} ${hh}:${mi}`;
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  if (hours === 0) hours = 12;
+  const hh = String(hours).padStart(2, '0');
+  return `${dd}-${mon}-${yy} ${hh}:${mi}${ampm}`;
+}
+
+function footerInk(colorHex?: string | null) {
+  if (colorHex && /^#fff/i.test(colorHex.trim())) return rgb(1, 1, 1);
+  return rgb(0.05, 0.05, 0.08);
+}
+
+/** True when face bold flag or Fresa-style emphasis (titles / company headers). */
+function isEmphasizedRun(text: string, boldFlag: unknown, size: number): boolean {
+  if (Boolean(boldFlag)) return true;
+  if (size >= 12) return true;
+  return /^(tax\s*invoice|invoice|quotation|debit\s*note|credit\s*note|bill of lading|multimodal transport|arrival notice)$/i.test(
+    text.trim(),
+  );
+}
+
+function absolutizeFetchUrl(logoUrl: string): string {
+  const trimmed = logoUrl.trim();
+  if (!trimmed) return '';
+  if (/^(data:|blob:|https?:)/i.test(trimmed)) return trimmed;
+  if (trimmed.startsWith('/') && typeof window !== 'undefined' && window.location?.origin) {
+    return `${window.location.origin}${trimmed}`;
+  }
+  return trimmed;
 }
 
 async function loadLogoBytes(
@@ -226,17 +557,24 @@ async function loadLogoBytes(
       for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
       return { bytes, kind };
     }
-    if (!/^https?:/i.test(logoUrl) && !logoUrl.startsWith('/')) return null;
-    const response = await fetch(logoUrl);
+    const absolute = absolutizeFetchUrl(logoUrl);
+    if (!absolute) return null;
+    if (!/^https?:/i.test(absolute) && !absolute.startsWith('/')) return null;
+    const response = await fetch(absolute, { credentials: 'include' });
     if (!response.ok) return null;
     const type = (response.headers.get('content-type') || '').toLowerCase();
+    const bytes = new Uint8Array(await response.arrayBuffer());
     const kind = type.includes('png')
       ? 'png'
       : type.includes('jpeg') || type.includes('jpg')
         ? 'jpg'
-        : null;
+        : bytes[0] === 0x89 && bytes[1] === 0x50
+          ? 'png'
+          : bytes[0] === 0xff && bytes[1] === 0xd8
+            ? 'jpg'
+            : null;
     if (!kind) return null;
-    return { bytes: new Uint8Array(await response.arrayBuffer()), kind };
+    return { bytes, kind };
   } catch {
     return null;
   }
@@ -250,21 +588,39 @@ async function drawOrgLogoInSlot(
   slot: ReportBrandingBox | null | undefined,
   fallback: { x: number; y: number; width: number; height: number },
   textRotateDeg = 0,
+  clamp?: PageFrame | null,
 ): Promise<boolean> {
-  if (!logoUrl) return false;
-  const loaded = await loadLogoBytes(logoUrl);
+  const candidates = [logoUrl, resolveCommercialPdfLogoUrl()].filter(
+    (u): u is string => Boolean(u && String(u).trim() && !/fresa/i.test(String(u))),
+  );
+  let loaded: { bytes: Uint8Array; kind: 'png' | 'jpg' } | null = null;
+  for (const candidate of candidates) {
+    loaded = await loadLogoBytes(candidate);
+    if (loaded) break;
+  }
   if (!loaded) return false;
   const image =
     loaded.kind === 'png' ? await pdf.embedPng(loaded.bytes) : await pdf.embedJpg(loaded.bytes);
   const box = slot || fallback;
-  const maxWidth = Math.max(24, box.width || 78);
-  const maxHeight = Math.max(16, box.height || 36);
+  // Fit inside the measured box with inset so the mark does not crowd borders
+  // or letterhead text. Never upscale past native pixels (oversized logos overlap).
+  const boxW = Math.max(24, box.width || 78);
+  const boxH = Math.max(16, box.height || 36);
+  const inset = 0.78;
+  const maxWidth = Math.max(18, boxW * inset);
+  const maxHeight = Math.max(12, boxH * inset);
   const scale = Math.min(maxWidth / image.width, maxHeight / image.height, 1);
-  const width = image.width * scale;
-  const height = image.height * scale;
-  const x = box.x + Math.max(0, (maxWidth - width) / 2);
-  const y = box.y + Math.max(0, (maxHeight - height) / 2);
-  wipeBox(page, { ...box, width: maxWidth, height: maxHeight }, 1);
+  const width = Math.max(1, image.width * scale);
+  const height = Math.max(1, image.height * scale);
+  const x = box.x + Math.max(0, (boxW - width) / 2);
+  const y = box.y + Math.max(0, (boxH - height) / 2);
+  // Tight wipe — avoid eating the outer letterhead frame.
+  wipeBox(
+    page,
+    { x: x - 1, y: y - 1, width: width + 2, height: height + 2 },
+    0,
+    clamp,
+  );
   // Rotated Fresa samples paint chrome along +Y; rotate the logo so it reads
   // upright after the page /Rotate flag is applied by the viewer.
   page.drawImage(image, {
@@ -277,13 +633,54 @@ async function drawOrgLogoInSlot(
   return true;
 }
 
-function contactLines(data: OfficialFaceData): string[] {
-  return [data.companyAddress, data.companyPhone, data.companyEmail, data.companyWeb]
+/** Fresa letterhead shows address + web under the company name (not phone/email first). */
+function contactLines(data: OfficialFaceData, letterheadStyle = false): string[] {
+  const ordered = letterheadStyle
+    ? [data.companyAddress, data.companyWeb, data.companyPhone, data.companyEmail]
+    : [data.companyAddress, data.companyPhone, data.companyEmail, data.companyWeb];
+  return ordered
     .map((part) => (part || '').trim())
     .filter((part) => part && !isFresaIdentityText(part));
 }
 
-function boxesOverlap(a: ReportBrandingBox, b: ReportBrandingBox, pad = 2): boolean {
+function wipeIsInHeaderBand(
+  wipe: ReportBrandingBox,
+  slots: ReportBrandingSlots,
+  textRotateDeg: number,
+): boolean {
+  const band = slots.headerBand;
+  if (textRotateDeg === 90 && band) {
+    return wipe.x <= band.x + band.width + 4;
+  }
+  if (band) {
+    return wipe.y + (wipe.height || wipe.size || 8) >= band.y - 4;
+  }
+  return true;
+}
+
+function boxesOverlap(
+  a: ReportBrandingBox,
+  b: ReportBrandingBox,
+  pad = 2,
+  textRotateDeg = 0,
+): boolean {
+  // /Rotate 90: width is advance along +Y, height/size is the glyph band along X.
+  if (textRotateDeg === 90) {
+    const ax = a.x;
+    const aw = Math.max(a.height || 0, a.size || 8, 8);
+    const ay = a.y;
+    const ah = Math.max(a.width || 40, 12);
+    const bx = b.x;
+    const bw = Math.max(b.height || 0, b.size || 8, 8);
+    const by = b.y;
+    const bh = Math.max(b.width || 40, 12);
+    return !(
+      ax + aw + pad < bx ||
+      bx + bw + pad < ax ||
+      ay + ah + pad < by ||
+      by + bh + pad < ay
+    );
+  }
   const aw = a.width || 40;
   const ah = a.height || a.size || 8;
   const bw = b.width || 40;
@@ -305,30 +702,90 @@ function applyBrandingSlots(
   pageIndex: number,
   pageCount: number,
   textRotateDeg = 0,
+  clamp?: PageFrame | null,
+  pageSize?: { width: number; height: number },
 ): void {
-  // Wipe only — never stamp org company into body wipe boxes (that painted
-  // "Zoyan Logistics" over Client/IGM on Format 2 and similar faces).
-  for (const wipe of slots.companyWipes || []) wipeTextSlot(page, wipe, textRotateDeg, 1);
-  for (const line of slots.addressLines || []) {
-    if (slots.company && boxesOverlap(line, slots.company, 4)) continue;
-    wipeTextSlot(page, line, textRotateDeg, 1);
+  const pageWidth = pageSize?.width ?? 595;
+  const pageHeight = pageSize?.height ?? 842;
+  // Wipe only letterhead branding — never body Client/IGM cells.
+  for (const wipe of slots.companyWipes || []) {
+    if (!wipeIsInHeaderBand(wipe, slots, textRotateDeg)) continue;
+    wipeTextSlot(page, wipe, textRotateDeg, 1, clamp);
   }
-  wipeTextSlot(page, slots.company, textRotateDeg, 2);
-  wipeBox(page, slots.footer.poweredByWipe, 2);
+  for (const line of slots.addressLines || []) {
+    if (slots.company && boxesOverlap(line, slots.company, 4, textRotateDeg)) continue;
+    if (!wipeIsInHeaderBand(line, slots, textRotateDeg)) continue;
+    wipeTextSlot(page, line, textRotateDeg, 1, clamp);
+  }
+  wipeTextSlot(page, slots.company, textRotateDeg, 1, clamp);
+  // Only wipe Powered By when the slot sits on the footer strip (never body cells).
+  if (
+    slots.footer.poweredByWipe &&
+    isFooterStripWipe(slots.footer.poweredByWipe, textRotateDeg, pageWidth, pageHeight)
+  ) {
+    if (textRotateDeg === 90) {
+      wipeTextSlot(page, slots.footer.poweredByWipe, 90, 1);
+    } else {
+      wipeBox(page, slots.footer.poweredByWipe, 2);
+    }
+  } else if (textRotateDeg === 90 && slots.footer.pageLabel && slots.footer.printedDateLabel) {
+    // Synthesize a Powered By wipe between Printed Date and Page on the footer strip.
+    const dateLabel = slots.footer.printedDateLabel;
+    const pageLab = slots.footer.pageLabel;
+    const wipeY = (dateLabel.y || 0) + (dateLabel.width || 40) + 50;
+    const wipeH = Math.max(40, (pageLab.y || 0) - wipeY - 8);
+    if (wipeH > 20) {
+      wipeTextSlot(
+        page,
+        {
+          x: pageLab.x,
+          y: wipeY,
+          width: wipeH,
+          height: Math.max(pageLab.height || 8, 10),
+          size: 8,
+        },
+        90,
+        1,
+      );
+    }
+  }
   wipeTextSlot(page, slots.footer.printedByValue, textRotateDeg, 1);
   wipeTextSlot(page, slots.footer.printedDateValue, textRotateDeg, 1);
 
   if (pageIndex !== 0) return;
 
   const company = officialCompanyName(data.companyName);
-  const lines = contactLines(data);
+  const letterheadStyle = isRotatedTallHeader(slots.headerBand);
+  const isHblFace = /^(HBL_|FG_HBL_)/i.test(slots.code || '');
+  // HKG-style: F/Agent gets city only; Tel/Email sit under the logo issuer block.
+  const lines =
+    isHblFace && slots.issuerCompany
+      ? [(data.companyAddress || '').trim()].filter(Boolean)
+      : contactLines(data, letterheadStyle);
   const companyAlign = slots.company?.align === 'right' ? 'right' : 'left';
+  const band = slots.headerBand;
+  // Clamp company into the letterhead strip so chrome never lands on IGM/body.
+  // Ocean HBL: org chrome stays in the agent/carrier column (right half).
+  let companySlot =
+    slots.company && band && letterheadStyle
+      ? {
+          ...slots.company,
+          x: Math.min(
+            Math.max(slots.company.x, band.x + 2),
+            band.x + Math.max(8, band.width - 14),
+          ),
+        }
+      : slots.company;
+  if (isHblFace && companySlot && companySlot.x < pageWidth * 0.4) {
+    companySlot = null;
+  }
   const addressSlots = (slots.addressLines || []).filter((box) => {
-    if (!slots.company) return true;
-    if (boxesOverlap(box, slots.company, 4)) return false;
+    if (!wipeIsInHeaderBand(box, slots, textRotateDeg)) return false;
+    if (!companySlot) return true;
+    if (boxesOverlap(box, companySlot, 4, textRotateDeg)) return false;
     return (
-      Math.abs(box.x - slots.company.x) > 2 ||
-      Math.abs(box.y - slots.company.y) > 2
+      Math.abs(box.x - companySlot.x) > 2 ||
+      Math.abs(box.y - companySlot.y) > 2
     );
   });
   if (addressSlots.length > 0 && lines.length > 0) {
@@ -336,41 +793,99 @@ function applyBrandingSlots(
       ...new Map(addressSlots.map((b) => [`${Math.round(b.y)}:${Math.round(b.x)}`, b])).values(),
     ].sort((a, b) => b.y - a.y || a.x - b.x);
     const belowCompany = uniqueY.filter((b) => {
-      if (!slots.company) return true;
+      if (!companySlot) return true;
       // Rotated letterhead: "below" company is toward +X (visual down).
-      if (textRotateDeg === 90) return b.x > slots.company.x + 4;
-      return b.y < slots.company.y - 4;
+      if (textRotateDeg === 90) return b.x > companySlot.x + 4;
+      return b.y < companySlot.y - 4;
     });
     const targets = (belowCompany.length >= 1 ? belowCompany : uniqueY).slice(0, lines.length);
+    // One contiguous wipe clears leftover sample address fragments (overlap fix).
+    if (!textRotateDeg && targets.length > 0) {
+      const left = Math.min(...targets.map((b) => b.x)) - 2;
+      const right = Math.max(...targets.map((b) => b.x + (b.width || 160)));
+      const top = Math.max(...targets.map((b) => b.y + (b.size || 8))) + 2;
+      const bottom = Math.min(...targets.map((b) => b.y)) - 2;
+      wipeBox(
+        page,
+        {
+          x: left,
+          y: bottom,
+          width: Math.max(40, right - left),
+          height: Math.max(10, top - bottom),
+        },
+        1,
+        clamp,
+      );
+    }
+    let lastY = companySlot?.y ?? targets[0]?.y ?? 0;
     targets.forEach((box, index) => {
       const value = lines[index];
       if (!value) return;
-      wipeTextSlot(page, box, textRotateDeg, 1);
-      const align = box.align === 'right' || companyAlign === 'right' ? 'right' : 'left';
+      const drawBox =
+        textRotateDeg === 90 && band
+          ? {
+              ...box,
+              x: Math.min(Math.max(box.x, band.x + 2), band.x + band.width - 8),
+            }
+          : box;
+      // Keep contact lines on distinct baselines (avoids "Dubai, UAE+971" glue).
+      let drawY = drawBox.y;
+      if (!textRotateDeg && index > 0 && Math.abs(drawY - lastY) < 8) {
+        drawY = lastY - 9;
+      }
+      lastY = drawY;
+      wipeTextSlot(
+        page,
+        { ...drawBox, y: drawY },
+        textRotateDeg,
+        1,
+        clamp,
+      );
+      const align = drawBox.align === 'right' || companyAlign === 'right' ? 'right' : 'left';
       drawSafeText(
         page,
         fonts,
         value.slice(0, 90),
-        box.x,
-        box.y,
-        box.size || 7,
+        drawBox.x,
+        drawY,
+        drawBox.size || 7,
         false,
-        rgb(0.05, 0.05, 0.08),
+        colorFromHex(drawBox.color || companySlot?.color, rgb(0.06, 0.3, 0.59)),
         align,
-        box.width,
+        Math.min(drawBox.width || 200, textRotateDeg === 90 ? pageHeight - drawY - 16 : 220),
         textRotateDeg,
       );
     });
-  } else if (slots.company && lines.length > 0) {
+  } else if (companySlot && lines.length > 0) {
+    // Wipe a clean band under the company name before drawing contact lines.
+    if (!textRotateDeg) {
+      wipeBox(
+        page,
+        {
+          x: companyAlign === 'right' ? companySlot.x - 40 : companySlot.x,
+          y: Math.max(8, companySlot.y - 40),
+          width: Math.min(260, (companySlot.width || 200) + 48),
+          height: 44,
+        },
+        1,
+        clamp,
+      );
+    }
     lines.slice(0, 3).forEach((line, index) => {
-      const lineX =
+      let lineX =
         textRotateDeg === 90
-          ? slots.company!.x + 11 * (index + 1)
-          : slots.company!.x;
+          ? companySlot.x + 10 * (index + 1)
+          : companySlot.x;
+      if (textRotateDeg === 90 && band) {
+        lineX = Math.min(lineX, band.x + band.width - 8);
+      }
       const lineY =
         textRotateDeg === 90
-          ? slots.company!.y
-          : Math.max(8, slots.company!.y - 11 * (index + 1));
+          ? companySlot.y
+          : Math.max(
+              band ? band.y + 6 : 8,
+              companySlot.y - 11 * (index + 1),
+            );
       drawSafeText(
         page,
         fonts,
@@ -379,114 +894,369 @@ function applyBrandingSlots(
         lineY,
         7,
         false,
-        rgb(0.05, 0.05, 0.08),
+        colorFromHex(companySlot.color, rgb(0.06, 0.3, 0.59)),
         companyAlign,
-        slots.company!.width,
+        Math.min(companySlot.width || 200, textRotateDeg === 90 ? pageHeight - lineY - 16 : 220),
         textRotateDeg,
       );
     });
   }
 
   // Draw company last so address wipes cannot clip the letterhead name.
-  if (slots.company) {
-    const size = slots.company.size || slots.company.height || 11;
+  if (companySlot) {
+    const size = companySlot.size || companySlot.height || 11;
+    const maxAdvance =
+      textRotateDeg === 90
+        ? Math.min(companySlot.width || 420, Math.max(120, pageHeight - companySlot.y - 24))
+        : 280;
     const advance = Math.min(
-      Math.max(slots.company.width || 0, company.length * size * 0.55) + 8,
-      textRotateDeg === 90 ? slots.company.width || 420 : 280,
+      Math.max(companySlot.width || 0, company.length * size * 0.55) + 8,
+      maxAdvance,
     );
     wipeTextSlot(
       page,
       {
-        ...slots.company,
+        ...companySlot,
         width: advance,
         height: size + 2,
         size,
       },
       textRotateDeg,
-      2,
+      1,
+      clamp,
     );
     drawSafeText(
       page,
       fonts,
       company,
-      slots.company.x,
-      slots.company.y,
+      companySlot.x,
+      companySlot.y,
       size,
       true,
-      colorFromHex(slots.company.color),
+      colorFromHex(companySlot.color, rgb(0, 0, 0)),
       companyAlign,
-      slots.company.width,
+      advance,
       textRotateDeg,
     );
   }
 
-  const printedBy = (data.printedBy || company || '').trim();
-  if (printedBy && slots.footer.printedByValue) {
-    const byBox = {
-      ...slots.footer.printedByValue,
-      width: Math.max(slots.footer.printedByValue.width || 40, printedBy.length * 4),
-    };
-    wipeTextSlot(page, byBox, textRotateDeg, 1);
+  // Ocean HBL issuer block under the agent logo (Fresa FRESA DEMO INDIA band).
+  const issuer = slots.issuerCompany;
+  if (issuer && company) {
+    const size = issuer.size || issuer.height || 8;
+    const advance = Math.min(
+      220,
+      Math.max(issuer.width || 0, company.length * size * 0.55) + 8,
+    );
+    // Clear sample FRESA DEMO / Mumbai address so Tel/Email do not stack on it.
+    wipeBox(
+      page,
+      {
+        x: issuer.x - 2,
+        y: Math.max(8, issuer.y - 48),
+        width: Math.min(240, advance + 40),
+        height: 56,
+      },
+      1,
+      clamp,
+    );
+    wipeTextSlot(
+      page,
+      { ...issuer, width: advance, height: size + 2, size },
+      textRotateDeg,
+      1,
+      clamp,
+    );
     drawSafeText(
       page,
       fonts,
+      company,
+      issuer.x,
+      issuer.y,
+      size,
+      true,
+      colorFromHex(issuer.color, rgb(0, 0, 0)),
+      'left',
+      advance,
+      textRotateDeg,
+    );
+    const issuerTexts = [
+      data.companyPhone ? `Tel: ${data.companyPhone}` : '',
+      data.companyEmail ? `Email: ${data.companyEmail}` : '',
+    ].filter(Boolean);
+    const issuerSlots = (slots.issuerAddressLines || []).slice(0, issuerTexts.length);
+    if (issuerSlots.length > 0) {
+      issuerSlots.forEach((box, index) => {
+        const text = issuerTexts[index];
+        if (!text) return;
+        wipeTextSlot(page, box, textRotateDeg, 1, clamp);
+        drawSafeText(
+          page,
+          fonts,
+          text.slice(0, 90),
+          box.x,
+          box.y,
+          box.size || 7,
+          false,
+          rgb(0.05, 0.05, 0.08),
+          'left',
+          Math.min(box.width || 200, 220),
+          textRotateDeg,
+        );
+      });
+    } else {
+      issuerTexts.forEach((text, index) => {
+        drawSafeText(
+          page,
+          fonts,
+          text.slice(0, 90),
+          issuer.x,
+          Math.max(8, issuer.y - 11 * (index + 1)),
+          7,
+          false,
+          rgb(0.05, 0.05, 0.08),
+          'left',
+          220,
+          textRotateDeg,
+        );
+      });
+    }
+  }
+
+  const preparedBy = (data.printedBy || data.companyEmail || company || '').trim();
+  if (preparedBy && slots.preparedByValue) {
+    const box = slots.preparedByValue;
+    wipeTextSlot(page, box, textRotateDeg, 1, clamp);
+    drawSafeText(
+      page,
+      fonts,
+      preparedBy.slice(0, 48),
+      box.x,
+      box.y,
+      box.size || 8,
+      false,
+      rgb(0.05, 0.05, 0.08),
+      'left',
+      Math.min(box.width || 160, 200),
+      textRotateDeg,
+    );
+  }
+
+  if (company && slots.signatureBy) {
+    const box = slots.signatureBy;
+    const byLine = `By ${company}`;
+    // Wipe static "By" label + sample issuer so we redraw a single Fresa-style line.
+    wipeTextSlot(
+      page,
+      {
+        x: 310,
+        y: box.y,
+        width: Math.max(box.width || 160, byLine.length * (box.size || 8) * 0.55 + 12),
+        height: (box.size || 8) + 2,
+        size: box.size || 8,
+      },
+      textRotateDeg,
+      1,
+      clamp,
+    );
+    drawSafeText(
+      page,
+      fonts,
+      byLine.slice(0, 60),
+      313,
+      box.y,
+      box.size || 8,
+      false,
+      rgb(0.05, 0.05, 0.08),
+      'left',
+      220,
+      textRotateDeg,
+    );
+  }
+
+  // Fresa footer: Printed By : | Printed Date : | Page n of m (Powered By wiped).
+  paintFresaFooterStrip(
+    page,
+    fonts,
+    slots,
+    data,
+    company,
+    pageIndex,
+    pageCount,
+    textRotateDeg,
+    pageWidth,
+    pageHeight,
+  );
+}
+
+/**
+ * Stamp the Fresa footer strip at measured slots so layout matches the pin:
+ * `Printed By : {user}    Printed Date :{date}    Page {n} of {m}`
+ * Never paints "Powered By : Fresa …" (identity wipe only).
+ */
+function paintFresaFooterStrip(
+  page: PDFPage,
+  fonts: FaceFonts,
+  slots: ReportBrandingSlots,
+  data: OfficialFaceData,
+  company: string,
+  pageIndex: number,
+  pageCount: number,
+  textRotateDeg: number,
+  pageWidth: number,
+  pageHeight: number,
+): void {
+  const footer = slots.footer;
+  if (!footer) return;
+  // Rotated faces keep measured slot geometry (advance along +Y); portrait gets
+  // the Fresa one-line strip layout.
+  if (textRotateDeg === 90 || textRotateDeg === 270) {
+    const printedBy = (data.printedBy || company || '').trim();
+    const byBox = footerValueBox(
+      footer.printedByLabel,
+      footer.printedByValue,
       printedBy.slice(0, 40),
-      byBox.x,
-      byBox.y,
-      byBox.size || 7,
-      false,
-      rgb(0.05, 0.05, 0.08),
-      'left',
-      byBox.width,
       textRotateDeg,
+      160,
     );
-  }
-
-  const printedDate = (data.printedDate || defaultPrintedDate()).trim();
-  if (printedDate && slots.footer.printedDateValue) {
-    const dateBox = {
-      ...slots.footer.printedDateValue,
-      width: Math.max(slots.footer.printedDateValue.width || 40, printedDate.length * 4.2),
-    };
-    wipeTextSlot(page, dateBox, textRotateDeg, 1);
-    drawSafeText(
-      page,
-      fonts,
+    if (printedBy && byBox) {
+      wipeTextSlot(page, byBox, textRotateDeg, 1);
+      drawSafeText(
+        page,
+        fonts,
+        printedBy.slice(0, 40),
+        byBox.x,
+        byBox.y,
+        byBox.size || 7,
+        false,
+        rgb(0.05, 0.05, 0.08),
+        'left',
+        byBox.width,
+        textRotateDeg,
+      );
+    }
+    const printedDate = (data.printedDate || defaultPrintedDate()).trim();
+    const dateBox = footerValueBox(
+      footer.printedDateLabel,
+      footer.printedDateValue,
       printedDate.slice(0, 28),
-      dateBox.x,
-      dateBox.y,
-      dateBox.size || 7,
-      false,
-      rgb(0.05, 0.05, 0.08),
-      'left',
-      dateBox.width,
       textRotateDeg,
+      140,
+    );
+    if (printedDate && dateBox) {
+      wipeTextSlot(page, dateBox, textRotateDeg, 1);
+      drawSafeText(
+        page,
+        fonts,
+        printedDate.slice(0, 28),
+        dateBox.x,
+        dateBox.y,
+        dateBox.size || 7,
+        false,
+        rgb(0.05, 0.05, 0.08),
+        'left',
+        dateBox.width,
+        textRotateDeg,
+      );
+    }
+    if (footer.pageLabel) {
+      const label = data.pageLabel || `Page ${pageIndex + 1} of ${pageCount}`;
+      wipeTextSlot(page, footer.pageLabel, textRotateDeg, 1);
+      drawSafeText(
+        page,
+        fonts,
+        label,
+        footer.pageLabel.x,
+        footer.pageLabel.y,
+        footer.pageLabel.size || 7,
+        false,
+        rgb(0.05, 0.05, 0.08),
+        'left',
+        Math.max(footer.pageLabel.width || 40, label.length * 4),
+        textRotateDeg,
+      );
+    }
+    return;
+  }
+  const y =
+    footer.printedByLabel?.y ??
+    footer.printedByValue?.y ??
+    footer.printedDateValue?.y ??
+    footer.pageLabel?.y ??
+    22;
+  const size =
+    footer.printedByLabel?.size ||
+    footer.printedByValue?.size ||
+    footer.printedDateLabel?.size ||
+    7;
+  const colorHint =
+    footer.printedByLabel?.color ||
+    footer.printedByValue?.color ||
+    footer.printedDateLabel?.color ||
+    '';
+  const lightOnDark = /^#fff/i.test(String(colorHint).trim());
+  // White slot colour often means text on a coloured footer chip (Format-1). Prefer
+  // black ink on a wiped strip unless we know the chip must stay (lightOnDark).
+  const ink = lightOnDark ? rgb(1, 1, 1) : rgb(0.05, 0.05, 0.08);
+  // Format-1 maps sample "User :" mid-chip; Fresa pin starts "Printed By :" at the left.
+  let byLabelX = footer.printedByLabel?.x ?? 22;
+  let byValueX =
+    footer.printedByValue?.x ?? byLabelX + (footer.printedByLabel?.width || 48) + 4;
+  if (lightOnDark && byLabelX > 40) {
+    byLabelX = 16;
+    byValueX = 70;
+  }
+  const dateLabelX =
+    footer.printedDateLabel?.x ??
+    (footer.printedDateValue ? Math.max(200, footer.printedDateValue.x - 70) : 245);
+  const dateValueX =
+    footer.printedDateValue?.x ?? dateLabelX + (footer.printedDateLabel?.width || 55) + 2;
+  const pageX = footer.pageLabel?.x ?? Math.max(500, pageWidth - 90);
+
+  // Clear sample User:/emails/Powered By. Skip full wipe on coloured chip footers
+  // so Format-1 blue/amber/red bars are not erased.
+  if (!textRotateDeg && !lightOnDark) {
+    wipeBox(
+      page,
+      { x: Math.min(14, byLabelX - 2), y: y - 2, width: pageWidth - 28, height: size + 6 },
+      0,
     );
   }
 
-  if (slots.footer.pageLabel) {
-    const label =
-      data.pageLabel ||
-      `Page ${pageIndex + 1} of ${pageCount}`;
-    const pageBox = {
-      ...slots.footer.pageLabel,
-      width: Math.max(slots.footer.pageLabel.width || 40, label.length * 4),
-    };
-    wipeTextSlot(page, pageBox, textRotateDeg, 1);
+  const stamp = (
+    text: string,
+    x: number,
+    bold = false,
+    maxW = 160,
+  ) => {
     drawSafeText(
       page,
       fonts,
-      label,
-      pageBox.x,
-      pageBox.y,
-      pageBox.size || 7,
-      false,
-      rgb(0.05, 0.05, 0.08),
+      text,
+      x,
+      y,
+      size,
+      bold,
+      ink,
       'left',
-      pageBox.width,
+      maxW,
       textRotateDeg,
     );
-  }
+  };
+
+  // Labels always use Fresa wording (not "User :" / "Created By :").
+  stamp('Printed By :', byLabelX, false, 55);
+  const printedBy = (data.printedBy || company || '').trim();
+  if (printedBy) stamp(printedBy.slice(0, 42), byValueX, false, 150);
+
+  stamp('Printed Date :', dateLabelX, false, 70);
+  const printedDate = (data.printedDate || defaultPrintedDate()).trim();
+  // Fresa pin: `Printed Date :28-JAN-19 01:54PM` (value follows label slot).
+  if (printedDate) stamp(printedDate.slice(0, 28), dateValueX, false, 130);
+
+  const pageLabel =
+    data.pageLabel || `Page ${pageIndex + 1} of ${pageCount}`;
+  stamp(pageLabel, pageX, false, 80);
 }
 
 const DOC_TITLE =
@@ -565,10 +1335,14 @@ function drawFacePage(
   pageIndex: number,
   pageCount: number,
   slots: ReportBrandingSlots | undefined,
-  opts: { shiftLetterheadForLogo?: boolean } = {},
+  opts: { shiftLetterheadForLogo?: boolean; frame?: PageFrame | null } = {},
 ): void {
   const textRotateDeg = Number(face.rotateDeg) || 0;
   const pageArea = face.widthPt * face.heightPt;
+  const frame = opts.frame ?? null;
+  if (!textRotateDeg) {
+    paintTitleBands(page, facePage, face.widthPt, frame);
+  }
   for (const rect of facePage.rects) {
     const [x, y, w, h, r, g, b, kind] = rect;
     if (w < 0.4 || h < 0.4) continue;
@@ -607,13 +1381,56 @@ function drawFacePage(
       color: ink(r, g, b),
     });
   }
-  // Keep footer *labels* only — values are wiped/redrawn from org/session data.
+  // Footer strip is fully redrawn by paintFresaFooterStrip — skip all sample footer glyphs.
   const footerKeep =
-    /^(printed by\s*:?|printed date\s*:?|created by\b.*|powered by|this is a computer)/i;
+    /^(printed by\s*:?|printed date\s*:?|created by\b.*|powered by|this is a computer|user\s*:)/i;
+  const isHblFacePage = /^(HBL_|FG_HBL_)/i.test(face.code);
+  const isInvoiceFacePage = /^INVOICE_REPORT_FORMAT_/i.test(face.code);
+  // When the job/invoice is bound, drop Fresa demo party glyphs so live stamps
+  // do not stack on top of 4G / AL NASER sample lines (wipe alone is unreliable).
+  const skipHblPartySamples = isHblFacePage && Boolean(data.entityBound);
+  const hblPartyBands = skipHblPartySamples
+    ? collectHblPartyBands(facePage, face)
+    : [];
+  const invoiceSampleKeys =
+    isInvoiceFacePage && data.entityBound && !textRotateDeg
+      ? collectInvoiceSampleValueRuns(facePage, face)
+      : null;
   for (const run of facePage.texts) {
     const [raw, x, y, size, bold] = run;
     const text = plainLabel(raw || '');
     if (!text || isFresaIdentityText(text)) continue;
+    if (
+      skipHblPartySamples &&
+      isInsideHblPartyBand(x, y, text, face.widthPt, hblPartyBands)
+    ) {
+      continue;
+    }
+    if (
+      invoiceSampleKeys?.has(
+        `${Math.round(x * 10)}:${Math.round(y * 10)}:${text.slice(0, 40)}`,
+      )
+    ) {
+      continue;
+    }
+    // Drop sample letterhead/agent glyphs that branding slots will redraw — prevents
+    // Tamil Nadu / FRESA DEMO / Tel lines stacking under org address.
+    if (
+      slots &&
+      shouldSkipSampleBrandingGlyph(x, y, size || 8, text, face, slots, textRotateDeg)
+    ) {
+      continue;
+    }
+    // Ocean HBL: sample Tel/Email/By/agent-city are org chrome — redraw from slots.
+    if (
+      isHblFacePage &&
+      (/^Tel\s*:/i.test(text) ||
+        /^Email\s*:/i.test(text) ||
+        /^By\s*$/i.test(text) ||
+        (/^DUBAI\b/i.test(text) && x > face.widthPt * 0.45))
+    ) {
+      continue;
+    }
     // Rotated footers live on high X; drop sample values (RAM, dates, "of 1")
     // so branding can redraw without stacking on top of the sample.
     if (
@@ -623,18 +1440,8 @@ function drawFacePage(
     ) {
       continue;
     }
-    // Portrait footer band — same idea for non-rotated faces.
-    if (
-      !textRotateDeg &&
-      y < 55 &&
-      slots?.footer &&
-      !footerKeep.test(text) &&
-      (/^\d{1,2}[-/][A-Za-z]{3}[-/]\d{2,4}/.test(text) ||
-        /^[\w.+-]+@/.test(text) ||
-        /^(ram|admin|user)$/i.test(text) ||
-        /^of\s+\d+$/i.test(text) ||
-        /^\d+\s*\/\s*\d+$/.test(text))
-    ) {
+    // Portrait footer band — paintFresaFooterStrip owns this strip (no sample overlap).
+    if (!textRotateDeg && y < 55 && slots?.footer) {
       continue;
     }
     if (CHECK_ONLY.test(text)) {
@@ -651,7 +1458,7 @@ function drawFacePage(
       x,
       y,
       size || 8,
-      Boolean(bold) || (size || 0) >= 12,
+      isEmphasizedRun(drawn, bold, size || 8),
       rgb(0.05, 0.05, 0.08),
       'left',
       undefined,
@@ -660,7 +1467,17 @@ function drawFacePage(
   }
 
   if (slots) {
-    applyBrandingSlots(page, fonts, slots, data, pageIndex, pageCount, textRotateDeg);
+    applyBrandingSlots(
+      page,
+      fonts,
+      slots,
+      data,
+      pageIndex,
+      pageCount,
+      textRotateDeg,
+      frame,
+      { width: face.widthPt, height: face.heightPt },
+    );
   } else if (pageIndex === 0) {
     drawHeuristicLetterhead(
       page,
@@ -673,10 +1490,15 @@ function drawFacePage(
   }
 
   if (pageIndex !== 0) return;
+  // /Rotate 90 measured fieldSlots are often mediaBox-misaligned vs the visible
+  // sample values (Format-2 Tax Invoice India). Stamping them double-prints and
+  // can land on IGM/body cells — skip until slots are re-extracted.
+  if (textRotateDeg === 90 || textRotateDeg === 270) return;
+  const isHblFace = /^(HBL_|FG_HBL_)/i.test(face.code);
   const values: Record<string, string> = {
-    shipper: (data.shipperLines || []).filter(Boolean).join(', '),
-    consignee: (data.consigneeLines || []).filter(Boolean).join(', '),
-    notify: (data.notifyLines || []).filter(Boolean).join(', '),
+    shipper: (data.shipperLines || []).filter(Boolean).join('\n'),
+    consignee: (data.consigneeLines || []).filter(Boolean).join('\n'),
+    notify: (data.notifyLines || []).filter(Boolean).join('\n'),
     jobNumber: data.jobNumber || '',
     referenceNo: data.referenceNo || '',
     invoiceNumber: data.invoiceNumber || '',
@@ -684,22 +1506,450 @@ function drawFacePage(
     hblNo: data.hblNo || '',
     mawbNo: data.mawbNo || '',
   };
+
+  // HBL: measured fieldSlots for parties often sit on the label row. When the
+  // record is bound, stamp live parties at the sample value anchors (left column).
+  if (isHblFace && data.entityBound) {
+    stampHblPartyBlock(page, fonts, facePage, face, 'Shipper', data.shipperLines, frame);
+    stampHblPartyBlock(page, fonts, facePage, face, 'Consignee', data.consigneeLines, frame);
+    stampHblPartyBlock(page, fonts, facePage, face, 'Notify', data.notifyLines, frame);
+    const blAnchor = facePage.texts.find(
+      (run) =>
+        /^[A-Z0-9]{6,}$/i.test(String(run[0] || '').trim()) &&
+        (run[1] || 0) > face.widthPt * 0.55 &&
+        (run[2] || 0) > face.heightPt * 0.9,
+    );
+    if (values.hblNo && blAnchor) {
+      const size = blAnchor[3] || 9;
+      wipeTextSlot(
+        page,
+        {
+          x: blAnchor[1],
+          y: blAnchor[2],
+          width: Math.min(200, values.hblNo.length * size * 0.55 + 8),
+          height: size + 2,
+          size,
+        },
+        textRotateDeg,
+        1,
+        frame,
+      );
+      drawSafeText(
+        page,
+        fonts,
+        values.hblNo.slice(0, 40),
+        blAnchor[1],
+        blAnchor[2],
+        size,
+        false,
+        rgb(0.05, 0.05, 0.08),
+        'left',
+        undefined,
+        textRotateDeg,
+      );
+    }
+  }
+
+  // Invoice portrait: stamp Bill To / Shipper / Consignee / Invoice No at sample
+  // value anchors (fieldSlots often sit on the label, not the value cell).
+  const isInvoiceFace = /^INVOICE_REPORT_FORMAT_/i.test(face.code);
+  if (isInvoiceFace && data.entityBound) {
+    const billTo =
+      (data.billToLines || []).filter(Boolean).join(', ') ||
+      (data.consigneeLines || []).filter(Boolean).join(', ') ||
+      (data.shipperLines || []).filter(Boolean).join(', ');
+    stampInvoiceLabeledValue(page, fonts, facePage, face, 'Bill\\s*To', billTo, frame);
+    stampInvoiceLabeledValue(
+      page,
+      fonts,
+      facePage,
+      face,
+      'Shipper',
+      (data.shipperLines || []).filter(Boolean).join(', '),
+      frame,
+    );
+    stampInvoiceLabeledValue(
+      page,
+      fonts,
+      facePage,
+      face,
+      'Consignee',
+      (data.consigneeLines || []).filter(Boolean).join(', '),
+      frame,
+    );
+    stampInvoiceLabeledValue(
+      page,
+      fonts,
+      facePage,
+      face,
+      'Invoice\\s*No',
+      data.invoiceNumber,
+      frame,
+    );
+    stampInvoiceLabeledValue(
+      page,
+      fonts,
+      facePage,
+      face,
+      'Job\\s*No',
+      data.jobNumber,
+      frame,
+    );
+    stampInvoiceLabeledValue(
+      page,
+      fonts,
+      facePage,
+      face,
+      'HBL',
+      data.hblNo,
+      frame,
+    );
+    stampInvoiceLabeledValue(
+      page,
+      fonts,
+      facePage,
+      face,
+      'Client',
+      billTo,
+      frame,
+    );
+  }
+
   for (const field of face.fieldSlots) {
+    // HBL parties / hblNo handled above via sample anchors when entity-bound.
+    if (
+      isHblFace &&
+      (field.key === 'shipper' ||
+        field.key === 'consignee' ||
+        field.key === 'notify' ||
+        field.key === 'hblNo')
+    ) {
+      continue;
+    }
+    // Invoice parties/doc nos stamped at label-adjacent sample anchors above.
+    if (
+      isInvoiceFace &&
+      data.entityBound &&
+      (field.key === 'shipper' ||
+        field.key === 'consignee' ||
+        field.key === 'invoiceNumber' ||
+        field.key === 'jobNumber' ||
+        field.key === 'hblNo' ||
+        field.key === 'referenceNo')
+    ) {
+      continue;
+    }
     const value = values[field.key];
     if (!value || isFresaIdentityText(value)) continue;
+    const size = field.size || 8;
+    const advance = Math.min(220, Math.max(36, value.length * size * 0.55 + 8));
+    wipeTextSlot(
+      page,
+      { x: field.x, y: field.y, width: advance, height: size + 2, size },
+      textRotateDeg,
+      1,
+      frame,
+    );
     drawSafeText(
       page,
       fonts,
-      value.slice(0, 80),
+      value.replace(/\n/g, ', ').slice(0, 80),
       field.x,
       field.y,
-      field.size || 8,
+      size,
       false,
       rgb(0.05, 0.05, 0.08),
       'left',
       undefined,
       textRotateDeg,
     );
+  }
+}
+
+type HblPartyBand = { topY: number; bottomY: number };
+
+const HBL_PARTY_KEYS = ['shipper', 'consignee', 'notify'] as const;
+
+/** Left-column party value bands — labels and/or measured fieldSlots (MAGIC has no Shipper label). */
+function collectHblPartyBands(
+  facePage: OfficialMeasuredFace['pages'][number],
+  face: OfficialMeasuredFace,
+): HblPartyBand[] {
+  const anchors: number[] = [];
+  for (const run of facePage.texts) {
+    if (
+      /^(Shipper|Consignee|Notify)/i.test(String(run[0] || '')) &&
+      (run[1] || 0) < face.widthPt * 0.45
+    ) {
+      anchors.push(run[2] || 0);
+    }
+  }
+  for (const slot of face.fieldSlots || []) {
+    if (HBL_PARTY_KEYS.includes(slot.key as (typeof HBL_PARTY_KEYS)[number])) {
+      anchors.push(slot.y);
+    }
+  }
+  // DEMO-* sample party lines with no nearby label (MAGIC shipper cell).
+  for (const run of facePage.texts) {
+    if (
+      (run[1] || 0) < face.widthPt * 0.48 &&
+      /^(DEMO[- ]|LIVE )/i.test(String(run[0] || ''))
+    ) {
+      anchors.push((run[2] || 0) + 12);
+    }
+  }
+  const tops = [...new Set(anchors.map((y) => Math.round(y * 10) / 10))].sort(
+    (a, b) => b - a,
+  );
+  const bands: HblPartyBand[] = [];
+  for (let i = 0; i < tops.length; i++) {
+    const topY = tops[i] + 2;
+    const next = tops[i + 1];
+    const bottomY = next != null ? next + 2 : tops[i] - 95;
+    bands.push({ topY, bottomY: Math.min(bottomY, tops[i] - 8) });
+  }
+  return bands;
+}
+
+function isInsideHblPartyBand(
+  x: number,
+  y: number,
+  text: string,
+  pageWidth: number,
+  bands: HblPartyBand[],
+): boolean {
+  if (x >= pageWidth * 0.48) return false;
+  if (/^(Shipper|Consignee|Notify)/i.test(text)) return false;
+  return bands.some((b) => y < b.topY && y > b.bottomY);
+}
+
+function hblPartyFieldKey(labelWord: string): (typeof HBL_PARTY_KEYS)[number] | null {
+  const lower = labelWord.toLowerCase();
+  if (lower.startsWith('ship')) return 'shipper';
+  if (lower.startsWith('consign')) return 'consignee';
+  if (lower.startsWith('notify')) return 'notify';
+  return null;
+}
+
+/** Draw live multi-line party text under a HBL label (sample glyphs already skipped). */
+function stampHblPartyBlock(
+  page: PDFPage,
+  fonts: FaceFonts,
+  facePage: OfficialMeasuredFace['pages'][number],
+  face: OfficialMeasuredFace,
+  labelWord: string,
+  lines: string[] | undefined,
+  frame?: PageFrame | null,
+): void {
+  const live = (lines || []).map((l) => String(l || '').trim()).filter(Boolean);
+  if (!live.length) return;
+  const labelRe = new RegExp(`^${labelWord}`, 'i');
+  const label = facePage.texts.find(
+    (run) => labelRe.test(String(run[0] || '')) && (run[1] || 0) < face.widthPt * 0.45,
+  );
+  const slotKey = hblPartyFieldKey(labelWord);
+  const slot = slotKey
+    ? face.fieldSlots.find((f) => f.key === slotKey)
+    : undefined;
+  // MAGIC has no "Shipper" label — fall back to the measured fieldSlot / DEMO sample.
+  const labelY = label?.[2] ?? (slot ? slot.y + 12 : 0);
+  if (!labelY && !slot) return;
+  const sampleLines = facePage.texts
+    .filter(
+      (run) =>
+        (run[1] || 0) < face.widthPt * 0.48 &&
+        (run[2] || 0) <= labelY - 1 &&
+        (run[2] || 0) > labelY - 95 &&
+        !/^(Shipper|Consignee|Notify|Place of|Vessel|Port|Container|Job)/i.test(
+          String(run[0] || ''),
+        ),
+    )
+    .sort((a, b) => (b[2] || 0) - (a[2] || 0));
+  const top = sampleLines[0];
+  const x = top?.[1] ?? slot?.x ?? (label?.[1] ?? 20) + 1;
+  const y0 = top?.[2] ?? slot?.y ?? labelY - 14;
+  const size = top?.[3] || slot?.size || 8;
+  // Clear residual ink across the party cell before redrawing live lines.
+  wipeTextSlot(
+    page,
+    {
+      x: Math.max(14, x - 1),
+      y: y0 - 42,
+      width: face.widthPt * 0.42,
+      height: 56,
+      size,
+    },
+    0,
+    1,
+    frame,
+  );
+  live.slice(0, 4).forEach((line, index) => {
+    drawSafeText(
+      page,
+      fonts,
+      line.slice(0, 70),
+      x,
+      y0 - index * (size + 3),
+      size,
+      false,
+      rgb(0.05, 0.05, 0.08),
+      'left',
+      face.widthPt * 0.42,
+      0,
+    );
+  });
+}
+
+/**
+ * Invoice faces: sample party/doc values sit to the right of labels, while
+ * fieldSlots often land on the label. Skip those sample glyphs when bound, then
+ * stamp live values at the sample anchors.
+ */
+function collectInvoiceSampleValueRuns(
+  facePage: OfficialMeasuredFace['pages'][number],
+  face: OfficialMeasuredFace,
+): Set<string> {
+  const keys = new Set<string>();
+  const labelRe =
+    /^(Bill\s*To|Client|Shipper|Consignee|Invoice\s*No|Job\s*No|MBL|MAWB|HAWB|HBL|Shipment\s*No)/i;
+  const labels = facePage.texts.filter(
+    (run) => labelRe.test(String(run[0] || '')) && (run[1] || 0) < face.widthPt * 0.92,
+  );
+  for (const label of labels) {
+    const lx = label[1] || 0;
+    const ly = label[2] || 0;
+    for (const run of facePage.texts) {
+      const tx = run[1] || 0;
+      const ty = run[2] || 0;
+      const text = String(run[0] || '');
+      if (labelRe.test(text)) continue;
+      if (tx <= lx + 8) continue;
+      if (tx > lx + 240) continue;
+      // Same row or value block just under the label (multi-line Bill To / Client).
+      if (Math.abs(ty - ly) <= 3 || (ty < ly - 2 && ty > ly - 52)) {
+        keys.add(`${Math.round(tx * 10)}:${Math.round(ty * 10)}:${text.slice(0, 40)}`);
+      }
+    }
+  }
+  return keys;
+}
+
+function stampInvoiceLabeledValue(
+  page: PDFPage,
+  fonts: FaceFonts,
+  facePage: OfficialMeasuredFace['pages'][number],
+  face: OfficialMeasuredFace,
+  labelWord: string,
+  value: string | undefined,
+  frame?: PageFrame | null,
+): void {
+  const live = String(value || '').trim();
+  if (!live) return;
+  const labelRe = new RegExp(`^${labelWord}`, 'i');
+  const label = facePage.texts.find((run) => labelRe.test(String(run[0] || '')));
+  if (!label) return;
+  const lx = label[1] || 0;
+  const ly = label[2] || 0;
+  const samples = facePage.texts
+    .filter(
+      (run) =>
+        (run[1] || 0) > lx + 8 &&
+        (run[1] || 0) < lx + 240 &&
+        !labelRe.test(String(run[0] || '')) &&
+        (Math.abs((run[2] || 0) - ly) <= 3 ||
+          ((run[2] || 0) < ly - 2 && (run[2] || 0) > ly - 52)),
+    )
+    .sort((a, b) => (b[2] || 0) - (a[2] || 0) || (a[1] || 0) - (b[1] || 0));
+  const sample = samples[0];
+  const x = sample?.[1] ?? lx + 110;
+  const y = sample?.[2] ?? ly;
+  const size = sample?.[3] || 8;
+  const wipeBottom = Math.min(y, ...samples.map((s) => s[2] || y)) - 2;
+  const wipeTop = Math.max(y + size, ly + 2);
+  // Stop before the next label on the same row (Bill To must not erase Invoice No.).
+  const nextLabelX = facePage.texts
+    .filter(
+      (run) =>
+        Math.abs((run[2] || 0) - ly) <= 4 &&
+        (run[1] || 0) > x + 24 &&
+        /^(Invoice|Job|Shipper|Consignee|Due|MBL|MAWB|HAWB|HBL|Shipment|Date|Department|Client|Bill)/i.test(
+          String(run[0] || ''),
+        ),
+    )
+    .map((run) => run[1] || 0)
+    .sort((a, b) => a - b)[0];
+  const wipeW = Math.max(
+    48,
+    Math.min(
+      180,
+      face.widthPt * 0.34,
+      nextLabelX != null ? nextLabelX - x - 6 : 180,
+    ),
+  );
+  wipeBox(
+    page,
+    {
+      x: x - 1,
+      y: wipeBottom,
+      width: wipeW,
+      height: Math.max(size + 4, wipeTop - wipeBottom),
+    },
+    1,
+    frame,
+  );
+  drawSafeText(
+    page,
+    fonts,
+    live.slice(0, 55),
+    x,
+    y,
+    size,
+    false,
+    rgb(0.05, 0.05, 0.08),
+    'left',
+    wipeW,
+    0,
+  );
+}
+
+function drawMeasuredBarcode(
+  page: PDFPage,
+  box: ReportBrandingBox | null | undefined,
+  value: string | undefined,
+): void {
+  if (!box || box.width < 1 || box.height < 1) return;
+  const payload = String(value || '')
+    .replace(/[^\x20-\x7E]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!payload || /fresa/i.test(payload)) return;
+  const bits = code128BitString(payload);
+  if (!bits) return;
+  const quiet = 10;
+  const padded = `${'0'.repeat(quiet)}${bits}${'0'.repeat(quiet)}`;
+  const moduleWidth = box.width / padded.length;
+  page.drawRectangle({
+    x: box.x,
+    y: box.y,
+    width: box.width,
+    height: box.height,
+    color: rgb(1, 1, 1),
+  });
+  let index = 0;
+  while (index < padded.length) {
+    if (padded[index] !== '1') {
+      index += 1;
+      continue;
+    }
+    const start = index;
+    while (index < padded.length && padded[index] === '1') index += 1;
+    page.drawRectangle({
+      x: box.x + start * moduleWidth,
+      y: box.y,
+      width: (index - start) * moduleWidth,
+      height: box.height,
+      color: rgb(0, 0, 0),
+    });
   }
 }
 
@@ -725,69 +1975,118 @@ export async function generateOfficialMeasuredPdf(
   const helvetica = await doc.embedFont(StandardFonts.Helvetica);
   const helveticaBold = await doc.embedFont(StandardFonts.HelveticaBold);
   const arimoBytes = await loadFontBytes('/reports-fonts/Arimo-Regular.ttf');
+  const arimoBoldBytes = await loadFontBytes('/reports-fonts/Arimo-Bold.ttf');
   const arabicBytes = await loadFontBytes('/reports-fonts/NotoNaskhArabic-Regular.ttf');
   const latin = arimoBytes ? await doc.embedFont(arimoBytes, { subset: true }) : helvetica;
-  const latinBold = helveticaBold;
+  const latinBold = arimoBoldBytes
+    ? await doc.embedFont(arimoBoldBytes, { subset: true })
+    : helveticaBold;
   const arabic = arabicBytes
     ? await doc.embedFont(arabicBytes, { subset: true })
     : null;
   const fonts: FaceFonts = { latin, latinBold, arabic };
   const pages = face.pages.length > 0 ? face.pages : [{ rects: [], lines: [], texts: [] }];
-  const slots = getReportBrandingSlots(face.code) || getReportBrandingSlots(code);
+  const rawSlots = getReportBrandingSlots(face.code) || getReportBrandingSlots(code);
+  const rotateDeg = Number(face.rotateDeg) || 0;
+  const firstPage = pages[0];
+  const frame =
+    !rotateDeg && firstPage
+      ? inferOuterFrame(firstPage, face.widthPt, face.heightPt)
+      : null;
+  const slots = fitSlotsInsideHeaderBand(
+    ensureReportBrandingChrome(rawSlots, face),
+    frame,
+  );
   const hasLogo = Boolean(data.logoUrl && !/fresa/i.test(data.logoUrl));
 
-  const rotateDeg = Number(face.rotateDeg) || 0;
   for (let index = 0; index < pages.length; index += 1) {
     const facePage = pages[index];
     // Geometry is in mediaBox (unrotated) space. Apply /Rotate so viewers match Fresa.
     const page = doc.addPage([face.widthPt, face.heightPt]);
     if (rotateDeg) page.setRotation(degrees(rotateDeg));
     drawFacePage(page, facePage, fonts, face, data, index, pages.length, slots, {
-      shiftLetterheadForLogo: hasLogo && index === 0 && !slots?.logo,
+      shiftLetterheadForLogo: hasLogo && index === 0 && !rawSlots?.logo,
+      frame: index === 0 ? frame : null,
     });
     if (index === 0) {
-      await drawOrgLogoInSlot(
-        doc,
-        page,
-        data.logoUrl,
-        slots?.logo,
-        {
-          x: Math.max(14, Math.min(face.branding?.x ?? 20, 28)),
-          y: Math.max(face.heightPt - 56, face.heightPt - 40),
-          width: 78,
-          height: 36,
-        },
-        rotateDeg,
-      );
+      const isHblFace = /^(HBL_|FG_HBL_)/i.test(face.code);
+      // HBL: never invent a top-left invoice logo (lands in Shipper). Measured
+      // agent/carrier logo slots (any side) are still painted.
+      if (slots.logo || !isHblFace) {
+        await drawOrgLogoInSlot(
+          doc,
+          page,
+          data.logoUrl,
+          slots.logo,
+          isHblFace
+            ? { x: slots.logo!.x, y: slots.logo!.y, width: slots.logo!.width, height: slots.logo!.height }
+            : defaultLogoFallback(face, rotateDeg),
+          rotateDeg,
+          frame,
+        );
+      }
       // Re-stamp company after the logo wipe so letterhead text is never clipped.
       if (slots?.company) {
         const company = officialCompanyName(data.companyName);
-        const size = slots.company.size || slots.company.height || 11;
-        const align = slots.company.align === 'right' ? 'right' : 'left';
+        const band = slots.headerBand;
+        const companySlot =
+          band && isRotatedTallHeader(band)
+            ? {
+                ...slots.company,
+                x: Math.min(
+                  Math.max(slots.company.x, band.x + 2),
+                  band.x + Math.max(8, band.width - 14),
+                ),
+              }
+            : slots.company;
+        const size = companySlot.size || companySlot.height || 11;
+        const align = companySlot.align === 'right' ? 'right' : 'left';
+        const maxAdvance =
+          rotateDeg === 90
+            ? Math.min(
+                companySlot.width || 420,
+                Math.max(120, face.heightPt - companySlot.y - 24),
+              )
+            : 280;
         const advance = Math.min(
-          Math.max(slots.company.width || 0, company.length * size * 0.55) + 8,
-          rotateDeg === 90 ? slots.company.width || 420 : 280,
+          Math.max(companySlot.width || 0, company.length * size * 0.55) + 8,
+          maxAdvance,
         );
         wipeTextSlot(
           page,
-          { ...slots.company, width: advance, height: size + 2, size },
+          { ...companySlot, width: advance, height: size + 2, size },
           rotateDeg,
-          2,
+          1,
+          frame,
         );
         drawSafeText(
           page,
           fonts,
           company,
-          slots.company.x,
-          slots.company.y,
+          companySlot.x,
+          companySlot.y,
           size,
           true,
-          colorFromHex(slots.company.color),
+          colorFromHex(companySlot.color),
           align,
-          slots.company.width,
+          advance,
           rotateDeg,
         );
       }
+      if (slots?.barcode) {
+        const fromFace = facePage.texts.find((run) =>
+          /^[A-Z0-9]{8,}$/i.test(String(run[0] || '').trim()),
+        );
+        const barcodeValue =
+          data.hblNo ||
+          data.referenceNo ||
+          data.hawbNo ||
+          String(fromFace?.[0] || '').trim();
+        drawMeasuredBarcode(page, slots.barcode, barcodeValue);
+      }
+      // Branding wipes can nick letterhead / page boxes — restore frames last.
+      strokeHeaderBandBox(page, slots?.headerBand, 0.55);
+      if (frame) strokeOuterFrame(page, frame, 0.55);
     }
   }
   const bytes = await doc.save();

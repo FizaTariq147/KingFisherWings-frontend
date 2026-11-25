@@ -47,6 +47,19 @@ export type ReportBrandingSlots = {
   /** Sample branding name/phone/address spans to wipe before drawing org chrome. */
   companyWipes: ReportBrandingBox[];
   headerBand: ReportBrandingBox | null;
+  /**
+   * Ocean HBL (e.g. FG_HBL_HKG): second org name under the agent logo
+   * (Fresa “FRESA DEMO INDIA PVT LTD” block).
+   */
+  issuerCompany?: ReportBrandingBox | null;
+  /** Contact lines under issuerCompany (Tel / Email). */
+  issuerAddressLines?: ReportBrandingBox[];
+  /** Value to the right of “Prepared By :”. */
+  preparedByValue?: ReportBrandingBox | null;
+  /** “By {company}” under Signed on behalf of the Carrier. */
+  signatureBy?: ReportBrandingBox | null;
+  /** Top-right Code 128 box (B/L number). */
+  barcode?: ReportBrandingBox | null;
   footer: {
     printedByLabel: ReportBrandingBox | null;
     printedByValue: ReportBrandingBox | null;
@@ -95,6 +108,8 @@ export type OfficialFaceData = {
   shipperLines?: string[];
   consigneeLines?: string[];
   notifyLines?: string[];
+  /** Invoice Bill To party (customer) — separate from BL shipper. */
+  billToLines?: string[];
   jobNumber?: string;
   referenceNo?: string;
   invoiceNumber?: string;

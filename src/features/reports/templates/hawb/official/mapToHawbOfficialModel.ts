@@ -56,7 +56,8 @@ export function mapWithLayout(
   const rate = data.tableRows?.[0]?.[5] ? trim(data.tableRows[0][5]) : '';
   const totalCell = data.tableRows?.[0]?.[6] ? trim(data.tableRows[0][6]) : trim(data.total);
 
-  const shipperLines = linesOf(data.shipperLines, data.billToName ? [data.billToName] : undefined);
+  // Shipper is the shipment party — never fall back to bill-to / org as shipper.
+  const shipperLines = linesOf(data.shipperLines);
   const consigneeLines = linesOf(data.consigneeLines);
   const notifyLines = linesOf(data.notifyLines);
   const agentLines = linesOf(

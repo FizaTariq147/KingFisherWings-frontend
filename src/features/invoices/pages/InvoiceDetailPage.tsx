@@ -43,7 +43,6 @@ import { invoiceDisplayNumber } from '../utils/normalizeInvoice';
 import { resolveInvoicePdfBankAccountsAsync } from '../utils/resolveInvoicePdfBankAccounts';
 import { resolveInvoicePdfCompanyAsync } from '../utils/resolveInvoicePdfCompany';
 import { buildInvoiceFresaCatalogPath } from '@/features/reports/constants/fresaPdfParity.constants';
-import { buildCatalogHref } from '@/features/reports/utils/moduleCatalogFamily';
 
 function Field({ label, value }: { label: string; value?: string | number | null }) {
   return (
@@ -331,21 +330,22 @@ export default function InvoiceDetailPage() {
     },
     {
       label: 'Formats',
-      onClick: () => navigate(buildInvoiceFresaCatalogPath(id)),
+      onClick: () =>
+        navigate(
+          buildInvoiceFresaCatalogPath(id, {
+            job_id: invoice?.job_id,
+            party_id: invoice?.party_id,
+          }),
+        ),
       variant: 'secondary' as const,
     },
     {
       label: 'Reports catalog',
       onClick: () =>
         navigate(
-          buildCatalogHref({
-            context: 'invoice',
-            family: 'commercial',
-            invoice_id: id,
+          buildInvoiceFresaCatalogPath(id, {
             job_id: invoice?.job_id,
             party_id: invoice?.party_id,
-            view: 'strips',
-            layouts: 'all',
           }),
         ),
       variant: 'secondary' as const,

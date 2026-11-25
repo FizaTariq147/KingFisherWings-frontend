@@ -2035,6 +2035,9 @@ export interface PatchShowAllDto {
   /** Alias for vessel_name. */
   vessel_number?: string | null;
   voyage_number?: string | null;
+  /** VGM cutoff date (customs EDI) — Fresa Documentation parity. */
+  vgm_cutoff?: string | null;
+  vgm_cutoff_date?: string | null;
   /** Shipping line code. */
   line_code?: string | null;
   /** Alias for line_code. */

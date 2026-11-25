@@ -8,7 +8,6 @@ import {
   catalogContextCacheKey,
   resolveCatalogContextPdfData,
 } from '../../utils/resolveCatalogContextPdfData';
-import { generateHblSamplePdf } from '../../utils/generateHblSamplePdf';
 import { generateHblFamilyClassicPdf } from '@/features/shared/bl-draft/generateHblFamilyClassicPdf';
 import { resolveReportOrgChrome } from '../../utils/resolveReportOrgChrome';
 import {
@@ -29,9 +28,7 @@ type Props = {
 
 /**
  * HBL catalogue preview (Phase 3).
- * Jasper pilot: Freightnest native composition only.
- * Unbound browse: unmodified Fresa reference sample (labelled).
- * Entity-bound: classic / native — never a Fresa sample as the final PDF.
+ * Always Freightnest classic / native / Jasper — never a Fresa CDN sample PDF.
  */
 export function HblFormatAutoPdf({ code, context, autoOpen = true }: Props) {
   const spec = getHblFormatSpec(code);
@@ -150,7 +147,7 @@ export function HblFormatAutoPdf({ code, context, autoOpen = true }: Props) {
             const shared = getSharedLayoutSource(spec.code);
             const source = catalogPreviewSourceLabel({
               entityBound: data.entityBound,
-              preferOfficialSample: !data.entityBound,
+              preferOfficialSample: false,
               isSharedLayout: Boolean(shared?.isSharedLayout),
             });
             const label =
@@ -171,39 +168,25 @@ export function HblFormatAutoPdf({ code, context, autoOpen = true }: Props) {
             logoUrl: data.logoUrl || orgChrome.logoUrl,
           };
 
-          // Phase 3: entity-bound → Freightnest generate only.
-          if (data.entityBound) {
-            const generated = await generateCatalogLayoutPdf(spec.code, merged, {
-              logoUrl: orgChrome.logoUrl,
-              purpose: 'generate',
-              workflow: 'freightnest_generate',
-              hblMode: 'classic',
-            });
-            if (!generated) {
-              const { blob } = await generateHblFamilyClassicPdf(spec.code, merged, {
-                appendCustomerTerms: true,
-              });
-              return blob;
-            }
-            return generated.blob;
-          }
-
-          // Unbound browse: unmodified Fresa reference sample.
-          try {
-            const { blob } = await generateHblSamplePdf(spec.code, {
-              skipOrgStamp: true,
-              appendCustomerTerms: false,
-            });
-            if (!cancelled) {
-              setBoundLabel(FRESA_REFERENCE_SAMPLE_LABEL);
-            }
-            return blob;
-          } catch {
+          // Always Freightnest generate — never open a Fresa CDN sample as the document.
+          const generated = await generateCatalogLayoutPdf(spec.code, merged, {
+            logoUrl: orgChrome.logoUrl,
+            purpose: 'generate',
+            workflow: 'freightnest_generate',
+            hblMode: 'classic',
+          });
+          if (!generated) {
             const { blob } = await generateHblFamilyClassicPdf(spec.code, merged, {
               appendCustomerTerms: true,
             });
             return blob;
           }
+          if (!cancelled && !data.entityBound) {
+            setBoundLabel(
+              `${FRESA_REFERENCE_SAMPLE_LABEL}. Preview uses Freightnest native with your organization branding.`,
+            );
+          }
+          return generated.blob;
         },
         {
           fileName: formatPdfFilename(

@@ -20,6 +20,8 @@ import type {
   UpdateCgmVoyageDto,
   UpdateChargeTemplateDto,
   UpdateDeliveryOrderDto,
+  UpdateJobDocFieldsDto,
+  UpdateShipmentBlStatusDto,
 } from '../types/documentation.types';
 import { normalizeDocumentationRecord, normalizeMany } from '../utils/normalizeDocumentation';
 import {
@@ -102,9 +104,18 @@ async function downloadBlob(
   triggerBlobDownload(blob, outName);
 }
 
-async function uploadFile(path: string, file: File): Promise<Record<string, unknown>> {
+async function uploadFile(
+  path: string,
+  file: File,
+  fields?: Record<string, string | undefined>,
+): Promise<Record<string, unknown>> {
   const form = new FormData();
   form.append('file', file);
+  if (fields) {
+    for (const [key, value] of Object.entries(fields)) {
+      if (value != null && value !== '') form.append(key, value);
+    }
+  }
   const res = await withGatewayRetry(() =>
     axiosInstance.post(path, form, { headers: { 'Content-Type': 'multipart/form-data' } }),
   );
@@ -263,6 +274,21 @@ export const documentationDeliveryOrderService = {
       throw formatDocumentationError(error);
     }
   },
+
+  async updateShipmentBlStatus(
+    jobId: string,
+    dto: UpdateShipmentBlStatusDto,
+  ): Promise<DocumentationRecord> {
+    try {
+      return (await mutateRecord(
+        'patch',
+        DOCUMENTATION_API.deliveryOrders.updateShipmentBlStatus(jobId),
+        preparePayload(dto),
+      )) as DocumentationRecord;
+    } catch (error) {
+      throw formatDocumentationError(error);
+    }
+  },
 };
 
 async function listEdiResource<T extends DocumentationRecord>(
@@ -330,6 +356,21 @@ export const documentationEdiService = {
       filename,
       'application/pdf, application/json, */*',
     ),
+};
+
+/** Docs BE Phase 1 — job documentation fields. */
+export const documentationJobOpsService = {
+  async patchDocFields(jobId: string, dto: UpdateJobDocFieldsDto): Promise<DocumentationRecord> {
+    try {
+      return (await mutateRecord(
+        'patch',
+        DOCUMENTATION_API.jobs.docFields(jobId),
+        preparePayload(dto),
+      )) as DocumentationRecord;
+    } catch (error) {
+      throw formatDocumentationError(error);
+    }
+  },
 };
 
 /** Documentation All Jobs list + create wizard (OpenAPI). */

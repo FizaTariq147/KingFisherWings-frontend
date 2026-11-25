@@ -1,9 +1,8 @@
-import { useMemo, useState, type ComponentType, type FormEvent, type ReactNode } from 'react'
+import { type ComponentType, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronRight, LogIn, Package, Search, Shield } from 'lucide-react'
+import { ChevronRight, LogIn, Package, Shield } from 'lucide-react'
 import loginBg from '@/assets/login-bg.mp4'
 import { BrandLogo } from '@/features/branding/components/BrandLogo'
-import { resolveTenantSlugFromLocation } from '@/features/public-track/utils/publicTrackContext'
 
 const NAVY = '#0A2942'
 
@@ -73,35 +72,6 @@ export function AuthLandingShell({
   /** Hide hub UI — video + overlay stay visible (e.g. while a login popup is open). */
   videoOnly?: boolean
 }) {
-  const defaultTenant = useMemo(() => resolveTenantSlugFromLocation(), [])
-  const [trackRef, setTrackRef] = useState('')
-  const [error, setError] = useState<string | null>(null)
-
-  const onTrack = (e: FormEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    const ref = trackRef.trim()
-    if (ref.length < 2) {
-      setError('Enter at least 2 characters.')
-      return
-    }
-    setError(null)
-
-    const params = new URLSearchParams()
-    params.set('ref', ref)
-    if (defaultTenant) params.set('tenant_slug', defaultTenant)
-    const url = `${window.location.origin}/track?${params.toString()}`
-    // Open only in a new tab — never navigate the login page away.
-    // Do not pass "noopener" as a window feature: browsers then return null even
-    // when the tab opens, which previously triggered a same-tab fallback.
-    const opened = window.open(url, '_blank')
-    if (opened) {
-      opened.opener = null
-      return
-    }
-    setError('Pop-up blocked. Allow pop-ups for this site to open Track in a new tab.')
-  }
-
   return (
     <div className="relative min-h-screen overflow-hidden">
       <video
@@ -162,43 +132,6 @@ export function AuthLandingShell({
                 onClick={onAdminClick}
               />
             </div>
-
-            <form
-              noValidate
-              onSubmit={onTrack}
-              className="mx-auto mt-4 max-w-[440px] rounded-2xl bg-white/18 px-4 py-4 shadow-[0_8px_32px_rgba(10,41,66,0.12)] backdrop-blur-md ring-1 ring-white/25"
-            >
-              <div className="mb-2.5 flex items-start gap-2 text-white">
-                <Search size={15} className="mt-0.5 shrink-0 opacity-90" />
-                <div>
-                  <p className="text-[13.5px] font-semibold">Track a Shipment</p>
-                  <p className="text-[11.5px] leading-snug text-white/75">
-                    Opens live Track &amp; Trace in a new tab.
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={trackRef}
-                  onChange={(e) => setTrackRef(e.target.value)}
-                  placeholder="Job / shipment / container / BL…"
-                  className="h-10 min-w-0 flex-1 rounded-lg border-0 bg-white px-3 text-[13px] text-slate-800 outline-none placeholder:text-slate-400"
-                />
-                <button
-                  type="submit"
-                  disabled={trackRef.trim().length < 2}
-                  className="h-10 shrink-0 rounded-lg bg-white px-4 text-[13px] font-semibold text-slate-800 transition hover:bg-slate-100 disabled:opacity-60"
-                >
-                  Track
-                </button>
-              </div>
-              {error ? (
-                <p role="alert" className="mt-2 text-[12px] text-red-100">
-                  {error}
-                </p>
-              ) : null}
-            </form>
           </div>
         </main>
       )}

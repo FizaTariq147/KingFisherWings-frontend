@@ -34,7 +34,7 @@ describe('Phase 6 defect regressions', () => {
     ).toBe(false);
   });
 
-  it('unbound browse may still prefer CDN sample', () => {
+  it('unbound browse never prefers CDN sample in-app', () => {
     expect(
       shouldPreferOfficialSamplePdf({
         code: 'HAWB_DRAFT_REPORT_FORMAT_1',
@@ -42,7 +42,7 @@ describe('Phase 6 defect regressions', () => {
         entityBound: false,
         purpose: 'browse',
       }),
-    ).toBe(true);
+    ).toBe(false);
     expect(
       shouldPreferOfficialSamplePdf({
         code: 'HAWB_DRAFT_REPORT_FORMAT_1',
@@ -52,6 +52,7 @@ describe('Phase 6 defect regressions', () => {
       }),
     ).toBe(false);
   });
+
 
   it('Arrival Format-11+ resolves to Format-1 alias layout', () => {
     const layout = getArrivalNoticeFormatUiLayout('ARRIVAL_NOTICE_REPORT_FORMAT_11');

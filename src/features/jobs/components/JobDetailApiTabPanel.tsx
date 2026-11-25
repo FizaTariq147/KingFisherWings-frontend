@@ -27,6 +27,7 @@ import { JobAirMawbPanel } from './JobAirMawbPanel';
 import { JobContainersPanel } from './JobContainersPanel';
 import { JobLedgerPanel } from './JobLedgerPanel';
 import { JobCustomsRefsPanel } from './JobCustomsRefsPanel/JobCustomsRefsPanel';
+import { JobDocumentationExtrasPanel } from './JobDocumentationExtrasPanel/JobDocumentationExtrasPanel';
 import { JobDepartmentPanel } from './JobDepartmentPanel/JobDepartmentPanel';
 import { JobDimensionsPanel } from './JobDimensionsPanel/JobDimensionsPanel';
 import { JobExchangeRatesPanel } from './JobExchangeRatesPanel/JobExchangeRatesPanel';
@@ -1202,7 +1203,14 @@ function InteractiveTabBody({
     return <JobRoutingLegsPanel job={job} onChanged={onChanged} />;
   }
   if (key === 'customs' || key === 'shipping_bill_boe') {
-    return <JobCustomsRefsPanel job={job} onChanged={onChanged} tabKey={key} />;
+    return (
+      <div className="space-y-4">
+        <JobCustomsRefsPanel job={job} onChanged={onChanged} tabKey={key} />
+        {key === 'customs' ? (
+          <JobDocumentationExtrasPanel job={job} onChanged={onChanged} />
+        ) : null}
+      </div>
+    );
   }
   return null;
 }

@@ -103,6 +103,33 @@ export async function generateHawbOfficialPdf(
   host.style.top = '0';
   Object.assign(host.style, pageGeometryToCaptureHostCss(geometry));
   host.style.width = `${geometry.widthMm}mm`;
+  // Kill Tailwind/app chrome so capture matches Fresa: pure black grid, Arial, tight gaps.
+  // Do NOT force color/background on every node — inverted HAWB NO badges need white-on-black.
+  const reset = document.createElement('style');
+  reset.textContent = `
+    [data-hawb-official-capture], [data-hawb-official-capture] * {
+      box-sizing: border-box !important;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+      font-family: Arial, Helvetica, "Helvetica Neue", sans-serif !important;
+    }
+    [data-hawb-official-capture] {
+      color: #000000;
+    }
+    [data-hawb-official-capture] p {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    [data-hawb-official-capture] table {
+      border-collapse: collapse !important;
+      border-spacing: 0 !important;
+    }
+    [data-hawb-official-capture] img {
+      display: block;
+      max-width: 100%;
+    }
+  `;
+  host.appendChild(reset);
   document.body.appendChild(host);
 
   let root: Root | null = null;
@@ -140,7 +167,7 @@ export async function generateHawbOfficialPdf(
     for (const target of targets) {
       sanitizeHtml2CanvasClone(document, target);
       const canvas = await html2canvas(target, {
-        scale: 2,
+        scale: 3,
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
@@ -159,7 +186,8 @@ export async function generateHawbOfficialPdf(
       const imgW = pageW;
       const imgH = (canvas.height * imgW) / canvas.width;
       const drawH = Math.min(imgH, pageH);
-      pdf.addImage(canvas.toDataURL('image/jpeg', 0.94), 'JPEG', 0, 0, imgW, drawH);
+      // PNG keeps thin grid lines sharp (JPEG was softening borders).
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, imgW, drawH);
     }
 
     let layoutBlob = pdf.output('blob');

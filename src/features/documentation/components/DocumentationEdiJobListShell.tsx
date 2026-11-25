@@ -9,6 +9,7 @@ import { DocumentationListState, DocumentationRecordTable } from './Documentatio
 import { extractAxiosErrorDetail } from '@/lib/extractAxiosErrorDetail';
 import { formatDocumentationPermissionError } from '../utils/documentationPermissions';
 import { useDocumentationPermissions } from '../hooks/useDocumentationPermissions';
+import { useEdiSubmissionDownload } from '../hooks/useDocumentation';
 
 export interface EdiJobAction {
   key: string;
@@ -23,6 +24,8 @@ interface DocumentationEdiJobListShellProps {
   useList: (params: DocumentationListParams, enabled: boolean) => UseQueryResult<ListResult<DocumentationRecord>>;
   getJobId?: (row: DocumentationRecord) => string;
   actions?: EdiJobAction[];
+  /** When true, show Download if the row or last action exposes a submission id. */
+  enableSubmissionDownload?: boolean;
 }
 
 function formatEdiError(error: unknown, isTenantAdmin: boolean): string {
@@ -33,30 +36,71 @@ function formatEdiError(error: unknown, isTenantAdmin: boolean): string {
   return formatDocumentationPermissionError(raw, { isTenantAdmin });
 }
 
+function pickSubmissionId(source: unknown): string | null {
+  if (!source || typeof source !== 'object') return null;
+  const rec = source as Record<string, unknown>;
+  const nested =
+    rec.submission && typeof rec.submission === 'object'
+      ? (rec.submission as Record<string, unknown>)
+      : null;
+  const raw =
+    rec.submission_id ??
+    rec.submissionId ??
+    rec.last_submission_id ??
+    nested?.id ??
+    nested?.submission_id;
+  if (raw == null || raw === '') return null;
+  return String(raw);
+}
+
 export function DocumentationEdiJobListShell({
   title,
   preferredColumns = ['job_number', 'mbl_number', 'mawb_number', 'status', 'vessel_name', 'etd', 'eta'],
   useList,
   getJobId = (row) => String(row.job_id ?? row.id),
   actions = [],
+  enableSubmissionDownload = true,
 }: DocumentationEdiJobListShellProps) {
   const { isTenantAdmin, canReadEdi } = useDocumentationPermissions();
+  const download = useEdiSubmissionDownload();
   const [search, setSearch] = useState('');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [applied, setApplied] = useState<DocumentationListParams | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [actionInfo, setActionInfo] = useState<string | null>(null);
   const [pendingKey, setPendingKey] = useState<string | null>(null);
+  const [lastSubmissionByJob, setLastSubmissionByJob] = useState<Record<string, string>>({});
 
   const query = useList(applied ?? {}, Boolean(applied) && canReadEdi);
   const rows = useMemo(() => query.data?.items ?? [], [query.data?.items]);
   const listError = query.error ? formatEdiError(query.error, isTenantAdmin) : null;
 
+  const runDownload = async (submissionId: string) => {
+    setActionError(null);
+    setActionInfo(null);
+    setPendingKey(`download:${submissionId}`);
+    try {
+      await download.mutateAsync(submissionId);
+      setActionInfo(`Downloaded submission ${submissionId}.`);
+    } catch (err) {
+      setActionError(formatEdiError(err, isTenantAdmin));
+    } finally {
+      setPendingKey(null);
+    }
+  };
+
   const runAction = async (action: EdiJobAction, jobId: string) => {
     setActionError(null);
+    setActionInfo(null);
     setPendingKey(`${action.key}:${jobId}`);
     try {
-      await action.run(jobId);
+      const result = await action.run(jobId);
+      const submissionId = pickSubmissionId(result);
+      if (submissionId) {
+        setLastSubmissionByJob((prev) => ({ ...prev, [jobId]: submissionId }));
+        setActionInfo(`${action.label} OK — submission ${submissionId}. Use Download to save the file.`);
+      }
       await query.refetch();
     } catch (err) {
       setActionError(formatEdiError(err, isTenantAdmin));
@@ -111,6 +155,7 @@ export function DocumentationEdiJobListShell({
         </div>
 
         {actionError ? <p className="px-5 py-2 text-sm text-red-600">{actionError}</p> : null}
+        {actionInfo ? <p className="px-5 py-2 text-sm text-emerald-700">{actionInfo}</p> : null}
 
         {!applied ? (
           <div className="flex h-56 items-center justify-center px-6 text-center text-sm text-gray-500">
@@ -132,9 +177,11 @@ export function DocumentationEdiJobListShell({
                   rows={rows}
                   preferredColumns={preferredColumns}
                   actionColumn={
-                    actions.length
+                    actions.length || enableSubmissionDownload
                       ? (row) => {
                           const jobId = getJobId(row);
+                          const submissionId =
+                            lastSubmissionByJob[jobId] ?? pickSubmissionId(row) ?? null;
                           return (
                             <div className="flex flex-wrap gap-1">
                               {actions.map((action) => (
@@ -149,6 +196,17 @@ export function DocumentationEdiJobListShell({
                                   {action.label}
                                 </Button>
                               ))}
+                              {enableSubmissionDownload && submissionId ? (
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="secondary"
+                                  disabled={pendingKey === `download:${submissionId}` || download.isPending}
+                                  onClick={() => void runDownload(submissionId)}
+                                >
+                                  Download
+                                </Button>
+                              ) : null}
                             </div>
                           );
                         }

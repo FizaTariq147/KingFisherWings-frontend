@@ -1,4 +1,4 @@
-import { buildCatalogHref } from '../utils/moduleCatalogFamily';
+import { buildDashboardHref } from '../utils/moduleCatalogFamily';
 
 /**
  * FRESA exact PDF parity — backend pack priority (handoff for kingfisherwings-backend).
@@ -91,15 +91,19 @@ export const FRESA_INVOICE_FORMAT_1 = {
     'https://fresatechnologies.com/wp-content/uploads/report-formats/invoice-report-format-1-tax-invoice-india.pdf',
 } as const;
 
-/** Catalog deep-link helpers for invoice detail → all invoice-related formats. */
-export function buildInvoiceFresaCatalogPath(invoiceId: string, opts?: { code?: string }): string {
-  return buildCatalogHref({
+/** Invoice detail → report formats dashboard with live invoice (+ job) context. */
+export function buildInvoiceFresaCatalogPath(
+  invoiceId: string,
+  opts?: { code?: string; job_id?: string | null; party_id?: string | null },
+): string {
+  return buildDashboardHref({
     context: 'invoice',
     family: 'commercial',
     invoice_id: invoiceId,
+    job_id: opts?.job_id,
+    party_id: opts?.party_id,
     // Only pin a code when the caller asks — Formats must list every invoice report.
     code: opts?.code,
-    view: 'strips',
     layouts: 'all',
   });
 }

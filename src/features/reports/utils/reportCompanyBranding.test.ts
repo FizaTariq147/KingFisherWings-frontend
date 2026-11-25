@@ -121,7 +121,7 @@ describe('report company branding', () => {
     );
   });
 
-  it('handles missing logo safely without inventing a registered logo', () => {
+  it('falls back to bundled commercial logo when org has no logo_url', () => {
     expect(resolveReportLogoUrl(null)).toBeUndefined();
     expect(resolveReportLogoUrl('')).toBeUndefined();
     const chrome = chromeFromOrganizationProfile({
@@ -146,8 +146,11 @@ describe('report company branding', () => {
       customs_code: '',
       customs_license_no: '',
     });
-    expect(chrome.logoUrl).toBe('');
-    expect(brandLogoSrc(applySharedLayoutChrome(baseLayout, chrome).branding)).toBe('');
+    // Every report must still paint a header mark; prefer org, else bundled asset.
+    expect(chrome.logoUrl.length).toBeGreaterThan(0);
+    expect(brandLogoSrc(applySharedLayoutChrome(baseLayout, chrome).branding).length).toBeGreaterThan(
+      0,
+    );
   });
 
   it('handles missing company profile without fabricating contact details', () => {
@@ -157,7 +160,7 @@ describe('report company branding', () => {
     expect(chrome.address).toBe('');
     expect(chrome.phone).toBe('');
     expect(chrome.email).toBe('');
-    expect(chrome.logoUrl).toBe('');
+    expect(chrome.logoUrl.length).toBeGreaterThan(0);
     expect(SHARED_LAYOUT_CHROME.company).toBe('');
   });
 

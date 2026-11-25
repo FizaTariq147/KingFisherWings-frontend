@@ -32,6 +32,7 @@ const REFERENCE_TYPES = [
   'CUSTOMER_REF',
   'SABER',
   'RA_CODE',
+  'PORTNET',
   'ISF',
   'OTHER',
 ] as const;

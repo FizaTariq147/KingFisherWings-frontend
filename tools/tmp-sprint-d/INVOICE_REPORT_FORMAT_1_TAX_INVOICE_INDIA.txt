@@ -1,0 +1,80 @@
+  1/28/2019                                                                    TAX INVOICE
+                                                                                                                              Zoyan Logistics
+                                                                                                                                            Chennai- 600 100
+                                                                                                                                   Dubai, UAE
+                                                                                                                                            Tamil
+                                                                                                                                             +971 Nadu,
+                                                                                                                                                  50 000India
+                                                                                                                                                         0000
+                                                                                                                      ops@zoyan.example
+
+                                                                      TAX INVOICE
+ Bill To                          LIVE BILLTO LLC, Dubai, UAE                     Invoice No./Date               INV-LIVE-1001
+                                    10, DBS CENTRE, NUNGAMBAKKAM HIGH
+                                    ROAD, NUNGAMBAKKAM, CHENNAI, TAMI
+                                    LNADU, INDIA, 600084
+                                    Phone : N/A
+                                    GSTIN No. : GSTNO9876666554
+ Due Date                         : 28-JAN-19                                     Shipper                     LIVE SHIPPER CO, Chennai, India
+ Consignee                        LIVE CONSIGNEE LLC, Sharjah, UAE                Job No.                     JOB-LIVE-42
+ Shipment No.                                                                     MBL / MAWB No.      MAWB-LIVE-55
+                                                                                                                MBLC9878909999 / 21-JAN-19
+ HBL / HAWB No.      HBL-LIVE-9001                                                Place of Receipt            : CHENNAI
+ POR                         : INMAA                                              POL                         : INMAA
+ POD                         : AEJEA                                              Place of Delivery           : JEBEL ALI FZE
+ Vessel / Voyage             : MSC MARINA / 876                                   ETD                         : 28-JAN-19
+ Narration                   : B/EXP/19/0251 MBL NO. MBLC9878909999               ETA                         : 05-FEB-19
+                               / HBL NO. PLMAAJEA00080 / JOB NO.CEX
+                               P190148
+ Reference No.               : REFE NO. 987890 / 22-JAN-19                        Currency                       : INR 1.000000
+ IGM No.                     : 8987777 / 25-JAN-19                                INCO Terms                     : CFR
+ Remarks                           1X20: SHIPMENT TO JEBEL ALI - CMA CGM - PO NO. 9877777 DATE: 17/01/2019
+    Container No.         Type                                No of Pcs                                 Gross Weight           Volume     Volume Weight
+    TCNU9876543          20' DC                            125 PACKAGES                                 18,000.000 K           20.000
+
+                                                                                           Non                                                      Total
+                    SAC            Amount /                           FCY       Taxable           SGST      CGST      I/UGST
+     Charges                Qty                Currency   Ex.Rate                         Taxable      SGST      CGST        I/UGST                Amount
+                    Code             Qty                             Amount     Amount             %         %           %
+                                                                                          Amount                                                    (INR)
+FREIGHT
+                               1     100.00      USD      70.00000    100.00              7,000.00                                                  7,000.00
+CHARGE
+TERMINAL
+HANDLING
+                               1    5,500.00     INR       1.00000 5,500.00 5,500.00                  9.00 495.00      9.00 495.00                  6,490.00
+CHARGES
+20"GP
+SEAL FEE                       1     300.00      INR       1.00000    300.00     300.00               9.00    27.00    9.00    27.00                 354.00
+BILL OF LADING                 1    3,000.00     INR       1.00000 3,000.00 3,000.00                  9.00 270.00      9.00 270.00                  3,540.00
+                                                                                8,800.00 7,000.00            792.00           792.00               17,384.00
+
+                                                                                                                                  Tax          Amount (INR)
+                                                                                                                           GST18-SGST9%               792.00
+                                                                                                                           GST18-CGST9%               792.00
+                                                                     Rupee Seventeen Thousand Three Hundred Eighty-Four Only                       17,384.00
+Terms
+
+1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+
+2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be acc
+
+Bank Details
+
+Beneficiary Name: Zoyan Logistics
+Bank               : HDFC
+A/c No             : XXXXXXXXXXX
+IBAN Code          : ABA:XXXXXX
+Swift Code         : XXXXXX
+Address            : CHENNAI.
+
+
+                                         This is a computer generated document and does not require a signature
+
+Created By :
+
+
+
+
+            User : ops@zoyan.example                                 25/11/2026 15:03
+
