@@ -107,6 +107,17 @@ export function partitionCatalogStrips(
       continue;
     }
 
+    // Invoice Formats / catalogue: every commercial invoice layout must be listed,
+    // not only the small v2-wired subset (otherwise users only see one strip).
+    const contexts = template.contexts || [];
+    if (
+      template.family === 'commercial' &&
+      (contexts.includes('invoice') || /INVOICE|TAX_INVOICE|PROFORMA|DEBIT_NOTE|CREDIT_NOTE/i.test(code))
+    ) {
+      recommended.push(row);
+      continue;
+    }
+
     other.push(row);
   }
 

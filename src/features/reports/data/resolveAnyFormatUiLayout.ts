@@ -37,6 +37,48 @@ import {
 import { getRegistryByCode } from './fresaReportRegistry';
 import { listFlowCatalogEntries } from '../flow/invoiceFlowCode';
 import { reportsCatalogCodeVisible } from '../engine/invoiceV2Gate';
+import { listOfficialMeasuredFaces } from '../templates/official/officialFaceRegistry';
+import type { OfficialFaceFamily } from '../templates/official/officialFace.types';
+
+function reportFamilyFromMeasured(family: OfficialFaceFamily): ReportFamily {
+  switch (family) {
+    case 'hbl':
+    case 'arrival_notice':
+    case 'delivery_order':
+      return 'sea_docs';
+    case 'mawb':
+      return 'air_docs';
+    case 'invoice':
+      return 'commercial';
+    case 'accounts':
+      return 'finance';
+    case 'quotation':
+      return 'quotation';
+    case 'wms_asn':
+      return 'wms';
+    case 'my_reports':
+      return 'ops_list';
+    default:
+      return 'other';
+  }
+}
+
+function contextsFromMeasured(family: OfficialFaceFamily): ReportContext[] {
+  switch (family) {
+    case 'invoice':
+      return ['invoice'];
+    case 'quotation':
+      return ['quotation'];
+    case 'accounts':
+      return ['gl'];
+    case 'wms_asn':
+      return ['wms'];
+    case 'my_reports':
+      return ['list', 'job'];
+    default:
+      return ['job'];
+  }
+}
 
 export type RegisteredFormatCatalogEntry = {
   code: string;
@@ -108,6 +150,21 @@ export function listAllRegisteredFormatCatalogEntries(): RegisteredFormatCatalog
     const key = row.code.toUpperCase();
     if (!byCode.has(key)) byCode.set(key, row);
   }
+
+  // Measured Fresa faces that have no JSON shell still belong on the dashboard.
+  for (const face of listOfficialMeasuredFaces()) {
+    const key = face.code.toUpperCase();
+    if (byCode.has(key)) continue;
+    const family = reportFamilyFromMeasured(face.family);
+    byCode.set(key, {
+      code: face.code,
+      name: face.name || face.code,
+      family: familyFromCode(face.code, family),
+      contexts: contextsFromCode(face.code, contextsFromMeasured(face.family)),
+      kind: `measured_${face.family}`,
+    });
+  }
+
   const flowFirst = listFlowCatalogEntries().map((entry) => entry.code.toUpperCase());
   return [...byCode.values()].filter((row) => reportsCatalogCodeVisible({ code: row.code })).sort((a, b) => {
     const ai = flowFirst.indexOf(a.code.toUpperCase());

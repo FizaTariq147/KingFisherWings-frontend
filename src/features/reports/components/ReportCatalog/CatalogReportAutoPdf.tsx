@@ -1,5 +1,7 @@
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
 import { resolveAnyFormatUiLayout } from '../../data/resolveAnyFormatUiLayout';
+import { getOfficialMeasuredFace } from '../../templates/official/officialFaceRegistry';
+import { hasCatalogLayoutPdf } from '../../utils/generateCatalogLayoutPdf';
 import type { InvoiceFormatPreview } from '../../types/invoiceFormatPreview.types';
 import type { ReportContextIds } from '../../utils/reportParameterUtils';
 import {
@@ -16,8 +18,8 @@ type Props = {
 };
 
 /**
- * Opens the KingFisher JSON layout PDF for any registered catalog/registry report code.
- * Hydrates from invoice / quotation / job / party deep-link context when present.
+ * Opens Freightnest PDF for any registered / measured catalogue code.
+ * Prefers measured Fresa geometry when available; JSON shell is fallback only.
  */
 export function CatalogReportAutoPdf({
   code,
@@ -26,6 +28,9 @@ export function CatalogReportAutoPdf({
   autoOpen = true,
 }: Props) {
   const layout = resolveAnyFormatUiLayout(code);
+  const measured = getOfficialMeasuredFace(code);
+  const canOpen = Boolean(layout || measured || hasCatalogLayoutPdf(code));
+
   const preview: InvoiceFormatPreview | undefined = layout
     ? {
         code: layout.code,
@@ -39,7 +44,18 @@ export function CatalogReportAutoPdf({
         rtl: layout.rtl,
         sections: [],
       }
-    : undefined;
+    : measured || canOpen
+      ? {
+          code,
+          formatNumber: 0,
+          name: measured?.name || code,
+          samplePdfUrl: measured?.samplePdfUrl || null,
+          layoutKind: 'generic',
+          paper: 'A4',
+          rtl: false,
+          sections: [],
+        }
+      : undefined;
 
   const resolvedContext: ReportContextIds | null = context
     ? { ...context, invoice_id: context.invoice_id || invoiceId }
@@ -48,10 +64,10 @@ export function CatalogReportAutoPdf({
       : null;
 
   const { viewer, error, boundLabel } = useCatalogFormatLayoutPdf({
-    autoOpen,
+    autoOpen: autoOpen && Boolean(preview),
     preview,
     fileName: formatPdfFilename(
-      `Report-${layout?.formatNumber || 'X'}-${layout?.code ?? code}`,
+      `Report-${layout?.formatNumber || 'X'}-${preview?.code ?? code}`,
       'report-format',
     ),
     title: preview?.name,
@@ -59,7 +75,7 @@ export function CatalogReportAutoPdf({
     formatCode: preview?.code,
   });
 
-  if (!layout || !preview) return null;
+  if (!preview) return null;
 
   return (
     <CatalogFormatPdfViewerShell

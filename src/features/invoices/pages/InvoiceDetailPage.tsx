@@ -344,6 +344,8 @@ export default function InvoiceDetailPage() {
             invoice_id: id,
             job_id: invoice?.job_id,
             party_id: invoice?.party_id,
+            view: 'strips',
+            layouts: 'all',
           }),
         ),
       variant: 'secondary' as const,

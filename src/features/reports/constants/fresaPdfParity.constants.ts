@@ -91,13 +91,15 @@ export const FRESA_INVOICE_FORMAT_1 = {
     'https://fresatechnologies.com/wp-content/uploads/report-formats/invoice-report-format-1-tax-invoice-india.pdf',
 } as const;
 
-/** Catalog deep-link helpers for invoice detail → FRESA formats. */
+/** Catalog deep-link helpers for invoice detail → all invoice-related formats. */
 export function buildInvoiceFresaCatalogPath(invoiceId: string, opts?: { code?: string }): string {
   return buildCatalogHref({
     context: 'invoice',
     family: 'commercial',
     invoice_id: invoiceId,
-    code: opts?.code ?? FRESA_INVOICE_FORMAT_1.code,
+    // Only pin a code when the caller asks — Formats must list every invoice report.
+    code: opts?.code,
     view: 'strips',
+    layouts: 'all',
   });
 }

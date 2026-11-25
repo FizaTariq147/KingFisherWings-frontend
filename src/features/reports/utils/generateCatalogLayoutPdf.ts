@@ -251,19 +251,25 @@ export async function generateCatalogLayoutPdf(
     }
   }
 
-  // Four independent reference forms. Other measured codes stay on the shared face drawer.
-  if (!allowSample && isReferenceAccuratePdfCode(code)) {
-    return generateReferenceAccuratePdf(code, data);
-  }
-
-  // Measured native faces. Browse may still open the unmodified Fresa sample.
-  if (!allowSample && isOfficialMeasuredNativeCode(code) && !isHblJasperPilotCode(code)) {
+  // Measured Fresa faces first: exact header/footer slots (logo left, company right).
+  // Prefer this for Freightnest generate even when a browse sample exists.
+  if (
+    isOfficialMeasuredNativeCode(code) &&
+    !isHblJasperPilotCode(code) &&
+    (!allowSample ||
+      workflow === REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE ||
+      options.purpose === 'generate' ||
+      data.entityBound)
+  ) {
     const { blob } = await generateOfficialMeasuredPdf(code, {
       companyName: data.companyName,
       companyAddress: data.companyAddress,
       companyPhone: data.companyPhone,
       companyEmail: data.companyEmail,
+      companyWeb: data.companyWeb,
       logoUrl: options.logoUrl || data.logoUrl,
+      printedBy: data.printedBy || data.companyEmail || data.companyName,
+      printedDate: data.printedDate,
       entityBound: data.entityBound,
       shipperLines: data.shipperLines,
       consigneeLines: data.consigneeLines,
@@ -271,8 +277,16 @@ export async function generateCatalogLayoutPdf(
       jobNumber: data.jobNumber,
       referenceNo: data.referenceNo,
       invoiceNumber: data.invoiceNumber,
+      hawbNo: data.hawbNo,
+      hblNo: data.hblNo,
+      mawbNo: data.mawbNo,
     });
     return { blob, preview: enrichmentPreviewMeta(code) };
+  }
+
+  // Four independent reference forms (field-mapped) when no measured face exists.
+  if (!allowSample && isReferenceAccuratePdfCode(code)) {
+    return generateReferenceAccuratePdf(code, data);
   }
 
   // HBL Jasper pilot — Freightnest native only (no Fresa sample fallback on generate).

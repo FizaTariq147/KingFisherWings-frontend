@@ -33,6 +33,7 @@ import {
   hasCatalogLayoutPdf,
 } from '../../utils/generateCatalogLayoutPdf';
 import { isReferenceAccuratePdfCode } from '../../templates/referenceAccurate';
+import { isOfficialMeasuredNativeCode } from '../../templates/official';
 import { isHtmlCssPilotCode } from '../../engines/pdf/playwrightHtml/playwrightHtmlCodes';
 import {
   ACTIVITY_COMPLETED_JOBS_CODE,
@@ -86,6 +87,8 @@ type ReportGeneratePanelProps = {
    * Bind / activate / generate still run for live `/reports/*` PDFs.
    */
   omitClientPreview?: boolean;
+  /** Full page after a catalogue click. The list stays on the previous screen. */
+  presentation?: 'embedded' | 'page';
 };
 
 function isUuid(value: string): boolean {
@@ -133,6 +136,7 @@ export function ReportGeneratePanel({
   selectedPack: selectedPackProp,
   onSelectedPackChange,
   omitClientPreview = false,
+  presentation = 'embedded',
 }: ReportGeneratePanelProps) {
   const detailKey = isUuid(template.id) ? template.id : template.code;
   const detail = useReportTemplate(detailKey, Boolean(detailKey));
@@ -292,7 +296,7 @@ export function ReportGeneratePanel({
       setClientGenerating(true);
       try {
         const record = await loadInvoiceFlowRecord(contextIds);
-        const blob = await renderInvoiceFlowPdf(record);
+        const blob = await renderInvoiceFlowPdf(record, resolved.code);
         const fileName = formatPdfFilename(resolved.code, 'report-format');
         setPdfReadyName(fileName);
         setPdfReadyBlob(blob);
@@ -421,7 +425,13 @@ export function ReportGeneratePanel({
           logoUrl: data.logoUrl || orgChrome.logoUrl,
         };
 
-        if (isInvoiceFormatPdf && !isReferenceAccuratePdfCode(resolved.code)) {
+        // Measured / reference-accurate invoice faces must not use the generic JSON shell
+        // (wrong colours, tables, and bilingual header vs Fresa: logo left, company right).
+        if (
+          isInvoiceFormatPdf &&
+          !isReferenceAccuratePdfCode(resolved.code) &&
+          !isOfficialMeasuredNativeCode(resolved.code)
+        ) {
           const invoiceId = contextIds.invoice_id;
           if (invoiceId && isUuid(invoiceId)) {
             try {
@@ -724,9 +734,11 @@ export function ReportGeneratePanel({
             {formatStatus.detail}
           </p>
         </div>
-        <Button type="button" variant="secondary" onClick={onClose}>
-          Close
-        </Button>
+        {presentation === 'page' ? null : (
+          <Button type="button" variant="secondary" onClick={onClose}>
+            Close
+          </Button>
+        )}
       </div>
 
       <div
@@ -790,11 +802,9 @@ export function ReportGeneratePanel({
           role="status"
           className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900"
         >
-          Template not on API yet. Use <strong>Import registry</strong>, then Live API + Include
-          inactive.
-          {canClientLayoutPdf
-            ? ' Generate uses Freightnest layouts (org branding) — not Fresa sample PDFs.'
-            : ''}
+          {canClientLayoutPdf || presentation === 'page'
+            ? 'Listed by default from the local catalogue. Freightnest client PDF opens without Import or Activate. Backend pack is optional.'
+            : 'Template not on API yet. Use Import registry, then Live API + Include inactive.'}
         </div>
       ) : null}
 
@@ -825,15 +835,15 @@ export function ReportGeneratePanel({
           role="status"
           className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900"
         >
-          {canClientLayoutPdf
+          {canClientLayoutPdf || flowClientPdf
             ? entityBoundForUi
-              ? 'Live pack not bound yet — Generate uses Freightnest client layouts with registered organization branding and live record data. Bind + Activate a pack when available.'
-              : 'Generate uses Freightnest client layouts with registered organization branding. Official Fresa PDFs are browse-only references.'
+              ? 'Freightnest client PDF uses this record and organization branding. Binding a backend pack is optional.'
+              : 'Freightnest client PDF uses organization branding. Official Fresa PDFs are browse-only references. No Activate step is required.'
             : 'Format not enabled for print yet. Bind a Puppeteer pack, then Activate to enable Generate (organization branding on packs).'}
         </div>
       ) : null}
 
-      {!detailFailed && !resolved.is_active && activateLikely ? (
+      {!detailFailed && !resolved.is_active && activateLikely && !canClientLayoutPdf && !flowClientPdf ? (
         <div
           role="status"
           className="rounded-md border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs text-emerald-900"
@@ -967,7 +977,7 @@ export function ReportGeneratePanel({
         </p>
       ) : null}
 
-      <div className="flex flex-wrap justify-end gap-2">
+      <div className={presentation === 'page' ? 'flex flex-wrap gap-2' : 'flex flex-wrap justify-end gap-2'}>
         {!detailFailed && needsPackBind ? (
           <Button
             type="button"

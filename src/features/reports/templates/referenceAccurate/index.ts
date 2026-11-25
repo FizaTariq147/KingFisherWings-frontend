@@ -34,6 +34,8 @@ import {
 } from './invoiceIndiaReference';
 import { ACTIVITY_COMPLETED_JOBS_CODE } from './activityCompletedJobsWorkbook';
 import { HAWB_DRAFT2_LAYOUT } from '../hawb/official/layouts/hawbDraft2.layout';
+import { getReportBrandingSlots } from '../official/brandingSlots';
+import { officialCompanyName } from '../official/officialBranding';
 
 export const REFERENCE_ACCURATE_PDF_CODES = [
   HBL_JASPER_REFERENCE_CODE,
@@ -109,18 +111,35 @@ export const REFERENCE_ACCURATE_STATUS = [
 ] as const;
 
 function letterheadFor(code: string, data: InvoiceFormatPdfData): PlacedText[] {
-  const name = (data.companyName || '').trim();
+  const name = officialCompanyName(data.companyName);
   if (!name || isFresaIdentityText(name)) return [];
+  const slots = getReportBrandingSlots(code);
+  if (slots?.company) {
+    const size = slots.company.size || 12;
+    const alignRight = slots.company.align === 'right';
+    // Right-aligned Fresa header: place text so its right edge matches the slot.
+    const x = alignRight
+      ? Math.max(8, slots.company.x + (slots.company.width || 200) - name.length * size * 0.5)
+      : slots.company.x;
+    const contact = [data.companyAddress, data.companyPhone, data.companyEmail, data.companyWeb]
+      .map((part) => (part || '').trim())
+      .filter((part) => part && !isFresaIdentityText(part));
+    const addressX = alignRight ? slots.company.x : slots.company.x;
+    return [
+      { text: name, x, y: slots.company.y, size, bold: true },
+      ...stackLines(contact, addressX, slots.company.y - 12, 7.5, 9, 4),
+    ];
+  }
   if (code === INVOICE_INDIA_REFERENCE_CODE || code === FCL_QUOTATION_REFERENCE_CODE) {
     return [
-      { text: name, x: 400, y: 812, size: 8, bold: true },
+      { text: name, x: 353, y: 812, size: 14, bold: true },
       ...stackLines(
-        data.companyAddress ? [data.companyAddress] : [],
-        400,
-        800,
+        [data.companyAddress, data.companyPhone, data.companyWeb].filter(Boolean) as string[],
+        353,
+        798,
         7.5,
         9,
-        2,
+        4,
       ),
     ];
   }

@@ -98,7 +98,7 @@ export function CatalogOurThumbnail({
       };
       const generated = await generateCatalogLayoutPdf(code, merged, {
         logoUrl: orgChrome.logoUrl,
-        preferTemplateV2: true,
+        preferTemplateV2: false,
         purpose: 'generate',
         workflow: REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE,
       });

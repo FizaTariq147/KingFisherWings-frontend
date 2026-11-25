@@ -166,6 +166,8 @@ export function buildCatalogHref(opts: {
   shipment_id?: string | null;
   /** Catalogue browse mode — invoice Formats opens the redesigned strips list. */
   view?: 'strips' | 'fresa' | null;
+  /** When `all`, catalogue lists every layout variant (not only distinct shells). */
+  layouts?: 'all' | 'distinct' | null;
 }): string {
   const params = new URLSearchParams();
   if (opts.family && opts.family !== 'all') params.set('family', String(opts.family));
@@ -187,6 +189,7 @@ export function buildCatalogHref(opts: {
   if (opts.party_id?.trim()) params.set('party_id', opts.party_id.trim());
   if (opts.shipment_id?.trim()) params.set('shipment_id', opts.shipment_id.trim());
   if (opts.view === 'strips') params.set('view', 'strips');
+  if (opts.layouts === 'all') params.set('layouts', 'all');
   const q = params.toString();
   return q ? `${REPORT_CATALOG_ROUTE}?${q}` : REPORT_CATALOG_ROUTE;
 }

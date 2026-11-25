@@ -37,6 +37,10 @@ export type InvoiceFormatPdfData = {
   companyEmail?: string;
   /** Registered organization logo URL from org profile (never invent a placeholder). */
   logoUrl?: string;
+  /** Footer "Printed By" value from session user or org. */
+  printedBy?: string;
+  /** Footer "Printed Date" value. Defaults to now when omitted. */
+  printedDate?: string;
   invoiceNumber?: string;
   quotationNumber?: string;
   jobNumber?: string;

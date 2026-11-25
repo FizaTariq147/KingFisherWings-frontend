@@ -36,7 +36,9 @@ describe('partitionCatalogStrips', () => {
     ];
     const part = partitionCatalogStrips(items, { invoiceCurrency: null });
     expect(part.recommended.some((r) => r.template.code === wired)).toBe(true);
-    expect(part.otherByFamily.some((g) => g.items.some((r) => r.template.code === 'SOME_BROWSE_ONLY_FORMAT_XYZ'))).toBe(
+    // Commercial invoice layouts (including browse-only) stay in Recommended so
+    // invoice Formats lists every related report, not a single wired code.
+    expect(part.recommended.some((r) => r.template.code === 'SOME_BROWSE_ONLY_FORMAT_XYZ')).toBe(
       true,
     );
   });

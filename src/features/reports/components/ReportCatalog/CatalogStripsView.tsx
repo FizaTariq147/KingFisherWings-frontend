@@ -76,7 +76,10 @@ export function CatalogStripsView({
       return 'all';
     }
   });
-  const [moreFormatsCollapsed, setMoreFormatsCollapsed] = useState(true);
+  // Invoice deep-links need the full list visible (not buried under a collapsed "More").
+  const [moreFormatsCollapsed, setMoreFormatsCollapsed] = useState(
+    () => context?.invoice_id == null,
+  );
   const [notSuitableCollapsed, setNotSuitableCollapsed] = useState(true);
 
   const searchQuery = searchQueryProp ?? localSearch;

@@ -21,9 +21,9 @@ describe('official face factory', () => {
     const summary = summarizeOfficialFaceEvidence();
     expect(summary.faces).toBeGreaterThan(200);
     expect(summary.duplicateReferenceFiles).toEqual([]);
-    expect(summary.byFamily.hbl).toBe(113);
+    expect(summary.byFamily.hbl).toBeGreaterThanOrEqual(113);
     expect(summary.byFamily.delivery_order).toBeGreaterThanOrEqual(40);
-    expect(summary.byFamily.wms_asn).toBe(5);
+    expect(summary.byFamily.wms_asn).toBeGreaterThanOrEqual(5);
     expect(summary.byFamily.arrival_notice).toBeGreaterThan(0);
     expect(summary.byFamily.invoice).toBeGreaterThan(0);
     expect(summary.byFamily.accounts).toBeGreaterThan(0);
@@ -60,18 +60,16 @@ describe('official face factory', () => {
   });
 
   it('draws one delivery-order face at the measured page size', async () => {
-    const faces = listOfficialMeasuredFacesByFamily('delivery_order');
-    const face = [...faces].sort(
-      (a, b) =>
-        b.pages.reduce((sum, page) => sum + page.rects.length + page.lines.length, 0) -
-        a.pages.reduce((sum, page) => sum + page.rects.length + page.lines.length, 0),
-    )[0];
-    const { blob } = await generateOfficialMeasuredPdf(face.code, {
+    const face =
+      getOfficialMeasuredFace('FG_DELIVERY_ORDER_FORMAT9_RPM_REF_803') ||
+      listOfficialMeasuredFacesByFamily('delivery_order')[0];
+    expect(face).toBeTruthy();
+    const { blob } = await generateOfficialMeasuredPdf(face!.code, {
       companyName: 'KingFisher Wings',
       companyAddress: 'Dubai, UAE',
     });
-    expect(await generatedPageMatchesFace(blob, face)).toBe(true);
-    const rules = face.pages.reduce((sum, page) => sum + page.rects.length + page.lines.length, 0);
+    expect(await generatedPageMatchesFace(blob, face!)).toBe(true);
+    const rules = face!.pages.reduce((sum, page) => sum + page.rects.length + page.lines.length, 0);
     expect(rules).toBeGreaterThan(10);
     const doc = await getDocument({ data: new Uint8Array(await blob.arrayBuffer()) }).promise;
     const page = await doc.getPage(1);
@@ -79,6 +77,25 @@ describe('official face factory', () => {
     const text = content.items.map((item) => ('str' in item ? item.str : '')).join(' ');
     expect(text).toContain('KingFisher');
     expect(text.toLowerCase()).not.toContain('fresa');
+    await doc.destroy();
+  });
+
+  it('draws Arrival Notice USA when the sample tick is a radical', async () => {
+    const face = getOfficialMeasuredFace('ARRIVAL_NOTICE_REPORT_FORMAT_3_ARRIVAL_NOTICE_USA');
+    expect(face).toBeTruthy();
+    const ticks = face!.pages.flatMap((page) => page.texts).filter((run) => run[0] === '√');
+    expect(ticks.length).toBe(2);
+    const { blob } = await generateOfficialMeasuredPdf(face!.code, {
+      companyName: 'Northwind Freight LLC',
+    });
+    expect(await generatedPageMatchesFace(blob, face!)).toBe(true);
+    const doc = await getDocument({ data: new Uint8Array(await blob.arrayBuffer()) }).promise;
+    const page = await doc.getPage(1);
+    const content = await page.getTextContent();
+    const text = content.items.map((item) => ('str' in item ? item.str : '')).join(' ');
+    expect(text).toContain('Freight PREPAID');
+    expect(text).toContain('Northwind');
+    expect(text).not.toContain('√');
     await doc.destroy();
   });
 

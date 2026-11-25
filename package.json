@@ -28,6 +28,7 @@
     "audit:api-coverage": "node scripts/audit-api-coverage.mjs",
     "report:manifest": "node tools/reports/build-manifest.mjs",
     "report:code-map": "node tools/reports/build-code-map.mjs",
+    "report:format-map": "npx --yes tsx tools/reports/build-fresa-system-format-map.mjs",
     "report:status": "node tools/reports/build-status.mjs",
     "report:layout-counts": "node tools/reports/fingerprint-counts.mjs",
     "report:extract": "node tools/reports/extract.mjs",

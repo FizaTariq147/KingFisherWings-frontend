@@ -7,6 +7,8 @@ import { REPORT_FAMILY_LABELS, type ReportTemplate } from '../types/reportCatalo
 import { metaToTemplate } from '../utils/normalizeReportCatalog';
 import { reportFamilyAllowed } from '../utils/reportModuleAccess';
 import { shouldExposeHawbInPrimaryCatalogue } from '../utils/officialFormatGovernance';
+import { hasFreightnestGeneratePath } from '../utils/generateCatalogLayoutPdf';
+import { isClientFlowInvoiceCode } from '../flow/invoiceFlowOptions';
 import { useReportTemplatesBrowse } from './useReportCatalog';
 import {
   availabilityFromMeta,
@@ -79,22 +81,31 @@ export function useReportingDashboardCatalog() {
 
       const enrichment = getReportEnrichment(entry.code);
       const formats = template.formats?.length ? template.formats : (['PDF'] as const);
+      // Client layout / flow codes are listed and usable without Bind / Activate.
+      const clientReady =
+        isClientFlowInvoiceCode(entry.code) || hasFreightnestGeneratePath(entry.code);
+      const listedActive = clientReady || template.is_active !== false;
       const { availability, availabilityLabel } = availabilityFromMeta({
-        is_active: template.is_active !== false,
+        is_active: listedActive,
         gapStatus: template.gapStatus ?? meta?.gapStatus,
-        hasClientLayout: meta?.hasClientLayout ?? true,
+        hasClientLayout: clientReady || meta?.hasClientLayout !== false,
       });
 
+      const listedTemplate: ReportTemplate = clientReady
+        ? { ...template, is_active: true }
+        : template;
+
       out.push({
-        code: template.code,
-        name: template.name || entry.name,
-        description: template.description || meta?.description || '',
-        family: template.family || entry.family,
-        categoryLabel: REPORT_FAMILY_LABELS[template.family || entry.family] || entry.family,
-        moduleLabel: moduleLabelForFamily(template.family || entry.family),
+        code: listedTemplate.code,
+        name: listedTemplate.name || entry.name,
+        description: listedTemplate.description || meta?.description || '',
+        family: listedTemplate.family || entry.family,
+        categoryLabel:
+          REPORT_FAMILY_LABELS[listedTemplate.family || entry.family] || entry.family,
+        moduleLabel: moduleLabelForFamily(listedTemplate.family || entry.family),
         reportType: mapDocumentTypeToDashboardType(
           enrichment?.documentType,
-          template.family || entry.family,
+          listedTemplate.family || entry.family,
         ),
         formats: [...formats],
         availability,
@@ -102,8 +113,8 @@ export function useReportingDashboardCatalog() {
         keywords: [entry.kind, ...(entry.contexts || []), enrichment?.templateType || '']
           .filter(Boolean)
           .join(' '),
-        is_active: template.is_active !== false,
-        template,
+        is_active: listedActive,
+        template: listedTemplate,
       });
     });
     return out;

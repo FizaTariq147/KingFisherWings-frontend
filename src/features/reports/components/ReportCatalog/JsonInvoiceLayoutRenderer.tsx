@@ -286,7 +286,7 @@ function Block({
                       fontWeight: 700,
                       textTransform: 'uppercase',
                       lineHeight: 1.3,
-                      color: theme.ink,
+                      color: theme.accent || theme.primary || theme.ink,
                       wordBreak: 'break-word',
                       overflowWrap: 'anywhere',
                     }}

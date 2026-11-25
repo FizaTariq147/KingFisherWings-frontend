@@ -2,6 +2,7 @@
  * Browser pdfmake renderer for INVOICE_FLOW_TAX_INVOICE_1.
  * Uses the same doc definition rules as the Node spike tool.
  */
+import { flowInvoiceOptions } from './invoiceFlowOptions';
 import { INVOICE_FLOW_STYLE } from './invoiceFlowStyle';
 
 export type InvoiceFlowRecord = {
@@ -16,14 +17,25 @@ export type InvoiceFlowRecord = {
 
 type PdfMakeApi = {
   setUrlAccessPolicy: (fn: () => boolean) => void;
-  setLocalAccessPolicy: (fn: () => boolean) => void;
+  /** Present on the Node build only. The browser bundle does not define it. */
+  setLocalAccessPolicy?: (fn: () => boolean) => void;
+  /** Browser build: register base64 (no data-URL prefix) or { data, encoding }. */
+  addVirtualFileSystem?: (vfs: Record<string, string | { data: string; encoding?: string }>) => void;
   addFonts: (fonts: Record<string, Record<string, string>>) => void;
   createPdf: (def: unknown) => { getBlob: () => Promise<Blob> };
 };
 
+/** Block remote font fetches. Local-file policy is Node-only. */
+export function applyPdfMakeAccessPolicy(pdfmake: PdfMakeApi): void {
+  pdfmake.setUrlAccessPolicy(() => false);
+  if (typeof pdfmake.setLocalAccessPolicy === 'function') {
+    pdfmake.setLocalAccessPolicy(() => true);
+  }
+}
+
 let fontsReady = false;
 
-async function loadFontDataUrl(url: string): Promise<string> {
+async function loadFontBase64(url: string): Promise<string> {
   const response = await fetch(url);
   if (!response.ok) throw new Error(`Font load failed: ${url}`);
   const buffer = await response.arrayBuffer();
@@ -32,23 +44,42 @@ async function loadFontDataUrl(url: string): Promise<string> {
   for (let index = 0; index < bytes.length; index += 0x8000) {
     binary += String.fromCharCode(...bytes.subarray(index, index + 0x8000));
   }
-  return `data:font/ttf;base64,${btoa(binary)}`;
+  return btoa(binary);
 }
 
+/**
+ * pdfmake 0.3 browser: fonts must be VFS filenames, not data:font/... strings in addFonts.
+ * Passing a data URL into addFonts makes pdfkit treat it as a Node path and throw.
+ */
 async function ensureBrowserFonts(pdfmake: PdfMakeApi): Promise<void> {
   if (fontsReady) return;
-  pdfmake.setUrlAccessPolicy(() => false);
-  pdfmake.setLocalAccessPolicy(() => true);
-  const regular = await loadFontDataUrl('/reports-fonts/Arimo-Regular.ttf');
-  const bold = await loadFontDataUrl('/reports-fonts/Arimo-Bold.ttf');
-  pdfmake.addFonts({
-    Arimo: {
-      normal: regular,
-      bold,
-      italics: regular,
-      bolditalics: bold,
-    },
-  });
+  applyPdfMakeAccessPolicy(pdfmake);
+  const regular = await loadFontBase64('/reports-fonts/Arimo-Regular.ttf');
+  const bold = await loadFontBase64('/reports-fonts/Arimo-Bold.ttf');
+  if (typeof pdfmake.addVirtualFileSystem === 'function') {
+    pdfmake.addVirtualFileSystem({
+      'Arimo-Regular.ttf': regular,
+      'Arimo-Bold.ttf': bold,
+    });
+    pdfmake.addFonts({
+      Arimo: {
+        normal: 'Arimo-Regular.ttf',
+        bold: 'Arimo-Bold.ttf',
+        italics: 'Arimo-Regular.ttf',
+        bolditalics: 'Arimo-Bold.ttf',
+      },
+    });
+  } else {
+    // Node / older builds: data URLs are accepted by pdfkit when not routed through VFS.
+    pdfmake.addFonts({
+      Arimo: {
+        normal: `data:font/ttf;base64,${regular}`,
+        bold: `data:font/ttf;base64,${bold}`,
+        italics: `data:font/ttf;base64,${regular}`,
+        bolditalics: `data:font/ttf;base64,${bold}`,
+      },
+    });
+  }
   fontsReady = true;
 }
 
@@ -201,7 +232,11 @@ function thinLayout() {
   };
 }
 
-function buildDocDefinition(record: InvoiceFlowRecord) {
+function buildDocDefinition(record: InvoiceFlowRecord, code = '') {
+  const options = flowInvoiceOptions(code);
+  const documentTitle = options?.title || 'TAX INVOICE';
+  const showContainers = options?.showContainers !== false;
+  const numberLabel = options?.family === 'quotation' ? 'Quotation No./Date: ' : 'Invoice No./Date: ';
   const org = (record.organization || {}) as Record<string, unknown>;
   const invoice = (record.invoice || {}) as Record<string, unknown>;
   const job = (record.job || {}) as Record<string, unknown>;
@@ -461,7 +496,7 @@ function buildDocDefinition(record: InvoiceFlowRecord) {
               body: [
                 [
                   {
-                    text: 'TAX INVOICE',
+                    text: documentTitle,
                     alignment: 'center',
                     bold: true,
                     fontSize: INVOICE_FLOW_STYLE.fonts.sizes.title,
@@ -506,7 +541,7 @@ function buildDocDefinition(record: InvoiceFlowRecord) {
             stack: [
               {
                 text: [
-                  { text: 'Invoice No./Date: ', bold: true, fontSize: INVOICE_FLOW_STYLE.fonts.sizes.body },
+                  { text: numberLabel, bold: true, fontSize: INVOICE_FLOW_STYLE.fonts.sizes.body },
                   {
                     text:
                       joinParts(
@@ -548,16 +583,20 @@ function buildDocDefinition(record: InvoiceFlowRecord) {
         ],
         margin: [0, 0, 0, 6],
       },
-      {
-        table: {
-          headerRows: 1,
-          widths: [90, 50, 55, 70, 55, 70],
-          body: containerBody,
-          dontBreakRows: true,
-        },
-        layout: thinLayout(),
-        margin: [0, 0, 0, 6],
-      },
+      ...(showContainers
+        ? [
+            {
+              table: {
+                headerRows: 1,
+                widths: [90, 50, 55, 70, 55, 70],
+                body: containerBody,
+                dontBreakRows: true,
+              },
+              layout: thinLayout(),
+              margin: [0, 0, 0, 6],
+            },
+          ]
+        : []),
       {
         table: {
           headerRows: 1,
@@ -684,10 +723,10 @@ function buildDocDefinition(record: InvoiceFlowRecord) {
   };
 }
 
-export async function renderInvoiceFlowPdf(record: InvoiceFlowRecord): Promise<Blob> {
+export async function renderInvoiceFlowPdf(record: InvoiceFlowRecord, code = ''): Promise<Blob> {
   const mod = await import('pdfmake/build/pdfmake');
   const pdfmake = (mod.default || mod) as unknown as PdfMakeApi;
   await ensureBrowserFonts(pdfmake);
-  const doc = pdfmake.createPdf(buildDocDefinition(record));
+  const doc = pdfmake.createPdf(buildDocDefinition(record, code));
   return doc.getBlob();
 }

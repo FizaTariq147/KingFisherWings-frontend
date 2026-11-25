@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { appType } from '@/lib/erpTypography';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, X } from 'lucide-react';
 import { getOperationsReportByFormatCode } from '@/features/operations/config/operationsReports';
 import { Input } from '@/components/ui/Input';
@@ -139,6 +139,7 @@ export default function ReportCatalogPage() {
   const { user } = useAuth();
   const enabledModules = user?.enabledModules;
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const contextFilter = searchParams.get('context') || 'all';
   const jobId = searchParams.get('job_id') || undefined;
   const quotationId = searchParams.get('quotation_id') || undefined;
@@ -162,6 +163,18 @@ export default function ReportCatalogPage() {
   const partyId = searchParams.get('party_id') || undefined;
   const shipmentId = searchParams.get('shipment_id') || undefined;
   const selectedCode = (searchParams.get('code') || '').trim();
+  useEffect(() => {
+    if (!selectedCode) return;
+    const params = new URLSearchParams();
+    for (const key of ['job_id', 'quotation_id', 'invoice_id', 'party_id', 'shipment_id']) {
+      const value = searchParams.get(key);
+      if (value) params.set(key, value);
+    }
+    const query = params.toString();
+    navigate(`/reports/formats/${encodeURIComponent(selectedCode)}${query ? `?${query}` : ''}`, {
+      replace: true,
+    });
+  }, [navigate, searchParams, selectedCode]);
   const family = ((searchParams.get('family') as ReportFamily) || 'all') as ReportFamily | 'all';
   const familiesFilter = useMemo(
     () => parseCatalogFamiliesParam(searchParams.get('families')),
@@ -259,14 +272,15 @@ export default function ReportCatalogPage() {
         next.set('view', 'strips');
         changed = true;
       }
-      if (!next.get('code')) {
-        const first =
-          listInvoiceFormatPreviews().find((r) => isDistinctLayoutCode(r.code))?.code ||
-          listInvoiceFormatPreviews()[0]?.code;
-        if (first) {
-          next.set('code', first);
-          changed = true;
-        }
+      // Show every invoice layout variant (not only distinct shells / a single code).
+      if (next.get('layouts') !== 'all') {
+        next.set('layouts', 'all');
+        changed = true;
+      }
+      // Do not auto-pin a single format — user must see the full invoice list.
+      if (next.get('code')) {
+        next.delete('code');
+        changed = true;
       }
     } else if (jobId || shipmentId) {
       if (!next.get('context') || next.get('context') === 'all') {
@@ -795,7 +809,13 @@ export default function ReportCatalogPage() {
   }, [selectedCode, items, selectedDetail.data, registeredLayoutEntries]);
 
   const selectTemplate = (t: ReportTemplate) => {
-    patchParams({ code: t.code }, false);
+    const params = new URLSearchParams();
+    for (const key of ['job_id', 'quotation_id', 'invoice_id', 'party_id', 'shipment_id']) {
+      const value = searchParams.get(key);
+      if (value) params.set(key, value);
+    }
+    const query = params.toString();
+    navigate(`/reports/formats/${encodeURIComponent(t.code)}${query ? `?${query}` : ''}`);
   };
 
   const isInvoiceSelected = isInvoiceReportFormatCode(selectedCode);
