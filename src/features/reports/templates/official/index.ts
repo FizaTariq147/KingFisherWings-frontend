@@ -12,7 +12,12 @@ export {
   listOfficialMeasuredFacesByFamily,
 } from './officialFaceRegistry';
 export { generateOfficialMeasuredPdf } from './generateOfficialMeasuredPdf';
-export { getReportBrandingSlots, listReportBrandingSlots } from './brandingSlots';
+export {
+  getReportBrandingSlots,
+  listReportBrandingSlots,
+  ensureReportBrandingChrome,
+  ensureBrandingLogoSlot,
+} from './brandingSlots';
 export { summarizeOfficialFaceEvidence, generatedPageMatchesFace } from './officialEvidence';
 export { generateMyReportXlsx, getMyReportColumns, listMyReportColumns } from './officialWorkbook';
 export type {

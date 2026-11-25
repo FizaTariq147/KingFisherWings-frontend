@@ -320,7 +320,9 @@ export function invoiceFormatToInvoicePdfModel(
             amount: amount ?? (qty != null && rate != null ? qty * rate : undefined),
           };
         })
-      : DEMO_LINES;
+      : data.entityBound
+        ? []
+        : DEMO_LINES;
 
   const subtotal =
     parseMoney(data.subtotal) ??
@@ -383,15 +385,23 @@ export function invoiceFormatToInvoicePdfModel(
     },
     shipment: data.entityBound
       ? {
-          blAwb: REPORT_FIELD_NA,
-          vesselFlight: REPORT_FIELD_NA,
-          pol: REPORT_FIELD_NA,
-          pod: REPORT_FIELD_NA,
-          containerNo: REPORT_FIELD_NA,
+          blAwb:
+            data.hblNo ||
+            data.hawbNo ||
+            data.mawbNo ||
+            data.referenceNo ||
+            data.shipmentNumber ||
+            REPORT_FIELD_NA,
+          vesselFlight: data.vesselFlight || REPORT_FIELD_NA,
+          pol: data.pol || REPORT_FIELD_NA,
+          pod: data.pod || REPORT_FIELD_NA,
+          containerNo: data.containerNo || REPORT_FIELD_NA,
           etdEta:
             [data.etd, data.eta].filter(Boolean).join(' / ') || REPORT_FIELD_NA,
-          commodity: REPORT_FIELD_NA,
-          grossWtCbm: REPORT_FIELD_NA,
+          commodity: data.commodity || REPORT_FIELD_NA,
+          grossWtCbm:
+            [data.grossWeight, data.measurement].filter(Boolean).join(' / ') ||
+            REPORT_FIELD_NA,
         }
       : {
           blAwb: 'BL-DEMO-0042',

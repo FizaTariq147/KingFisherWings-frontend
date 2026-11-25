@@ -44,3 +44,11 @@ export const usePatchCrmFollowUp = () => {
     onSuccess: () => c.invalidateQueries({ queryKey: keys.all }),
   });
 };
+
+export const useDeleteCrmFollowUp = () => {
+  const c = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmFollowUpsService.remove(id),
+    onSuccess: () => c.invalidateQueries({ queryKey: keys.all }),
+  });
+};

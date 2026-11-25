@@ -1,6 +1,5 @@
 import type { CSSProperties } from 'react';
 import type { HawbOfficialLayoutConfig, HawbOfficialModel } from '../hawbOfficial.types';
-import { FREIGHTNEST_DOCUMENT_TYPOGRAPHY } from '../../../../engines/pdf/documentTypography';
 import { HawbPreprintedUnderlay } from './HawbPreprintedUnderlay';
 import {
   HAWB_ORIGINAL1_OVERLAY_SLOTS,
@@ -24,7 +23,7 @@ function slotStyle(slot: HawbOverlaySlot): CSSProperties {
     top: `${slot.topPct}%`,
     left: `${slot.leftPct}%`,
     width: `${slot.widthPct}%`,
-    fontFamily: FREIGHTNEST_DOCUMENT_TYPOGRAPHY.fontFamily,
+    fontFamily: 'Arial, Helvetica, "Helvetica Neue", sans-serif',
     fontSize: slot.fontSizePx ?? 8,
     fontWeight: slot.fontWeight ?? 400,
     textAlign: slot.align ?? 'left',
@@ -133,17 +132,18 @@ export function HawbSparseOverlayFace({ layout, model, showUnderlay = true }: Pr
         <HawbPreprintedUnderlay variant={isOriginal1 ? 'original1' : 'original2'} />
       ) : null}
 
-      {/* Registered org logo island (never Fresa) */}
+      {/* Issued-by / carrier logo — right of shipper cell (never over shipper text). */}
       {model.logoUrl ? (
         <img
           src={model.logoUrl}
           alt=""
           style={{
             position: 'absolute',
-            top: '1.2%',
-            left: isOriginal1 ? '2%' : '2%',
-            height: 22,
-            maxWidth: 88,
+            top: isOriginal1 ? '4.5%' : '4.2%',
+            left: isOriginal1 ? '50%' : '49%',
+            // Keep inside issuing-agent band without crowding borders.
+            height: 28,
+            maxWidth: 100,
             objectFit: 'contain',
             zIndex: 3,
           }}
@@ -153,8 +153,13 @@ export function HawbSparseOverlayFace({ layout, model, showUnderlay = true }: Pr
       {slots.map((slot) => {
         const value = valueForSlot(slot.id, model, layout);
         if (!value) return null;
+        // Original-2 Fresa pin: top/footer HAWB nos are bold black (not inverted boxes).
+        const emphasize =
+          slot.id === 'hawbNoTop' || slot.id === 'hawbNoFooter'
+            ? { fontWeight: 800 as const, fontSize: (slot.fontSizePx ?? 8) + 1 }
+            : {};
         return (
-          <p key={slot.id} data-hawb-slot={slot.id} style={slotStyle(slot)}>
+          <p key={slot.id} data-hawb-slot={slot.id} style={{ ...slotStyle(slot), ...emphasize }}>
             {value}
           </p>
         );

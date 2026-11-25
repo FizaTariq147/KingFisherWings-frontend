@@ -13,6 +13,7 @@ import {
   documentationMpciService,
   documentationTrackingService,
   documentationUploadService,
+  documentationJobOpsService,
 } from '../services/documentation.service';
 import type {
   AirTrackingParams,
@@ -30,6 +31,8 @@ import type {
   UpdateCgmVoyageDto,
   UpdateChargeTemplateDto,
   UpdateDeliveryOrderDto,
+  UpdateJobDocFieldsDto,
+  UpdateShipmentBlStatusDto,
 } from '../types/documentation.types';
 
 export const documentationKeys = {
@@ -220,11 +223,17 @@ export function useClosedDeliveryJobs(params: DocumentationListParams, enabled =
 
 export function useDeliveryOrderActions() {
   const queryClient = useQueryClient();
+  const invalidate = () => void queryClient.invalidateQueries({ queryKey: documentationKeys.all });
   return {
     updateJob: useMutation({
       mutationFn: ({ jobId, dto }: { jobId: string; dto: UpdateDeliveryOrderDto }) =>
         documentationDeliveryOrderService.updateJob(jobId, dto),
-      onSuccess: () => void queryClient.invalidateQueries({ queryKey: documentationKeys.all }),
+      onSuccess: invalidate,
+    }),
+    updateShipmentBlStatus: useMutation({
+      mutationFn: ({ jobId, dto }: { jobId: string; dto: UpdateShipmentBlStatusDto }) =>
+        documentationDeliveryOrderService.updateShipmentBlStatus(jobId, dto),
+      onSuccess: invalidate,
     }),
   };
 }
@@ -366,6 +375,16 @@ export function useEdiSubmissionDownload() {
   return useMutation({
     mutationFn: (submissionId: string) => documentationEdiService.downloadSubmission(submissionId),
   });
+}
+
+/** PATCH /documentation/jobs/:jobId/doc-fields */
+export function useDocumentationJobOpsActions() {
+  return {
+    patchDocFields: useMutation({
+      mutationFn: ({ jobId, dto }: { jobId: string; dto: UpdateJobDocFieldsDto }) =>
+        documentationJobOpsService.patchDocFields(jobId, dto),
+    }),
+  };
 }
 
 export function useJobTransferActions() {

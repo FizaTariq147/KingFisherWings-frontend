@@ -28,6 +28,7 @@ import {
   useCreateCrmFollowUp,
   useCrmFollowUpCalendar,
   useCrmFollowUps,
+  useDeleteCrmFollowUp,
   usePatchCrmFollowUp,
 } from '../hooks/useCrmFollowUps';
 import { createFollowUpSchema, type CreateFollowUpFormValues } from '../schemas/crm.schema';
@@ -65,6 +66,7 @@ export default function CrmFollowUpsPage() {
   const calendar = useCrmFollowUpCalendar(from, to, tab === 'calendar');
   const create = useCreateCrmFollowUp();
   const patch = usePatchCrmFollowUp();
+  const remove = useDeleteCrmFollowUp();
 
   const form = useAppForm<CreateFollowUpFormValues>({
     resolver: zodResolver(createFollowUpSchema) as unknown as Resolver<CreateFollowUpFormValues>,
@@ -200,19 +202,30 @@ export default function CrmFollowUpsPage() {
                         <CrmStatusBadge status={x.status} />
                       </td>
                       <td className={tdClass}>
-                        <SelectInput
-                          value={x.status}
-                          className="min-w-36"
-                          onChange={(e) =>
-                            patch.mutate({ id: x.id, dto: { status: e.target.value as FollowUpStatus } })
-                          }
-                        >
-                          {FOLLOW_UP_STATUSES.map((s) => (
-                            <option key={s} value={s}>
-                              {crmLabel(s)}
-                            </option>
-                          ))}
-                        </SelectInput>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <SelectInput
+                            value={x.status}
+                            className="min-w-36"
+                            onChange={(e) =>
+                              patch.mutate({ id: x.id, dto: { status: e.target.value as FollowUpStatus } })
+                            }
+                          >
+                            {FOLLOW_UP_STATUSES.map((s) => (
+                              <option key={s} value={s}>
+                                {crmLabel(s)}
+                              </option>
+                            ))}
+                          </SelectInput>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="secondary"
+                            disabled={remove.isPending}
+                            onClick={() => remove.mutate(x.id)}
+                          >
+                            Delete
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))}

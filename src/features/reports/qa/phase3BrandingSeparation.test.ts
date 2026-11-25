@@ -31,11 +31,11 @@ const SAMPLE_CODES = [
 ] as const;
 
 describe('Phase 3 branding separation', () => {
-  it('browse may use Fresa samples; generate and entity-bound may not', () => {
+  it('browse and generate both resolve to Freightnest; Fresa samples never open in-app', () => {
     expect(resolveReportPdfWorkflow({ purpose: 'browse' })).toBe(
-      REPORT_PDF_WORKFLOW.REFERENCE_BROWSE,
+      REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE,
     );
-    expect(allowsFresaSamplePdf(REPORT_PDF_WORKFLOW.REFERENCE_BROWSE)).toBe(true);
+    expect(allowsFresaSamplePdf(REPORT_PDF_WORKFLOW.REFERENCE_BROWSE)).toBe(false);
 
     expect(resolveReportPdfWorkflow({ purpose: 'generate' })).toBe(
       REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE,
@@ -48,16 +48,17 @@ describe('Phase 3 branding separation', () => {
     expect(resolveReportPdfWorkflow({})).toBe(REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE);
   });
 
-  it('browse mode can display Fresa reference PDFs (preference gate)', () => {
+  it('catalogue codes may have external Fresa samples but never prefer them in-app', () => {
     for (const code of SAMPLE_CODES) {
       expect(hasOfficialSamplePdf(code)).toBe(true);
       expect(
         shouldPreferOfficialSamplePdf({ code, format: 'PDF', purpose: 'browse' }),
-      ).toBe(true);
+      ).toBe(false);
     }
-    expect(FRESA_REFERENCE_SAMPLE_LABEL.toLowerCase()).toContain('reference');
-    expect(FRESA_REFERENCE_SAMPLE_LABEL.toLowerCase()).toContain('not a freightnest');
+    expect(FRESA_REFERENCE_SAMPLE_LABEL.toLowerCase()).toContain('never opens');
+    expect(FRESA_REFERENCE_SAMPLE_LABEL.toLowerCase()).toContain('layout comparison');
   });
+
 
   it('generated PDFs never prefer Fresa sample as final source', () => {
     for (const row of HAWB_FORMAT_CATALOG) {
@@ -147,10 +148,11 @@ describe('Phase 3 branding separation', () => {
     expect(resolveCatalogFormatStatus('HAWB_DRAFT_REPORT_FORMAT').id).toBe('native_layout');
   });
 
-  it('official-sample catalogue status marks reference-only (never Generate from Fresa sample)', () => {
+  it('official-sample catalogue status marks external comparison only (never open Fresa PDF)', () => {
     const st = resolveCatalogFormatStatus('DELIVERY_ORDER_REPORT_FORMAT_17');
     expect(st.id).toBe('official_sample');
-    expect(st.detail.toLowerCase()).toMatch(/reference/);
+    expect(st.detail.toLowerCase()).toMatch(/layout comparison|fresatechnologies/);
     expect(st.detail.toLowerCase()).toMatch(/never/);
   });
 });
+

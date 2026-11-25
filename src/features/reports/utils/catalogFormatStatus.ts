@@ -104,17 +104,16 @@ export function resolveCatalogFormatStatus(code: string): CatalogFormatStatus {
   }
 
   // Phase 2/3 — five official HAWB native layouts for Freightnest generate.
-  // Unbound browse may show unmodified Fresa reference samples (labelled).
   if (isOfficialHawbFormatCode(needle)) {
     return {
       id: 'native_layout',
       label: LABEL.native_layout,
       detail:
-        'Freightnest native HAWB layout for Generate. Catalogue browse may open an official Fresa reference sample (not a generated document).',
+        'Freightnest native HAWB layout. Preview and generate use organization branding — never a Fresa sample PDF.',
     };
   }
 
-  // Distinct verified official sample PDF (CDN) — reference browse only (Phase 3).
+  // Distinct Fresa CDN sample exists for external comparison only (never opened in-app).
   if (hasOfficialSamplePdf(needle)) {
     const hawb = getHawbFormatSpec(needle);
     if (!hawb?.sampleIsFallback) {
@@ -122,7 +121,7 @@ export function resolveCatalogFormatStatus(code: string): CatalogFormatStatus {
         id: 'official_sample',
         label: LABEL.official_sample,
         detail:
-          'Official Fresa reference sample available for browse comparison only. Generate must use Freightnest native / template-v2 / JSON / pack — never a stamped Fresa sample as the final PDF.',
+          'A Fresa public sample exists for layout comparison on fresatechnologies.com. In-app preview/generate use Freightnest native / template-v2 / JSON / pack with your organization branding — never that Fresa PDF.',
       };
     }
   }
@@ -180,9 +179,9 @@ export function catalogPreviewSourceLabel(opts: {
   if (!opts.entityBound && opts.preferOfficialSample) {
     return {
       id: 'official_sample',
-      label: 'Official Sample',
+      label: 'Freightnest Preview',
       detail:
-        'Official Fresa reference sample (unmodified third-party artwork). Not a Freightnest-generated document.',
+        'Freightnest-generated preview with organization branding. Fresa CDN samples are not opened in the app.',
     };
   }
   if (opts.isSharedLayout) {

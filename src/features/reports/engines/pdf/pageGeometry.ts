@@ -164,7 +164,7 @@ export const PAGE_HAWB_NEAR_A4 = resolvePageGeometry({
 export const PAGE_HAWB_DRAFT1_A4 = resolvePageGeometry({
   paper: 'A4',
   orientation: 'portrait',
-  marginsMm: { top: 6, right: 6, bottom: 6, left: 6 },
+  marginsMm: { top: 5, right: 5, bottom: 5, left: 5 },
 });
 
 /**

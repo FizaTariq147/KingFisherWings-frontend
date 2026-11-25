@@ -19,8 +19,13 @@ export interface DocumentationListParams {
   department_id?: string;
   billing_party_id?: string;
   status?: string;
+  /** UAE MPCI — alias of status (DocumentationMpciStatus). */
+  filing_status?: string;
   from_date?: string;
   to_date?: string;
+  job_type?: string;
+  /** MPCI + closed-job lists. */
+  job_id?: string;
 }
 
 export interface BoeListParams extends DocumentationListParams {
@@ -99,6 +104,22 @@ export interface UpdateDeliveryOrderDto {
   do_number: string;
   do_date?: string;
   do_status?: 'ISSUED' | 'DELIVERED' | 'CANCELLED';
+}
+
+/** At least one of shipment_status / bl_status required (BE Phase 1). */
+export interface UpdateShipmentBlStatusDto {
+  shipment_status?: string;
+  bl_status?: string;
+}
+
+/** PATCH /documentation/jobs/:jobId/doc-fields — Docs BE Phase 1. */
+export interface UpdateJobDocFieldsDto {
+  portnet_ref_no?: string;
+  saber_certificate_no?: string;
+  ra_code?: string;
+  overseas_agent_party_id?: string;
+  vgm_cutoff_date?: string;
+  voyage_number?: string;
 }
 
 export interface CgmVoyageDto {

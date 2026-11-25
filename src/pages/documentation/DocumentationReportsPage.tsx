@@ -92,7 +92,16 @@ export default function DocumentationReportsPage() {
   const [tab, setTab] = useState<ReportTab>('summary');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
-  const filters = { from_date: fromDate || undefined, to_date: toDate || undefined, page: 1, limit: 50 };
+  const [department, setDepartment] = useState('');
+  const [jobType, setJobType] = useState('');
+  const filters = {
+    from_date: fromDate || undefined,
+    to_date: toDate || undefined,
+    department: department.trim() || undefined,
+    job_type: jobType.trim() || undefined,
+    page: 1,
+    limit: 50,
+  };
 
   const summary = useDocumentationReportSummary(filters, tab === 'summary');
   const jobsList = useDocumentationJobsListReport(filters, tab === 'jobs-list');
@@ -101,7 +110,15 @@ export default function DocumentationReportsPage() {
   const manifest = useDocumentationManifestStatusReport(filters, tab === 'manifest');
 
   const active =
-    tab === 'summary' ? summary : tab === 'jobs-list' ? jobsList : tab === 'eta' ? eta : tab === 'etd' ? etd : manifest;
+    tab === 'summary'
+      ? summary
+      : tab === 'jobs-list'
+        ? jobsList
+        : tab === 'eta'
+          ? eta
+          : tab === 'etd'
+            ? etd
+            : manifest;
 
   return (
     <div className="space-y-4">
@@ -120,7 +137,27 @@ export default function DocumentationReportsPage() {
             <span className="text-xs text-gray-500">To</span>
             <input type="date" className="h-9 rounded-md border px-3 text-sm" value={toDate} onChange={(e) => setToDate(e.target.value)} />
           </label>
-          <Button type="button" variant="secondary" onClick={() => void active.refetch()}>Refresh</Button>
+          <label className="space-y-1">
+            <span className="text-xs text-gray-500">Department</span>
+            <input
+              className="h-9 rounded-md border px-3 text-sm"
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+              placeholder="optional"
+            />
+          </label>
+          <label className="space-y-1">
+            <span className="text-xs text-gray-500">Job type</span>
+            <input
+              className="h-9 rounded-md border px-3 text-sm"
+              value={jobType}
+              onChange={(e) => setJobType(e.target.value)}
+              placeholder="e.g. AIR_EXPORT"
+            />
+          </label>
+          <Button type="button" variant="secondary" onClick={() => void active.refetch()}>
+            Refresh
+          </Button>
         </div>
 
         <div className="flex flex-wrap gap-2 border-b pb-2">

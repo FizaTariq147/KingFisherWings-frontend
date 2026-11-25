@@ -325,20 +325,35 @@ export function OpsContinuumPanel({
               render={(row, i) => (
                 <li
                   key={rowId(row, i)}
-                  className="rounded-sm bg-white px-3 py-2 text-sm"
+                  className="flex items-start justify-between gap-2 rounded-sm bg-white px-3 py-2 text-sm"
                 >
-                  <p className="font-medium">
-                    {cell(row, 'subject', 'title', 'notes', 'note')}
-                  </p>
-                  {cell(row, 'notes', 'note') !== '—' &&
-                  cell(row, 'subject', 'title') !== cell(row, 'notes', 'note') ? (
-                    <p className="text-[12px] text-[var(--color-neutral-600)]">
-                      {cell(row, 'notes', 'note')}
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium">
+                      {cell(row, 'subject', 'title', 'notes', 'note')}
                     </p>
-                  ) : null}
-                  <p className="text-[12px] text-[var(--color-neutral-500)]">
-                    Due {cell(row, 'due_date', 'due_at')} · {cell(row, 'status')}
-                  </p>
+                    {cell(row, 'notes', 'note') !== '—' &&
+                    cell(row, 'subject', 'title') !== cell(row, 'notes', 'note') ? (
+                      <p className="text-[12px] text-[var(--color-neutral-600)]">
+                        {cell(row, 'notes', 'note')}
+                      </p>
+                    ) : null}
+                    <p className="text-[12px] text-[var(--color-neutral-500)]">
+                      Due {cell(row, 'due_date', 'due_at')} · {cell(row, 'status')}
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    disabled={mutations.deleteFollowUp.isPending}
+                    onClick={() =>
+                      void run(async () => {
+                        await mutations.deleteFollowUp.mutateAsync(rowId(row, i));
+                      }, 'Follow-up removed.')
+                    }
+                  >
+                    Delete
+                  </Button>
                 </li>
               )}
             />

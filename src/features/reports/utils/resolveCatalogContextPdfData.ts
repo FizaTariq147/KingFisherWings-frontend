@@ -551,7 +551,12 @@ export async function resolveCatalogContextPdfData(
   }
 
   // Shipper: prefer job shipper; otherwise tenant company on the quote/invoice.
-  if (!data.shipperLines?.length) {
+  // Never invent shipper from org for HBL/HAWB/MAWB — that lands org in the Shipper cell.
+  const formatCode = (opts?.formatCode || '').toUpperCase();
+  const isBlOrAwb =
+    /^(HBL_|FG_HBL_|HAWB_|MAWB_|LEFTOVER_HBL)/.test(formatCode) ||
+    /\bHBL\b|\bHAWB\b|\bMAWB\b/.test(formatCode);
+  if (!data.shipperLines?.length && !isBlOrAwb) {
     data = await enrichShipperFromCompanyId(linkedCompanyId, data);
   }
 

@@ -19,6 +19,13 @@ export const crmFollowUpsService = {
     try { const res = await withGatewayRetry(() => axiosInstance.patch(CRM_API.followUp(id), prepareCrmPayload(dto))); return normalizeFollowUp(unwrapEntity(res.data)); }
     catch (error) { throw formatAxiosError(error); }
   },
+  async remove(id: string): Promise<void> {
+    try {
+      await withGatewayRetry(() => axiosInstance.delete(CRM_API.followUp(id)));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
   async calendar(from?: string, to?: string): Promise<FollowUp[]> {
     try { const res = await withGatewayRetry(() => axiosInstance.get(CRM_API.followUpCalendar, { params: queryParams({ from, to }) })); return normalizeMany(unwrapList(res.data, ['follow_ups', 'events']).items, normalizeFollowUp); }
     catch (error) { throw formatAxiosError(error); }

@@ -83,8 +83,9 @@ describe('shared shell honesty', () => {
         entityBound: false,
         purpose: 'browse',
       }),
-    ).toBe(true);
+    ).toBe(false);
   });
+
 
   it('codifies generate priority and shared-shell policy', () => {
     expect(REPORT_GENERATE_PRIORITY).toEqual([

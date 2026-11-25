@@ -67,18 +67,18 @@ export function useCatalogFormatLayoutPdf({
             }),
             resolveReportOrgChrome(),
           ]);
-          const unboundBrowse =
-            !data.entityBound && hasOfficialSamplePdf(previewCode);
           if (!cancelled) {
-            if (unboundBrowse) {
-              setBoundLabel(FRESA_REFERENCE_SAMPLE_LABEL);
-            } else {
-              const label =
-                data.invoiceNumber ||
-                data.billToName ||
-                (contextKey ? 'live record' : null);
-              setBoundLabel(label ? `bound to ${label}` : null);
-            }
+            const label =
+              data.invoiceNumber ||
+              data.billToName ||
+              (contextKey ? 'live record' : null);
+            setBoundLabel(
+              label
+                ? `bound to ${label}`
+                : hasOfficialSamplePdf(previewCode)
+                  ? `${FRESA_REFERENCE_SAMPLE_LABEL}. Preview uses Freightnest native with your organization branding.`
+                  : null,
+            );
           }
           const merged = {
             ...data,
@@ -89,25 +89,21 @@ export function useCatalogFormatLayoutPdf({
             companyEmail: data.companyEmail || orgChrome.email,
             logoUrl: data.logoUrl || orgChrome.logoUrl,
           };
-          // Measured / reference faces always use catalogue generate (Fresa geometry),
-          // never the generic teal/KSA JSON shell.
+          // Always Freightnest generate — never open a Fresa CDN sample as the document.
           const preferCatalog =
-            unboundBrowse ||
             supportsTemplateV2(previewCode) ||
             data.entityBound ||
             isOfficialMeasuredNativeCode(previewCode) ||
-            isReferenceAccuratePdfCode(previewCode);
+            isReferenceAccuratePdfCode(previewCode) ||
+            hasOfficialSamplePdf(previewCode);
           if (preferCatalog) {
             const generated = await generateCatalogLayoutPdf(previewCode, merged, {
               logoUrl: orgChrome.logoUrl,
               preferTemplateV2:
-                !unboundBrowse &&
                 !isOfficialMeasuredNativeCode(previewCode) &&
                 !isReferenceAccuratePdfCode(previewCode),
-              purpose: unboundBrowse ? 'browse' : 'generate',
-              workflow: unboundBrowse
-                ? REPORT_PDF_WORKFLOW.REFERENCE_BROWSE
-                : REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE,
+              purpose: 'generate',
+              workflow: REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE,
             });
             if (generated) return generated.blob;
           }

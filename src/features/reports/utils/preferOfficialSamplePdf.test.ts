@@ -29,14 +29,14 @@ describe('preferOfficialSamplePdf', () => {
     ).toBe(false);
   });
 
-  it('Phase 3: browse may prefer official Fresa reference samples', () => {
+  it('Phase 3+: browse never opens Fresa sample PDFs in-app', () => {
     expect(
       shouldPreferOfficialSamplePdf({
         code: 'HAWB_DRAFT_REPORT_FORMAT_1',
         format: 'PDF',
         purpose: 'browse',
       }),
-    ).toBe(true);
+    ).toBe(false);
     expect(
       shouldPreferOfficialSamplePdf({
         code: 'HAWB_DRAFT_REPORT_FORMAT_1',
@@ -57,3 +57,4 @@ describe('preferOfficialSamplePdf', () => {
     ).toBe(false);
   });
 });
+

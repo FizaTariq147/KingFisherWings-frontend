@@ -1,9 +1,18 @@
 import type { HawbOfficialModel } from '../hawbOfficial.types';
 import { HAWB_DRAFT_LAYOUT } from '../layouts/hawbDraft.layout';
-import { hawbBody, hawbCell, hawbInk, hawbLabel, hawbLegal } from '../hawbOfficialStyles';
+import {
+  hawbAccountChip,
+  hawbBody,
+  hawbCell,
+  hawbColHead,
+  hawbInk,
+  hawbLabel,
+  hawbLegal,
+  hawbTitle,
+} from '../hawbOfficialStyles';
 
 const LEGAL =
-  "It is agreed that the goods described herein are accepted in apparent good order and condition (except as noted) for carriage SUBJECT TO THE CONDITIONS OF CONTRACT ON THE REVERSE HEREOF. THE SHIPPER'S ATTENTION IS DRAWN TO THE NOTICE CONCERNING CARRIERS LIMITATION OF LIABILITY. Shipper may increase such limitation of liability by declaring a higher value for carriage and paying a supplemental charge if required.";
+  "It is agreed that the goods described herein are accepted in apparent good order and condition (except as noted) for carriage SUBJECT TO THE CONDITIONS OF CONTRACT ON THE REVERSE HEREOF. ALL GOODS MAY BE CARRIED BY ANY OTHER MEANS INCLUDING ROAD OR ANY OTHER CARRIER UNLESS SPECIFIC CONTRARY INSTRUCTIONS ARE GIVEN HEREON BY THE SHIPPER. THE SHIPPER'S ATTENTION IS DRAWN TO THE NOTICE CONCERNING CARRIER'S LIMITATION OF LIABILITY. Shipper may increase such limitation of liability by declaring a higher value for carriage and paying a supplemental charge if required.";
 
 const CERT =
   'Shipper certifies that the particulars on the face hereof are correct and that insofar as any part of the consignment contains dangerous goods, such part is properly described by name and is in proper condition for carriage by air according to the applicable Dangerous Goods Regulations.';
@@ -15,16 +24,18 @@ const CERT =
  * lighter charge grid (open prepaid/collect cells, no per-row labels).
  */
 const H = {
-  shipper: 98,
-  consignee: 92,
-  departure: 36,
-  routing: 32,
-  destination: 44,
-  handling: 40,
-  insurance: 28,
-  cargoMin: 120,
-  otherCharges: 30,
-  signatureGap: 20,
+  shipper: 88,
+  consignee: 82,
+  agent: 48,
+  departure: 34,
+  routing: 28,
+  destination: 36,
+  currency: 30,
+  handling: 36,
+  insurance: 26,
+  cargoMin: 110,
+  otherCharges: 28,
+  signatureGap: 18,
 } as const;
 
 /**
@@ -35,7 +46,7 @@ export function HawbDraftDenseFace({ model }: { model: HawbOfficialModel }) {
   const layout = HAWB_DRAFT_LAYOUT;
   const lines = (rows: string[]) =>
     rows.map((line, i) => (
-      <p key={`${line}-${i}`} style={hawbBody}>
+      <p key={`${line}-${i}`} style={{ ...hawbBody, fontWeight: 700 }}>
         {line}
       </p>
     ));
@@ -64,25 +75,44 @@ export function HawbDraftDenseFace({ model }: { model: HawbOfficialModel }) {
         boxSizing: 'border-box',
       }}
     >
-      {/* Airline / AWB number strip — Draft-specific */}
+      {/* Airline / AWB number strip — Fresa Draft top band */}
       <div
         style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: 0,
-          border: `1px solid ${hawbInk}`,
+          border: `1.5px solid ${hawbInk}`,
+          borderBottom: 'none',
           marginBottom: 0,
           flexShrink: 0,
         }}
       >
-        <div style={{ ...hawbCell, fontWeight: 800, fontSize: 10, background: '#fafafa', padding: '4px 5px' }}>
+        <div
+          style={{
+            ...hawbCell,
+            fontWeight: 700,
+            fontSize: 10,
+            padding: '4px 6px',
+            border: 'none',
+            borderRight: `1px solid ${hawbInk}`,
+          }}
+        >
           {model.mawbNo
             ? model.mawbNo.replace(/-/g, '|')
             : model.hawbNo
               ? model.hawbNo
-              : '—'}
+              : ''}
         </div>
-        <div style={{ ...hawbCell, textAlign: 'right', fontWeight: 800, fontSize: 10, padding: '4px 5px' }}>
+        <div
+          style={{
+            ...hawbCell,
+            textAlign: 'right',
+            fontWeight: 700,
+            fontSize: 10,
+            padding: '4px 6px',
+            border: 'none',
+          }}
+        >
           {model.mawbNo || model.hawbNo || ''}
         </div>
       </div>
@@ -92,8 +122,7 @@ export function HawbDraftDenseFace({ model }: { model: HawbOfficialModel }) {
         style={{
           width: '100%',
           borderCollapse: 'collapse',
-          border: `1px solid ${hawbInk}`,
-          borderTop: 'none',
+          border: `1.5px solid ${hawbInk}`,
           tableLayout: 'fixed',
           flexShrink: 0,
         }}
@@ -113,45 +142,34 @@ export function HawbDraftDenseFace({ model }: { model: HawbOfficialModel }) {
                 minHeight: H.shipper,
                 height: H.shipper,
                 verticalAlign: 'top',
+                padding: 0,
               }}
             >
-              <p style={hawbLabel}>Shipper&apos;s Name and Address</p>
-              {lines(model.shipperLines)}
-              <p style={{ ...hawbLabel, marginTop: 10 }}>Shipper&apos;s Account Number</p>
-            </td>
-            <td colSpan={2} style={hawbCell}>
-              <div style={{ display: 'flex', gap: 8 }}>
-                <div style={{ flex: 1 }}>
-                  <p style={hawbLabel}>Non Negotiable</p>
-                  <p
-                    style={{
-                      margin: '4px 0 0',
-                      fontSize: 13,
-                      fontWeight: 800,
-                      letterSpacing: '0.04em',
-                    }}
-                  >
-                    {layout.titleMode}
-                  </p>
-                  <p style={{ ...hawbLabel, marginTop: 6 }}>Issued by</p>
-                  {model.logoUrl ? (
-                    <img
-                      src={model.logoUrl}
-                      alt=""
-                      style={{ height: 26, maxWidth: 100, objectFit: 'contain', display: 'block' }}
-                    />
-                  ) : null}
-                  <p style={{ ...hawbBody, fontWeight: 800 }}>{model.companyName}</p>
-                  <p style={hawbBody}>{model.companyAddress}</p>
+              {/* Fresa: account-number chip sits top-right inside the shipper cell. */}
+              <div style={{ display: 'flex', alignItems: 'flex-start', minHeight: H.shipper }}>
+                <div style={{ flex: 1, padding: '1px 3px' }}>
+                  <p style={hawbLabel}>Shipper&apos;s Name and Address</p>
+                  {lines(model.shipperLines)}
                 </div>
-                <div style={{ minWidth: 110, textAlign: 'right' }}>
-                  <p style={hawbLabel}>HAWB NO.</p>
-                  <p style={{ ...hawbBody, fontWeight: 800, fontSize: 10 }}>{model.hawbNo}</p>
-                  <p style={{ ...hawbLabel, marginTop: 6 }}>MAWB NO.</p>
-                  <p style={{ ...hawbBody, fontWeight: 700 }}>{model.mawbNo}</p>
+                <div style={hawbAccountChip}>
+                  <p style={hawbLabel}>Shipper&apos;s Account Number</p>
                 </div>
               </div>
-              <p style={{ ...hawbLegal, marginTop: 6 }}>{layout.copiesValidityLine}</p>
+            </td>
+            <td colSpan={2} style={hawbCell}>
+              {/* Fresa draft: title + Issued by only — AWB nos live in the top strip. */}
+              <p style={hawbLabel}>Non Negotiable</p>
+              <p style={hawbTitle}>{layout.titleMode}</p>
+              <p style={{ ...hawbLabel, marginTop: 4 }}>Issued by</p>
+              {model.logoUrl ? (
+                <img
+                  src={model.logoUrl}
+                  alt=""
+                  style={{ height: 22, maxWidth: 88, objectFit: 'contain', display: 'block', marginTop: 2 }}
+                />
+              ) : null}
+              <p style={{ ...hawbBody, fontWeight: 700 }}>{model.carrier || model.companyName}</p>
+              <p style={{ ...hawbLegal, marginTop: 4 }}>{layout.copiesValidityLine}</p>
             </td>
           </tr>
 
@@ -163,31 +181,69 @@ export function HawbDraftDenseFace({ model }: { model: HawbOfficialModel }) {
                 minHeight: H.consignee,
                 height: H.consignee,
                 verticalAlign: 'top',
+                padding: 0,
               }}
             >
-              <p style={hawbLabel}>Consignee&apos;s Name and Address</p>
-              {lines(model.consigneeLines)}
-              <p style={{ ...hawbLabel, marginTop: 10 }}>Consignee&apos;s Account Number</p>
+              <div style={{ display: 'flex', alignItems: 'flex-start', minHeight: H.consignee }}>
+                <div style={{ flex: 1, padding: '1px 3px' }}>
+                  <p style={hawbLabel}>Consignee&apos;s Name and Address</p>
+                  {lines(model.consigneeLines)}
+                </div>
+                <div style={hawbAccountChip}>
+                  <p style={hawbLabel}>Consignee&apos;s Account Number</p>
+                </div>
+              </div>
             </td>
             <td colSpan={2} style={hawbCell}>
               <p style={hawbLegal}>{LEGAL}</p>
             </td>
           </tr>
 
+          {/* Agent + Accounting — Fresa draft places these under consignee/legal */}
           <tr>
             <td
               colSpan={2}
+              style={{ ...hawbCell, minHeight: H.agent, height: H.agent, verticalAlign: 'top' }}
+            >
+              <p style={hawbLabel}>Issuing Carrier&apos; Agent Name and City</p>
+              <p style={{ ...hawbBody, fontWeight: 700, whiteSpace: 'pre-line' }}>
+                {model.agentLines.join('\n')}
+              </p>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: 0,
+                  marginTop: 6,
+                  borderTop: `0.75px solid ${hawbInk}`,
+                }}
+              >
+                <div style={{ paddingTop: 3, borderRight: `0.75px solid ${hawbInk}` }}>
+                  <p style={hawbLabel}>Agent&apos;s IATA Code</p>
+                </div>
+                <div style={{ paddingTop: 3, paddingLeft: 4 }}>
+                  <p style={hawbLabel}>Account No.</p>
+                </div>
+              </div>
+            </td>
+            <td
+              colSpan={2}
+              style={{ ...hawbCell, minHeight: H.agent, height: H.agent, verticalAlign: 'top' }}
+            >
+              <p style={hawbLabel}>Accounting Information</p>
+              <p style={hawbBody}>{model.accounting}</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td
+              colSpan={4}
               style={{ ...hawbCell, minHeight: H.departure, height: H.departure, verticalAlign: 'top' }}
             >
               <p style={hawbLabel}>
                 Airport of Departure (Addr. of first Carrier) and requested Routing
               </p>
               <p style={{ ...hawbBody, fontWeight: 700 }}>{model.departure}</p>
-            </td>
-            <td colSpan={2} style={{ ...hawbCell, minHeight: H.departure, height: H.departure }}>
-              <p style={hawbLabel}>Accounting Information</p>
-              <p style={hawbBody}>{model.accounting}</p>
-              <p style={{ ...hawbBody, fontWeight: 700 }}>{model.handling}</p>
             </td>
           </tr>
 
@@ -198,14 +254,23 @@ export function HawbDraftDenseFace({ model }: { model: HawbOfficialModel }) {
             </td>
             <td style={{ ...hawbCell, minHeight: H.routing, height: H.routing }}>
               <p style={hawbLabel}>By first Carrier</p>
-              <p style={{ ...hawbBody, fontWeight: 700 }}>{model.carrier || model.flightDate}</p>
+              <p style={{ ...hawbBody, fontWeight: 700 }}>{model.carrier}</p>
             </td>
             <td style={{ ...hawbCell, minHeight: H.routing, height: H.routing }}>
-              <p style={hawbLabel}>to / by / to · Routing and Destination</p>
+              <p style={hawbLabel}>to</p>
             </td>
             <td style={{ ...hawbCell, minHeight: H.routing, height: H.routing }}>
-              <p style={hawbLabel}>Requested Flight / Date</p>
-              <p style={{ ...hawbBody, fontWeight: 700 }}>{model.flightDate}</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 0, height: '100%' }}>
+                <div style={{ borderRight: `0.75px solid ${hawbInk}`, paddingRight: 2 }}>
+                  <p style={hawbLabel}>by</p>
+                </div>
+                <div style={{ borderRight: `0.75px solid ${hawbInk}`, padding: '0 2px' }}>
+                  <p style={hawbLabel}>to</p>
+                </div>
+                <div style={{ paddingLeft: 2 }}>
+                  <p style={hawbLabel}>by</p>
+                </div>
+              </div>
             </td>
           </tr>
 
@@ -222,27 +287,31 @@ export function HawbDraftDenseFace({ model }: { model: HawbOfficialModel }) {
               <p style={hawbLabel}>Airport of Destination</p>
               <p style={{ ...hawbBody, fontWeight: 700 }}>{model.destination}</p>
             </td>
-            <td style={{ ...hawbCell, minHeight: H.destination, height: H.destination }}>
-              <p style={hawbLabel}>Currency</p>
-              <p style={{ ...hawbBody, fontWeight: 700 }}>{model.currency}</p>
-              <p style={{ ...hawbLabel, marginTop: 4 }}>CHGS · WT/VAL · PPD/COLL</p>
-            </td>
-            <td style={{ ...hawbCell, minHeight: H.destination, height: H.destination }}>
-              <p style={hawbLabel}>Declared Value for Carriage</p>
-              <p style={{ ...hawbBody, fontWeight: 700 }}>{model.declaredCarriage}</p>
-              <p style={{ ...hawbLabel, marginTop: 4 }}>Declared Value for Customs</p>
-              <p style={{ ...hawbBody, fontWeight: 700 }}>{model.declaredCustoms}</p>
+            <td
+              colSpan={2}
+              style={{ ...hawbCell, minHeight: H.destination, height: H.destination }}
+            >
+              <p style={hawbLabel}>Requested Flight / Date</p>
+              <p style={{ ...hawbBody, fontWeight: 700 }}>{model.flightDate}</p>
             </td>
           </tr>
 
-          {/* Full-width Handling — Fresa landmark ~42% */}
           <tr>
-            <td
-              colSpan={4}
-              style={{ ...hawbCell, minHeight: H.handling, height: H.handling, verticalAlign: 'top' }}
-            >
-              <p style={hawbLabel}>Handling Information</p>
-              <p style={hawbBody}>{model.handling}</p>
+            <td style={{ ...hawbCell, minHeight: H.currency, height: H.currency }}>
+              <p style={hawbLabel}>Currency</p>
+              <p style={{ ...hawbBody, fontWeight: 700 }}>{model.currency}</p>
+            </td>
+            <td style={{ ...hawbCell, minHeight: H.currency, height: H.currency }}>
+              <p style={hawbLabel}>CHGS Code</p>
+              <p style={{ ...hawbLabel, marginTop: 2 }}>WT/VAL · Other · PPD/COLL</p>
+            </td>
+            <td style={{ ...hawbCell, minHeight: H.currency, height: H.currency }}>
+              <p style={hawbLabel}>Declared Value for Carriage</p>
+              <p style={{ ...hawbBody, fontWeight: 700 }}>{model.declaredCarriage}</p>
+            </td>
+            <td style={{ ...hawbCell, minHeight: H.currency, height: H.currency }}>
+              <p style={hawbLabel}>Declared Value for Customs</p>
+              <p style={{ ...hawbBody, fontWeight: 700 }}>{model.declaredCustoms}</p>
             </td>
           </tr>
 
@@ -256,9 +325,19 @@ export function HawbDraftDenseFace({ model }: { model: HawbOfficialModel }) {
             </td>
             <td colSpan={2} style={{ ...hawbCell, minHeight: H.insurance, height: H.insurance }}>
               <p style={hawbLabel}>
-                INSURANCE — If Carrier offers insurance, indicate amount in box marked Amount of
-                Insurance.
+                INSURANCE — If Carrier offers insurance, and such insurance is available and desired,
+                indicate amount to be insured in figures in box marked Amount of Insurance.
               </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td
+              colSpan={4}
+              style={{ ...hawbCell, minHeight: H.handling, height: H.handling, verticalAlign: 'top' }}
+            >
+              <p style={hawbLabel}>Handling Information</p>
+              <p style={hawbBody}>{model.handling}</p>
             </td>
           </tr>
         </tbody>
@@ -274,7 +353,6 @@ export function HawbDraftDenseFace({ model }: { model: HawbOfficialModel }) {
           tableLayout: 'fixed',
           marginTop: -1,
           flex: '1 1 auto',
-          height: '100%',
         }}
       >
         <colgroup>
@@ -287,7 +365,7 @@ export function HawbDraftDenseFace({ model }: { model: HawbOfficialModel }) {
           <col style={{ width: '12%' }} />
           <col style={{ width: '31%' }} />
         </colgroup>
-        <tbody style={{ height: '100%' }}>
+        <tbody>
           <tr>
             {[
               'No. of Pieces',
@@ -299,34 +377,32 @@ export function HawbDraftDenseFace({ model }: { model: HawbOfficialModel }) {
               'Total',
               'Nature and Quantity of Goods',
             ].map((h) => (
-              <td
-                key={h}
-                style={{
-                  ...hawbCell,
-                  background: '#f8fafc',
-                  fontWeight: 700,
-                  fontSize: 6.5,
-                  textTransform: 'uppercase',
-                  padding: '2px 4px',
-                }}
-              >
+              <td key={h} style={hawbColHead}>
                 {h}
               </td>
             ))}
           </tr>
-          <tr style={{ height: '100%' }}>
+          <tr>
             {Array.from({ length: 8 }).map((_, i) => (
               <td
                 key={i}
                 style={{
                   ...hawbCell,
                   minHeight: H.cargoMin,
-                  height: '100%',
                   fontWeight: i === 7 ? 600 : 500,
                   verticalAlign: 'top',
                 }}
               >
-                {cargoRow[i] ?? ''}
+                {i === 7 && model.pieces ? (
+                  <>
+                    <p style={{ ...hawbBody, fontWeight: 700, margin: 0 }}>
+                      TOTAL : ({model.pieces}) PACKAGES ONLY
+                    </p>
+                    <p style={{ ...hawbBody, margin: '4px 0 0' }}>{cargoRow[i] ?? ''}</p>
+                  </>
+                ) : (
+                  (cargoRow[i] ?? '')
+                )}
               </td>
             ))}
           </tr>
@@ -366,15 +442,14 @@ export function HawbDraftDenseFace({ model }: { model: HawbOfficialModel }) {
                   display: 'grid',
                   gridTemplateColumns: '40% 30% 30%',
                   borderBottom: `1px solid ${hawbInk}`,
-                  minHeight: 16,
-                  background: '#f8fafc',
+                  minHeight: 14,
                 }}
               >
-                <div style={{ padding: '2px 4px' }} />
-                <div style={{ padding: '2px 4px', borderLeft: `1px solid ${hawbInk}` }}>
+                <div style={{ padding: '1px 3px' }} />
+                <div style={{ padding: '1px 3px', borderLeft: `1px solid ${hawbInk}` }}>
                   <p style={hawbLabel}>Prepaid</p>
                 </div>
-                <div style={{ padding: '2px 4px', borderLeft: `1px solid ${hawbInk}` }}>
+                <div style={{ padding: '1px 3px', borderLeft: `1px solid ${hawbInk}` }}>
                   <p style={hawbLabel}>Collect</p>
                 </div>
               </div>
@@ -443,18 +518,28 @@ export function HawbDraftDenseFace({ model }: { model: HawbOfficialModel }) {
             </td>
           </tr>
           <tr>
-            <td colSpan={2} style={{ ...hawbCell, background: '#f8fafc', padding: '4px 5px' }}>
-              <p style={{ ...hawbBody, margin: 0, fontSize: 7.5 }}>
-                <strong>Currency Conversion Rates</strong> · CC Charges in Dest. Currency · For
-                Carrier&apos;s Use only at Destination · Charges at Destination · Total Collect
-                Charges
-              </p>
+            <td colSpan={2} style={{ ...hawbCell, padding: '3px 5px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: 8,
+                }}
+              >
+                <p style={{ ...hawbBody, margin: 0, fontSize: 6.5 }}>
+                  <strong>Currency Conversion Rates</strong> · CC Charges in Dest. Currency · For
+                  Carrier&apos;s Use only at Destination · Charges at Destination · Total Collect
+                  Charges
+                </p>
+                <p style={{ ...hawbBody, margin: 0, fontWeight: 700, fontSize: 10 }}>
+                  {model.mawbNo?.replace(/-/g, '') || model.hawbNo || ''}
+                </p>
+              </div>
             </td>
           </tr>
         </tbody>
       </table>
-
-      {/* No orange DRAFT footer ribbon — absent on Fresa Draft reference face */}
     </div>
   );
 }

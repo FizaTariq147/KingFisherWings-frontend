@@ -22,6 +22,9 @@ export const REPORT_CATALOG_API = {
 
 export const REPORT_CATALOG_ROUTE = '/reports/catalog';
 
+/** Sample-style formats index (Sea / Air / Accounts / My Reports). */
+export const REPORT_DASHBOARD_ROUTE = '/reports/dashboard';
+
 /** OpenAPI max for GET /reports/templates `limit`. */
 export const REPORT_TEMPLATES_MAX_LIMIT = 200;
 

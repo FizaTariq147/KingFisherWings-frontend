@@ -41,5 +41,6 @@ export const HAWB_ORIGINAL1_OVERLAY_SLOTS: HawbOverlaySlot[] = [
   { id: 'executedOn', topPct: 83.0, leftPct: 32.3, widthPct: 12, fontSizePx: 8, fontWeight: 700 },
   { id: 'executedAt', topPct: 83.0, leftPct: 44.9, widthPct: 14, fontSizePx: 8, fontWeight: 700 },
   { id: 'hawbNoFooter', topPct: 89.2, leftPct: 58, widthPct: 38, fontSizePx: 11, fontWeight: 800, align: 'right' },
-  { id: 'branding', topPct: 1.0, leftPct: 2, widthPct: 40, fontSizePx: 7, fontWeight: 700 },
+  // Issued-by band (right of shipper) — never over shipper name/address.
+  { id: 'branding', topPct: 7.2, leftPct: 50, widthPct: 28, fontSizePx: 8, fontWeight: 700 },
 ];

@@ -1,6 +1,6 @@
 /**
  * HBL template-v2 structured shipping document.
- * Catalogue browse still prefers official Fresa sample PDFs when available.
+ * Catalogue preview/generate use Freightnest layouts only (never a Fresa CDN sample).
  * Classic family React docs remain available via generateHblFamilyClassicPdf.
  */
 import type { HblViewModel } from '../../mappings/types';

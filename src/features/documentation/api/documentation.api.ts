@@ -19,6 +19,9 @@ export const DOCUMENTATION_API = {
   deliveryOrders: {
     closedJobs: '/documentation/delivery-orders/closed-jobs',
     updateJob: (jobId: string) => `/documentation/jobs/${jobId}/delivery-order`,
+    /** Closed-job shipment + BL status (Fresa parity — BE brief). */
+    updateShipmentBlStatus: (jobId: string) =>
+      `/documentation/jobs/${jobId}/shipment-bl-status`,
   },
   edi: {
     bayan: {
@@ -64,6 +67,8 @@ export const DOCUMENTATION_API = {
     list: '/documentation/jobs',
     createWizard: '/documentation/jobs/create-wizard',
     create: '/documentation/jobs/create',
+    /** Docs BE Phase 1 — PortNet + SABER/RA/agent/VGM/voyage. */
+    docFields: (jobId: string) => `/documentation/jobs/${jobId}/doc-fields`,
   },
   jobTransfer: {
     export: '/documentation/jobs/export',

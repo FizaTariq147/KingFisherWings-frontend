@@ -75,4 +75,18 @@ describe('Phase 7 financial integrity (fixture pass-through)', () => {
     expect(pdfModel.vatAmount).toBe(0);
     expect(pdfModel.grandTotal).toBe(200);
   });
+
+  it('entity-bound invoice PDF model never fills DEMO_LINES when charges missing', () => {
+    const preview = getInvoiceFormatPreview('INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA');
+    expect(preview).toBeTruthy();
+    const pdfModel = invoiceFormatToInvoicePdfModel(preview!, {
+      entityBound: true,
+      billToName: 'Live Customer LLC',
+    });
+    expect(pdfModel.lines).toEqual([{ description: 'N/A' }]);
+    expect(pdfModel.billTo.client).toBe('Live Customer LLC');
+    expect(pdfModel.lines.some((l) => /Ocean Freight|demo/i.test(l.description))).toBe(
+      false,
+    );
+  });
 });

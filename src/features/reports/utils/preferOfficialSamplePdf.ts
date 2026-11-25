@@ -4,7 +4,8 @@ import { hasDoOrWmsOfficialSamplePdf } from './generateCatalogOfficialSamplePdf'
 import { allowsFresaSamplePdf, resolveReportPdfWorkflow } from './reportPdfWorkflow';
 
 /**
- * Catalogue codes that have a distinct official Fresa sample PDF (reference browse).
+ * Catalogue codes that have a distinct official Fresa sample PDF on CDN
+ * (external layout comparison only — never opened in-app).
  */
 export function hasOfficialSamplePdf(code: string): boolean {
   const c = code.trim();
@@ -13,16 +14,14 @@ export function hasOfficialSamplePdf(code: string): boolean {
 }
 
 /**
- * Prefer official Fresa sample for **reference browse** only.
- *
- * Phase 3: never prefer sample PDFs for Freightnest Generate or entity-bound docs.
- * Generate must use native / template-v2 / JSON / backend pack.
+ * Prefer official Fresa sample for in-app PDF?
+ * Always false — catalogue preview and generate use Freightnest native only.
  */
 export function shouldPreferOfficialSamplePdf(opts: {
   code: string;
   format: string;
   entityBound?: boolean;
-  /** browse = catalogue reference; generate = Freightnest PDF (default). */
+  /** browse = catalogue; generate = download (both resolve to Freightnest). */
   purpose?: 'browse' | 'generate';
 }): boolean {
   const workflow = resolveReportPdfWorkflow({

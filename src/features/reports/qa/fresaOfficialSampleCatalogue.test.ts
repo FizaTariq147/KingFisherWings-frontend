@@ -75,7 +75,7 @@ describe('Fresa official sample catalogue', () => {
     expect(hasDeliveryOrderSamplePdf('DELIVERY_ORDER_REPORT_FORMAT_17')).toBe(true);
   });
 
-  it('browse prefers official DO/WMS samples; generate and entityBound block', () => {
+  it('browse and generate never prefer Fresa DO/WMS samples in-app', () => {
     expect(hasOfficialSamplePdf('ADVANCE_SHIPPING_NOTE')).toBe(true);
     expect(hasOfficialSamplePdf('DELIVERY_ORDER_REPORT_FORMAT_10')).toBe(true);
     expect(
@@ -85,7 +85,7 @@ describe('Fresa official sample catalogue', () => {
         entityBound: false,
         purpose: 'browse',
       }),
-    ).toBe(true);
+    ).toBe(false);
     expect(
       shouldPreferOfficialSamplePdf({
         code: 'ADVANCE_SHIPPING_NOTE',
@@ -102,6 +102,7 @@ describe('Fresa official sample catalogue', () => {
       }),
     ).toBe(false);
   });
+
 
   it('enrichment marks verified DO/WMS samples; Arrival Format-11 stays shared_shell', () => {
     const doE = getReportEnrichment('DELIVERY_ORDER_REPORT_FORMAT_17');

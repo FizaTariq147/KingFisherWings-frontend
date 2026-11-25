@@ -258,19 +258,33 @@ function Block({
                     padding: '6px 10px 8px 0',
                   }}
                 >
-                  {brandLogoSrc(branding) ? (
-                    <img
-                      src={brandLogoSrc(branding)}
-                      alt={branding.company || ''}
-                      style={{
-                        height: 42,
-                        width: 'auto',
-                        maxWidth: '100%',
-                        objectFit: 'contain',
-                        display: 'block',
-                      }}
-                    />
-                  ) : null}
+                  {(() => {
+                    const logoSrc = brandLogoSrc(branding);
+                    return logoSrc ? (
+                      <img
+                        src={logoSrc}
+                        alt={branding.company || 'Company logo'}
+                        crossOrigin="anonymous"
+                        style={{
+                          height: 42,
+                          width: 'auto',
+                          maxWidth: 120,
+                          objectFit: 'contain',
+                          display: 'block',
+                        }}
+                      />
+                    ) : (
+                      // Reserve Fresa logo box so the header never collapses left.
+                      <div
+                        style={{
+                          height: 42,
+                          width: 82,
+                          border: `1px dashed ${theme.fill || '#ddd'}`,
+                          boxSizing: 'border-box',
+                        }}
+                      />
+                    );
+                  })()}
                 </td>
                 <td
                   style={{

@@ -1,49 +1,46 @@
 /**
- * Phase 3 — separate Fresa reference PDFs from Freightnest-generated documents.
+ * Separate Fresa public samples from Freightnest-generated documents.
  *
- * reference_browse: may display unmodified official Fresa CDN samples (labelled).
- * freightnest_generate: native / template-v2 / JSON / backend pack only — never a Fresa sample PDF.
+ * In-app preview and generate always use Freightnest native / template-v2 / JSON /
+ * backend pack with organization branding. Fresa CDN samples are never opened or
+ * stamped as product output — compare only via the external Fresa website link.
  */
 
 export type ReportPdfWorkflow = 'reference_browse' | 'freightnest_generate';
 
 export const REPORT_PDF_WORKFLOW = {
+  /** @deprecated Kept for type compatibility; in-app PDFs never use this path. */
   REFERENCE_BROWSE: 'reference_browse' as const,
   FREIGHTNEST_GENERATE: 'freightnest_generate' as const,
 };
 
-/** User-facing label for browse of official CDN samples. */
+/** Copy when a Fresa CDN sample exists for external comparison only. */
 export const FRESA_REFERENCE_SAMPLE_LABEL =
-  'Official Fresa reference sample (third-party artwork — not a Freightnest-generated document)';
+  'Fresa publishes a public sample for layout comparison on fresatechnologies.com. This app never opens or ships that PDF';
 
 export type ResolveReportPdfWorkflowInput = {
   /** Live job/shipment/invoice bound into the report. */
   entityBound?: boolean;
   /**
-   * Explicit purpose. Generate panel / download must pass `freightnest_generate`.
-   * Catalogue AutoPdf unbound browse may pass `reference_browse`.
+   * Explicit purpose. Both browse and generate resolve to Freightnest generation
+   * so catalogue AutoPdf cannot load a third-party Fresa sample as the document.
    */
   purpose?: 'browse' | 'generate';
 };
 
 /**
  * Resolve which PDF workflow applies.
- * Entity-bound and Generate always use Freightnest generation.
+ * Always Freightnest generation — no in-app Fresa sample PDF.
  */
 export function resolveReportPdfWorkflow(
-  input: ResolveReportPdfWorkflowInput = {},
+  _input: ResolveReportPdfWorkflowInput = {},
 ): ReportPdfWorkflow {
-  if (input.entityBound) return REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE;
-  if (input.purpose === 'generate') return REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE;
-  if (input.purpose === 'browse') return REPORT_PDF_WORKFLOW.REFERENCE_BROWSE;
-  // Safe default: treat unspecified unbound calls as generate so callers cannot
-  // accidentally ship stamped Fresa samples as Freightnest PDFs.
   return REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE;
 }
 
-/** True only for labelled reference browse of CDN samples. */
-export function allowsFresaSamplePdf(workflow: ReportPdfWorkflow): boolean {
-  return workflow === REPORT_PDF_WORKFLOW.REFERENCE_BROWSE;
+/** In-app Fresa sample PDFs are disabled. */
+export function allowsFresaSamplePdf(_workflow: ReportPdfWorkflow): boolean {
+  return false;
 }
 
 /**

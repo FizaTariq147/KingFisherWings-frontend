@@ -41,9 +41,19 @@ export default function ReportFormatPage() {
       (isClientFlowInvoiceCode(template.code) || hasFreightnestGeneratePath(template.code)),
   );
 
+  const dashboardBack = useMemo(() => {
+    const params = new URLSearchParams();
+    for (const key of ['job_id', 'quotation_id', 'invoice_id', 'party_id', 'shipment_id', 'context', 'family'] as const) {
+      const value = searchParams.get(key);
+      if (value) params.set(key, value);
+    }
+    const q = params.toString();
+    return q ? `/reports/dashboard?${q}` : '/reports/dashboard';
+  }, [searchParams]);
+
   return (
     <div className="mx-auto w-full max-w-3xl space-y-4">
-      <PageBackLink to="/reports/dashboard" label="Back to report formats" />
+      <PageBackLink to={dashboardBack} label="Back to report formats" />
 
       {catalog.isLoading && catalog.rows.length === 0 ? (
         <p className="text-sm text-[var(--color-neutral-500)]">Loading format…</p>
@@ -76,7 +86,7 @@ export default function ReportFormatPage() {
             presentation="page"
             discoveryMode
             omitClientPreview
-            onClose={() => navigate('/reports/dashboard')}
+            onClose={() => navigate(dashboardBack)}
           />
         </>
       )}

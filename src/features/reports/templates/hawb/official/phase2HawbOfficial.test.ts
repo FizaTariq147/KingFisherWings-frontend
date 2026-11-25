@@ -101,6 +101,15 @@ describe('Phase 2 official HAWB layouts', () => {
     expect(model.companyName).toBe('Org Only');
   });
 
+  it('does not use bill-to as shipper', () => {
+    const model = mapToHawbOfficialModel('HAWB_DRAFT_REPORT_FORMAT', {
+      entityBound: true,
+      billToName: 'BILL TO ONLY',
+      companyName: 'Org',
+    });
+    expect(model.shipperLines).toEqual([]);
+  });
+
   it('maps live shipment fields without inventing MAWB/carrier defaults', () => {
     const model = mapToHawbOfficialModel('HAWB_DRAFT_REPORT_FORMAT_1', boundFixture);
     expect(model.hawbNo).toBe('MAA/DXB/260014');

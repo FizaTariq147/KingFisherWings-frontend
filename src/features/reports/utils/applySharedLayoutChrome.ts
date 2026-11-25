@@ -1,4 +1,7 @@
-import { REPORT_BRANDING } from '../constants/reportBranding.constants';
+import {
+  REPORT_BRANDING,
+  resolveCommercialPdfLogoUrl,
+} from '../constants/reportBranding.constants';
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 import { applyPriorityFresaParity } from './applyPriorityFresaParity';
 
@@ -9,13 +12,13 @@ export type SharedLayoutChrome = {
   phone?: string;
   email?: string;
   footerLine?: string;
-  /** Registered org logo URL only — empty when unavailable. */
+  /** Org logo URL; commercial bundled logo is used when empty. */
   logoUrl?: string;
 };
 
 /**
- * Empty chrome — used when organization profile is unavailable.
- * Do not invent company name, address, phone, email, or logo.
+ * Empty chrome — company/address/phone/email stay blank when profile is missing.
+ * Logo falls back to the bundled commercial asset so headers are never logo-less.
  */
 export const SHARED_LAYOUT_CHROME: SharedLayoutChrome = {
   company: '',
@@ -24,7 +27,7 @@ export const SHARED_LAYOUT_CHROME: SharedLayoutChrome = {
   phone: '',
   email: '',
   footerLine: '',
-  logoUrl: undefined,
+  logoUrl: resolveCommercialPdfLogoUrl() || undefined,
 };
 
 /**
@@ -43,7 +46,8 @@ export function applySharedLayoutChrome(
   const web = (chrome.web || '').trim();
   const phone = (chrome.phone || '').trim() || undefined;
   const email = (chrome.email || '').trim() || undefined;
-  const logoUrl = chrome.logoUrl?.trim() || undefined;
+  const logoUrl =
+    chrome.logoUrl?.trim() || resolveCommercialPdfLogoUrl() || undefined;
 
   return {
     ...withParity,

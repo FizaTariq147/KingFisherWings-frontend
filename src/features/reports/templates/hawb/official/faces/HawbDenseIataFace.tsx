@@ -1,5 +1,15 @@
 import type { HawbOfficialLayoutConfig, HawbOfficialModel } from '../hawbOfficial.types';
-import { hawbBody, hawbCell, hawbInk, hawbLabel, hawbLegal, displayOrBlank } from '../hawbOfficialStyles';
+import {
+  hawbAccountChip,
+  hawbBody,
+  hawbCell,
+  hawbColHead,
+  hawbInk,
+  hawbLabel,
+  hawbLegal,
+  hawbTitle,
+  displayOrBlank,
+} from '../hawbOfficialStyles';
 
 type Props = {
   layout: HawbOfficialLayoutConfig;
@@ -60,16 +70,15 @@ export function HawbDenseIataFace({ layout, model }: Props) {
         <p
           style={{
             margin: 0,
-            fontSize: 9,
-            fontWeight: 800,
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            color: layout.statusRibbon === 'DRAFT' ? '#F6A21B' : '#0f3d5e',
+            fontSize: 8,
+            fontWeight: 700,
+            letterSpacing: '0.04em',
+            color: layout.statusRibbon === 'DRAFT' ? '#C47A00' : '#000000',
           }}
         >
           {model.copyBanner || layout.statusRibbon}
         </p>
-        <p style={{ margin: 0, fontSize: 8, color: '#475569' }}>
+        <p style={{ margin: 0, fontSize: 8, color: '#000000' }}>
           {model.hawbNo ? `HAWB NO. ${model.hawbNo}` : 'HAWB NO.'}
           {layout.showMawbInRibbon && model.mawbNo ? ` · MAWB NO. ${model.mawbNo}` : ''}
           {model.copyIndex != null && model.copyTotal != null
@@ -83,7 +92,7 @@ export function HawbDenseIataFace({ layout, model }: Props) {
         style={{
           width: '100%',
           borderCollapse: 'collapse',
-          border: `1.5px solid ${hawbInk}`,
+          border: `1px solid ${hawbInk}`,
           tableLayout: 'fixed',
         }}
       >
@@ -95,12 +104,18 @@ export function HawbDenseIataFace({ layout, model }: Props) {
         </colgroup>
         <tbody>
           <tr>
-            <td colSpan={2} style={{ ...hawbCell, minHeight: 72 }}>
-              <p style={hawbLabel}>Shipper&apos;s Name and Address</p>
-              {partyLines(model.shipperLines)}
-              {layout.showAccountNumberLabels ? (
-                <p style={{ ...hawbLabel, marginTop: 6 }}>Shipper&apos;s Account Number</p>
-              ) : null}
+            <td colSpan={2} style={{ ...hawbCell, minHeight: 72, padding: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', minHeight: 72 }}>
+                <div style={{ flex: 1, padding: '1px 3px' }}>
+                  <p style={hawbLabel}>Shipper&apos;s Name and Address</p>
+                  {partyLines(model.shipperLines)}
+                </div>
+                {layout.showAccountNumberLabels ? (
+                  <div style={hawbAccountChip}>
+                    <p style={hawbLabel}>Shipper&apos;s Account Number</p>
+                  </div>
+                ) : null}
+              </div>
             </td>
             <td colSpan={2} style={hawbCell}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
@@ -113,9 +128,9 @@ export function HawbDenseIataFace({ layout, model }: Props) {
                       src={model.logoUrl}
                       alt={model.companyName || ''}
                       style={{
-                        height: 28,
+                        height: 24,
                         width: 'auto',
-                        maxWidth: 110,
+                        maxWidth: 90,
                         objectFit: 'contain',
                         display: 'block',
                         marginTop: 4,
@@ -130,7 +145,7 @@ export function HawbDenseIataFace({ layout, model }: Props) {
                 </div>
                 <div style={{ textAlign: 'right', minWidth: 120 }}>
                   <p style={hawbLabel}>HAWB NO.</p>
-                  <p style={{ ...hawbBody, fontWeight: 800, fontSize: 10 }}>{model.hawbNo}</p>
+                  <p style={{ ...hawbBody, fontWeight: 700, fontSize: 9 }}>{model.hawbNo}</p>
                   <p style={{ ...hawbLabel, marginTop: 6 }}>MAWB NO.</p>
                   <p style={{ ...hawbBody, fontWeight: 700 }}>{model.mawbNo}</p>
                   {layout.showJobNoInHeader ? (
@@ -145,12 +160,18 @@ export function HawbDenseIataFace({ layout, model }: Props) {
           </tr>
 
           <tr>
-            <td colSpan={2} style={{ ...hawbCell, minHeight: 64 }}>
-              <p style={hawbLabel}>Consignee&apos;s Name and Address</p>
-              {partyLines(model.consigneeLines)}
-              {layout.showAccountNumberLabels ? (
-                <p style={{ ...hawbLabel, marginTop: 6 }}>Consignee&apos;s Account Number</p>
-              ) : null}
+            <td colSpan={2} style={{ ...hawbCell, minHeight: 64, padding: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', minHeight: 64 }}>
+                <div style={{ flex: 1, padding: '1px 3px' }}>
+                  <p style={hawbLabel}>Consignee&apos;s Name and Address</p>
+                  {partyLines(model.consigneeLines)}
+                </div>
+                {layout.showAccountNumberLabels ? (
+                  <div style={hawbAccountChip}>
+                    <p style={hawbLabel}>Consignee&apos;s Account Number</p>
+                  </div>
+                ) : null}
+              </div>
             </td>
             <td colSpan={2} style={hawbCell}>
               {layout.showNotify ? (
@@ -219,20 +240,9 @@ export function HawbDenseIataFace({ layout, model }: Props) {
             </td>
             <td
               colSpan={2}
-              style={{ ...hawbCell, textAlign: 'center', backgroundColor: '#f8fafc' }}
+              style={{ ...hawbCell, textAlign: 'center' }}
             >
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: 13,
-                  fontWeight: 800,
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                  color: hawbInk,
-                }}
-              >
-                {layout.titleMode}
-              </p>
+              <p style={{ ...hawbTitle, textAlign: 'center' }}>{layout.titleMode}</p>
               <p style={{ ...hawbLegal, textAlign: 'center', marginTop: 4 }}>
                 {layout.copiesValidityLine}
               </p>
@@ -279,8 +289,8 @@ export function HawbDenseIataFace({ layout, model }: Props) {
         style={{
           width: '100%',
           borderCollapse: 'collapse',
-          borderLeft: `1.5px solid ${hawbInk}`,
-          borderRight: `1.5px solid ${hawbInk}`,
+          borderLeft: `1px solid ${hawbInk}`,
+          borderRight: `1px solid ${hawbInk}`,
           tableLayout: 'fixed',
           marginTop: -1,
         }}
@@ -298,16 +308,7 @@ export function HawbDenseIataFace({ layout, model }: Props) {
         <tbody>
           <tr>
             {model.tableHeaders.map((h) => (
-              <td
-                key={h}
-                style={{
-                  ...hawbCell,
-                  backgroundColor: '#f1f5f9',
-                  fontWeight: 700,
-                  fontSize: 6.5,
-                  textTransform: 'uppercase',
-                }}
-              >
+              <td key={h} style={hawbColHead}>
                 {h}
               </td>
             ))}
@@ -334,7 +335,7 @@ export function HawbDenseIataFace({ layout, model }: Props) {
         style={{
           width: '100%',
           borderCollapse: 'collapse',
-          border: `1.5px solid ${hawbInk}`,
+          border: `1px solid ${hawbInk}`,
           borderTop: 'none',
           tableLayout: 'fixed',
         }}
@@ -400,7 +401,7 @@ export function HawbDenseIataFace({ layout, model }: Props) {
             </td>
           </tr>
           <tr>
-            <td colSpan={2} style={{ ...hawbCell, backgroundColor: '#f8fafc' }}>
+            <td colSpan={2} style={hawbCell}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
                 <p style={{ ...hawbBody, margin: 0 }}>
                   <strong>Currency Conversion Rates</strong> · CC Charges in Dest. Currency

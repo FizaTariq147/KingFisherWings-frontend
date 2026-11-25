@@ -217,6 +217,7 @@ import JobDownloadPage from '../pages/documentation/JobDownloadPage'
 import OmanEqoEdiPage from '../pages/documentation/OmanEqoEdiPage'
 import TruckPositionUploadPage from '../pages/documentation/TruckPositionUploadPage'
 import UpdateDoClosedJobPage from '../pages/documentation/UpdateDoClosedJobPage'
+import UpdateShipmentBlClosedJobPage from '../pages/documentation/UpdateShipmentBlClosedJobPage'
 import UaeMpciMonitorPage from '../pages/documentation/UaeMpciMonitorPage'
 import MastersMenuPage from '../pages/masters/MastersMenuPage'
 import MasterResourceListPage from '../features/masters/pages/MasterResourceListPage'
@@ -666,6 +667,7 @@ export const router = createBrowserRouter([
               { path: '/documentation/truck-position-upload', element: <TruckPositionUploadPage /> },
               { path: '/documentation/uae-mpci-monitor', element: <UaeMpciMonitorPage /> },
               { path: '/documentation/update-do-closed-job', element: <UpdateDoClosedJobPage /> },
+              { path: '/documentation/update-shipment-bl-closed-job', element: <UpdateShipmentBlClosedJobPage /> },
               { path: '/documentation/reports', element: <DocumentationReportsPage /> },
             ],
           },

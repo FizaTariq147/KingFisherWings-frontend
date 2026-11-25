@@ -1,5 +1,6 @@
 import {
   REPORT_CATALOG_ROUTE,
+  REPORT_DASHBOARD_ROUTE,
   REPORT_TEMPLATE_FAMILY_ENUM,
 } from '../api/reportCatalog.api';
 import type { ReportContext, ReportFamily } from '../types/reportCatalog.types';
@@ -153,7 +154,7 @@ export function parseCatalogFamiliesParam(raw?: string | null): ReportFamily[] {
   return out;
 }
 
-export function buildCatalogHref(opts: {
+type CatalogHrefOpts = {
   family?: ReportFamily | string | null;
   /** Comma-separated multi-family filter (job/shipment relevant sets). */
   families?: ReportFamily[] | string | null;
@@ -168,7 +169,9 @@ export function buildCatalogHref(opts: {
   view?: 'strips' | 'fresa' | null;
   /** When `all`, catalogue lists every layout variant (not only distinct shells). */
   layouts?: 'all' | 'distinct' | null;
-}): string {
+};
+
+function buildReportQueryParams(opts: CatalogHrefOpts): URLSearchParams {
   const params = new URLSearchParams();
   if (opts.family && opts.family !== 'all') params.set('family', String(opts.family));
   if (opts.families) {
@@ -190,6 +193,50 @@ export function buildCatalogHref(opts: {
   if (opts.shipment_id?.trim()) params.set('shipment_id', opts.shipment_id.trim());
   if (opts.view === 'strips') params.set('view', 'strips');
   if (opts.layouts === 'all') params.set('layouts', 'all');
-  const q = params.toString();
+  return params;
+}
+
+export function buildCatalogHref(opts: CatalogHrefOpts): string {
+  const q = buildReportQueryParams(opts).toString();
   return q ? `${REPORT_CATALOG_ROUTE}?${q}` : REPORT_CATALOG_ROUTE;
+}
+
+/** Invoice Formats / Reports catalog → sample-style dashboard with live record ids. */
+export function buildDashboardHref(opts: CatalogHrefOpts): string {
+  const q = buildReportQueryParams(opts).toString();
+  return q ? `${REPORT_DASHBOARD_ROUTE}?${q}` : REPORT_DASHBOARD_ROUTE;
+}
+
+/** Query string for format deep-links (preserve invoice/job/party context). */
+export function reportContextQuery(opts: {
+  quotation_id?: string | null;
+  invoice_id?: string | null;
+  job_id?: string | null;
+  party_id?: string | null;
+  shipment_id?: string | null;
+}): string {
+  return buildReportQueryParams(opts).toString();
+}
+
+/** True when a catalogue row is an invoice / commercial document format. */
+export function isInvoiceRelatedReport(input: {
+  code?: string;
+  family?: string;
+  contexts?: string[];
+  name?: string;
+}): boolean {
+  const code = String(input.code || '').toUpperCase();
+  const family = String(input.family || '').toLowerCase();
+  const contexts = (input.contexts || []).map((c) => String(c).toLowerCase());
+  if (contexts.includes('invoice')) return true;
+  if (family === 'commercial' || family === 'finance') return true;
+  if (
+    /^(INVOICE_|PROFORMA_INVOICE_|PURCHASE_INVOICE_|DEBIT_NOTE_|CREDIT_NOTE_|FG_INVOICE)/i.test(
+      code,
+    )
+  ) {
+    return true;
+  }
+  const name = String(input.name || '');
+  return /\binvoice\b|\bdebit\s*note\b|\bcredit\s*note\b|\bproforma\b/i.test(name);
 }

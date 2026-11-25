@@ -708,7 +708,7 @@ export function ReportGeneratePanel({
   const sharedLayout = getSharedLayoutSource(resolved.code);
   const previewSource = catalogPreviewSourceLabel({
     entityBound: entityBoundForUi,
-    preferOfficialSample: !entityBoundForUi && officialSampleForUi,
+    preferOfficialSample: false,
     isSharedLayout: Boolean(sharedLayout?.isSharedLayout),
     usingBackendPack: packReadyForGenerate && entityBoundForUi,
     isNativePilot: formatStatus.id === 'native_layout',
@@ -813,9 +813,9 @@ export function ReportGeneratePanel({
           role="status"
           className="rounded-md border border-[var(--color-primary-200)] bg-[var(--color-primary-50)] px-3 py-2 text-xs text-[var(--color-primary-950)]"
         >
-          {FRESA_REFERENCE_SAMPLE_LABEL}. Catalogue browse may open it for layout comparison.
-          Generate / download always use Freightnest native, template-v2, JSON, or a backend pack —
-          never a stamped Fresa sample as the final document.
+          {FRESA_REFERENCE_SAMPLE_LABEL}. Preview and generate always use Freightnest native,
+          template-v2, JSON, or a backend pack with your organization logo and company name —
+          never a Fresa sample PDF.
         </div>
       ) : null}
 

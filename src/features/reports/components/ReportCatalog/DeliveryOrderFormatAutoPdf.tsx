@@ -53,14 +53,12 @@ export function DeliveryOrderFormatAutoPdf({ code, context, autoOpen = true }: P
             resolveCatalogContextPdfData(context, { formatCode: spec.code }),
             resolveReportOrgChrome(),
           ]);
-          const unboundBrowse =
-            !data.entityBound && hasOfficialSamplePdf(spec.code);
           if (!cancelled) {
             setBoundLabel(
               data.entityBound
                 ? `delivery order · ${data.jobNumber || data.shipmentNumber || 'bound'}`
-                : unboundBrowse
-                  ? FRESA_REFERENCE_SAMPLE_LABEL
+                : hasOfficialSamplePdf(spec.code)
+                  ? `${FRESA_REFERENCE_SAMPLE_LABEL}. Preview uses Freightnest native with your organization branding.`
                   : 'delivery order template',
             );
           }
@@ -77,13 +75,9 @@ export function DeliveryOrderFormatAutoPdf({ code, context, autoOpen = true }: P
             },
             {
               logoUrl: orgChrome.logoUrl,
-              preferTemplateV2: !unboundBrowse,
-              purpose: data.entityBound ? 'generate' : unboundBrowse ? 'browse' : 'generate',
-              workflow: data.entityBound
-                ? REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE
-                : unboundBrowse
-                  ? REPORT_PDF_WORKFLOW.REFERENCE_BROWSE
-                  : REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE,
+              preferTemplateV2: true,
+              purpose: 'generate',
+              workflow: REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE,
             },
           );
           if (!generated) throw new Error('No delivery order template for this format.');

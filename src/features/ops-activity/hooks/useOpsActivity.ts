@@ -168,6 +168,11 @@ export function useOpsActivityMutations(
         opsActivityService.createFollowUp(entityType, entityId, body),
       onSuccess: () => invalidate('follow-ups'),
     }),
+    deleteFollowUp: useMutation({
+      mutationFn: (followUpId: string) =>
+        opsActivityService.deleteFollowUp(entityType, entityId, followUpId),
+      onSuccess: () => invalidate('follow-ups'),
+    }),
     registerAttachment: useMutation({
       mutationFn: (body: Record<string, unknown>) =>
         opsActivityService.registerAttachment(entityType, entityId, body),

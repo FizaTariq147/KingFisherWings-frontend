@@ -51,10 +51,10 @@ import { renderInvoiceV2InBrowser } from '../engine/invoiceV2Gate';
  * Client layout PDF for catalogue codes when backend pack is unavailable.
  * Never replaces POST /invoices|quotations/:id/pdf.
  *
- * Phase 3 priority:
- * 1. reference_browse — unbound catalogue may show unmodified Fresa CDN samples (labelled)
- * 2. freightnest_generate — native / template-v2 / JSON only (never Fresa sample as final PDF)
- * 3. backend_pack — entity-bound pack via POST /reports/generate (caller / Generate panel)
+ * Phase 3+ priority (in-app):
+ * 1. freightnest_generate — measured / native / template-v2 / JSON only (never a Fresa CDN sample)
+ * 2. backend_pack — entity-bound pack via POST /reports/generate (caller / Generate panel)
+ * Fresa public samples exist for external layout comparison only; allowsFresaSamplePdf is always false.
  *
  * Preview/download must reuse the single Blob returned here.
  */
@@ -252,15 +252,29 @@ export async function generateCatalogLayoutPdf(
   }
 
   // Measured Fresa faces first: exact header/footer slots (logo left, company right).
-  // Prefer this for Freightnest generate even when a browse sample exists.
-  if (
-    isOfficialMeasuredNativeCode(code) &&
-    !isHblJasperPilotCode(code) &&
-    (!allowSample ||
-      workflow === REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE ||
-      options.purpose === 'generate' ||
-      data.entityBound)
-  ) {
+  // Always prefer measured redraw over the generic JSON/html2canvas shell — that
+  // shell is what produced missing logos and Shipper/company overlaps vs Fresa.
+  if (isOfficialMeasuredNativeCode(code) && !isHblJasperPilotCode(code)) {
+    const isBlOrAwb =
+      /^(HBL_|FG_HBL_|HAWB_|MAWB_|LEFTOVER_HBL)/i.test(code) ||
+      /\bHBL\b|\bHAWB\b|\bMAWB\b/i.test(code);
+    const billToLines = [data.billToName, data.billToAddress]
+      .map((part) => String(part || '').trim())
+      .filter(Boolean);
+    // Invoices often hydrate bill-to only; map into party slots when empty.
+    // Never for BL/AWB — bill-to/org must not land in the Shipper cell.
+    const shipperLines =
+      data.shipperLines?.length
+        ? data.shipperLines
+        : !isBlOrAwb && billToLines.length
+          ? billToLines
+          : undefined;
+    const consigneeLines =
+      data.consigneeLines?.length
+        ? data.consigneeLines
+        : !isBlOrAwb && billToLines.length
+          ? billToLines
+          : undefined;
     const { blob } = await generateOfficialMeasuredPdf(code, {
       companyName: data.companyName,
       companyAddress: data.companyAddress,
@@ -271,9 +285,10 @@ export async function generateCatalogLayoutPdf(
       printedBy: data.printedBy || data.companyEmail || data.companyName,
       printedDate: data.printedDate,
       entityBound: data.entityBound,
-      shipperLines: data.shipperLines,
-      consigneeLines: data.consigneeLines,
+      shipperLines,
+      consigneeLines,
       notifyLines: data.notifyLines,
+      billToLines: billToLines.length ? billToLines : undefined,
       jobNumber: data.jobNumber,
       referenceNo: data.referenceNo,
       invoiceNumber: data.invoiceNumber,

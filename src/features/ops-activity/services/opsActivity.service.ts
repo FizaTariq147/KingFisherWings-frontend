@@ -184,6 +184,14 @@ export const opsActivityService = {
     return unwrap(res.data);
   },
 
+  /** DELETE /ops/:type/:id/follow-ups/:followUpId — Fresa Documentation follow-up remove. */
+  async deleteFollowUp(entityType: string, entityId: string, followUpId: string) {
+    const res = await withGatewayRetry(() =>
+      axiosInstance.delete(OPS_ACTIVITY_API.followUp(entityType, entityId, followUpId)),
+    );
+    return unwrap(res.data);
+  },
+
   async getHistory(entityType: string, entityId: string, params?: Record<string, unknown>) {
     const res = await withGatewayRetry(() =>
       axiosInstance.get(OPS_ACTIVITY_API.history(entityType, entityId), { params }),
