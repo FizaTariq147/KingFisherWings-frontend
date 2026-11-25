@@ -22,6 +22,13 @@ import {
   normalizeReportTemplateList,
   toReportImportRow,
 } from '../utils/normalizeReportCatalog';
+import {
+  buildHtmlPilotPreviewBody,
+  mapHtmlPilotPayload,
+} from '../utils/htmlPilotPayload';
+import type { InvoiceFormatPdfData } from '../utils/invoiceFormatToInvoicePdfModel';
+import type { ReportContextIds } from '../utils/reportParameterUtils';
+import { isHtmlCssPilotCode } from '../engines/pdf/playwrightHtml/playwrightHtmlCodes';
 
 function formatAxiosError(error: unknown): Error {
   if (error instanceof Error && !(error as { response?: unknown }).response) return error;
@@ -461,6 +468,33 @@ export const reportCatalogService = {
       if (template) return template;
       return this.getTemplate(key);
     } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /**
+   * POST /reports/:code/preview — display-ready payload for the three HTML pilots.
+   * Returns available:false when the route is not deployed. Does not send companyId.
+   */
+  async previewHtmlPilot(
+    code: string,
+    input: {
+      context?: ReportContextIds | null;
+      parameters?: Record<string, unknown> | null;
+    } = {},
+  ): Promise<{ available: false } | { available: true; data: InvoiceFormatPdfData }> {
+    const key = code.trim().toUpperCase();
+    if (!isHtmlCssPilotCode(key)) return { available: false };
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post<unknown>(
+          REPORT_CATALOG_API.htmlPilotPreview(key),
+          buildHtmlPilotPreviewBody(input.context, input.parameters),
+        ),
+      );
+      return { available: true, data: mapHtmlPilotPayload(res.data) ?? { entityBound: true } };
+    } catch (error) {
+      if (isCatalogUnavailable(error)) return { available: false };
       throw formatAxiosError(error);
     }
   },

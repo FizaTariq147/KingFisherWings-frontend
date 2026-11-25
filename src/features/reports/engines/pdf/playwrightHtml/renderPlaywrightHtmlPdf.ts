@@ -1,12 +1,11 @@
 import type { Browser, Page } from 'playwright';
 import type { InvoiceFormatPdfData } from '@/features/reports/utils/invoiceFormatToInvoicePdfModel';
-import { PAGE_HAWB_NEAR_A4 } from '@/features/reports/engines/pdf/pageGeometry';
 import {
   assertPlaywrightHtmlAllowlist,
   assertSafeInlinedLogo,
-  buildHawbDraft2Html,
   type PlaywrightHtmlRenderInput,
 } from './hawbDraft2Html';
+import { resolveHtmlPilotTemplate } from './htmlPilotRegistry';
 
 const RENDER_TIMEOUT_MS = 20_000;
 const LOGO_TIMEOUT_MS = 8_000;
@@ -116,24 +115,33 @@ async function preparePage(page: Page, html: string): Promise<void> {
 }
 
 /**
- * Print the Draft-2 HAWB face to a PDF buffer.
- * Not used by the browser catalogue. One isolated page per call.
+ * Print an allowlisted HTML pilot (HAWB Draft 2 or Hybrid Option C codes) to PDF.
+ * Caller-supplied HTML is rejected. One isolated page per call.
  */
 export async function renderPlaywrightHtmlPdf(input: PlaywrightHtmlRenderInput): Promise<Buffer> {
   assertPlaywrightHtmlAllowlist(input);
+  const code = String(input.code || '').trim().toUpperCase();
+  const template = resolveHtmlPilotTemplate(code);
+  if (!template) {
+    throw new Error(`Playwright HTML renderer has no template for ${code || '(empty)'}`);
+  }
   const data = await fillOrgChrome({ ...(input.data || {}) });
   if (data.logoUrl?.trim()) {
     data.logoUrl = await inlineRemoteLogo(data.logoUrl);
   }
-  const html = buildHawbDraft2Html(data);
+  assertSafeInlinedLogo(data.logoUrl);
+  const html = template.buildHtml(data);
+  if (/fresa/i.test(html)) {
+    throw new Error('Playwright HTML renderer produced Fresa identity text');
+  }
   const browser = await sharedBrowser();
   const page = await browser.newPage();
   page.setDefaultTimeout(RENDER_TIMEOUT_MS);
   try {
     await preparePage(page, html);
     const pdf = await page.pdf({
-      width: `${PAGE_HAWB_NEAR_A4.widthMm}mm`,
-      height: `${PAGE_HAWB_NEAR_A4.heightMm}mm`,
+      width: `${template.widthMm}mm`,
+      height: `${template.heightMm}mm`,
       printBackground: true,
       preferCSSPageSize: true,
       displayHeaderFooter: false,

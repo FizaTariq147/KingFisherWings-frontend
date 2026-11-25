@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
 import { hawbDraft2PrintPlugin } from './scripts/hawbDraft2PrintPlugin.mjs';
+import { htmlPilotPrintPlugin } from './scripts/htmlPilotPrintPlugin.mjs';
 import { specReviewPlugin } from './scripts/specReviewPlugin.mjs';
 import { invoiceV2Plugin } from './scripts/invoiceV2Plugin.mjs';
 
@@ -16,7 +17,14 @@ const dirname =
     : path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(({ mode }) => ({
-  plugins: [react(), tailwindcss(), hawbDraft2PrintPlugin(), specReviewPlugin(), invoiceV2Plugin()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    hawbDraft2PrintPlugin(),
+    htmlPilotPrintPlugin(),
+    specReviewPlugin(),
+    invoiceV2Plugin(),
+  ],
 
   assetsInclude: ['**/*.pdf'],
 
@@ -117,6 +125,16 @@ export default defineConfig(({ mode }) => ({
           name: 'unit',
           environment: 'node',
           include: ['src/**/*.test.ts'],
+          exclude: ['src/**/*.test.tsx'],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'component',
+          environment: 'jsdom',
+          include: ['src/**/*.test.tsx'],
+          setupFiles: ['./src/test/setupTests.ts'],
         },
       },
       {

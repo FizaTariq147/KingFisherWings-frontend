@@ -111,12 +111,32 @@ export const arrivalNoticeBindingPaths = [
   'invoice.currency', 'invoice.amount', 'invoice.tax', 'invoice.total',
 ] as const
 
+/**
+ * Paths every non-invoice document family may bind to. Extends the arrival
+ * notice set. Empty values stay empty; no path is filled with sample data.
+ */
+export const documentBindingPaths = [
+  ...arrivalNoticeBindingPaths,
+  'company.website',
+  'invoice.number', 'invoice.date', 'invoice.dueDate', 'invoice.remarks', 'invoice.lpo', 'invoice.outstanding',
+  'quotation.number', 'quotation.date', 'quotation.validUntil', 'quotation.currency', 'quotation.total', 'quotation.terms',
+  'voucher.number', 'voucher.date', 'voucher.amount', 'voucher.currency', 'voucher.narration',
+  'voucher.payee', 'voucher.mode', 'voucher.reference',
+  'shipment.number', 'shipment.reference', 'shipment.houseDoc', 'shipment.masterDoc', 'shipment.transportDocs',
+  'job.incoterms', 'job.department',
+  'bank.name', 'bank.branch', 'bank.accountName', 'bank.accountNo', 'bank.iban', 'bank.swift', 'bank.ifsc',
+  'session.user', 'session.printedAt', 'session.createdBy',
+  'document.user',
+] as const
+
 export type InvoiceBindingPath = (typeof invoiceBindingPaths)[number]
 export type BillOfLadingBindingPath = (typeof billOfLadingBindingPaths)[number]
 export type ArrivalNoticeBindingPath = (typeof arrivalNoticeBindingPaths)[number]
+export type DocumentBindingPath = (typeof documentBindingPaths)[number]
 
 export const bindingPathsByFamily = {
   invoice: invoiceBindingPaths,
   billOfLading: billOfLadingBindingPaths,
   arrivalNotice: arrivalNoticeBindingPaths,
+  document: documentBindingPaths,
 } as const

@@ -27,11 +27,14 @@ import {
   invoiceRecordToFormatPdfData,
 } from '../../utils/generateInvoiceFormatLayoutPdf';
 import { resolveCatalogContextPdfData } from '../../utils/resolveCatalogContextPdfData';
+import { overlayHtmlPilotPayload } from '../../utils/htmlPilotPayload';
 import {
   generateCatalogLayoutPdf,
   hasCatalogLayoutPdf,
 } from '../../utils/generateCatalogLayoutPdf';
 import { isReferenceAccuratePdfCode } from '../../templates/referenceAccurate';
+import { isOfficialMeasuredNativeCode } from '../../templates/official';
+import { isHtmlCssPilotCode } from '../../engines/pdf/playwrightHtml/playwrightHtmlCodes';
 import {
   ACTIVITY_COMPLETED_JOBS_CODE,
   ACTIVITY_COMPLETED_JOBS_HEADERS,
@@ -61,9 +64,13 @@ import { isInvoiceReportFormatCode } from '../../types/invoiceFormatPreview.type
 import { InvoiceFormatAutoPdf } from './InvoiceFormatAutoPdf';
 import { ReportParameterForm } from './ReportParameterForm';
 import { invoiceService } from '@/features/invoices/services/invoice.service';
-import { reportsEngine } from '../../engine/reportsEngine';
-import { shouldUseInvoiceV2 } from '../../engine/invoiceV2Gate';
+import { reportsCatalogueGate, reportsEngine } from '../../engine/reportsEngine';
+import { FORMAT_NOT_AVAILABLE_YET, reportsCodeGenerateBlocked, shouldUseInvoiceV2 } from '../../engine/invoiceV2Gate';
+import { reportConformanceStatus } from '../../utils/reportConformanceStatus';
 import { invoiceV2SpecCodes } from '../../engine/invoiceV2Codes';
+import { isClientFlowInvoiceCode } from '../../flow/invoiceFlowOptions';
+import { loadInvoiceFlowRecord } from '../../flow/loadInvoiceFlowRecord';
+import { renderInvoiceFlowPdf } from '../../flow/renderInvoiceFlowPdf';
 import { InvoiceV2Preview } from './InvoiceV2Preview';
 
 type ReportGeneratePanelProps = {
@@ -80,6 +87,8 @@ type ReportGeneratePanelProps = {
    * Bind / activate / generate still run for live `/reports/*` PDFs.
    */
   omitClientPreview?: boolean;
+  /** Full page after a catalogue click. The list stays on the previous screen. */
+  presentation?: 'embedded' | 'page';
 };
 
 function isUuid(value: string): boolean {
@@ -127,6 +136,7 @@ export function ReportGeneratePanel({
   selectedPack: selectedPackProp,
   onSelectedPackChange,
   omitClientPreview = false,
+  presentation = 'embedded',
 }: ReportGeneratePanelProps) {
   const detailKey = isUuid(template.id) ? template.id : template.code;
   const detail = useReportTemplate(detailKey, Boolean(detailKey));
@@ -282,6 +292,30 @@ export function ReportGeneratePanel({
     const entityBound = hasReportEntityContext(contextIds);
     const packReady = isReportPackReady(resolved);
 
+    if (format === 'PDF' && isClientFlowInvoiceCode(resolved.code)) {
+      setClientGenerating(true);
+      try {
+        const record = await loadInvoiceFlowRecord(contextIds);
+        const blob = await renderInvoiceFlowPdf(record, resolved.code);
+        const fileName = formatPdfFilename(resolved.code, 'report-format');
+        setPdfReadyName(fileName);
+        setPdfReadyBlob(blob);
+        setPdfReadyUrl(null);
+        setPdfReadyOpen(true);
+        setJobId(null);
+        setMessage(
+          entityBound
+            ? 'PDF ready from this job or invoice. Empty fields were left blank.'
+            : 'PDF ready from the organization profile. No job or invoice was selected, so those fields are blank.',
+        );
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Could not build the flow PDF.');
+      } finally {
+        setClientGenerating(false);
+      }
+      return;
+    }
+
     if (format === 'XLSX' && resolved.code === ACTIVITY_COMPLETED_JOBS_CODE) {
       setClientGenerating(true);
       try {
@@ -366,12 +400,21 @@ export function ReportGeneratePanel({
     const runClientSamplePdf = async () => {
       setClientGenerating(true);
       try {
-        // Empty / partial data keeps layout JSON `demo` (Fresa sample dummy fields).
-        // Entity-bound overlays live values via mergeInvoiceFormatDemo.
+        // Open job / invoice / quotation fills the document. A backend preview
+        // payload may add fields, and it does not wipe values already on the record.
+        const orgChrome = await resolveReportOrgChrome();
         let data = await resolveCatalogContextPdfData(contextIds, {
           formatCode: resolved.code,
         });
-        const orgChrome = await resolveReportOrgChrome();
+        if (isHtmlCssPilotCode(resolved.code)) {
+          const preview = await reportCatalogService.previewHtmlPilot(resolved.code, {
+            context: entityBound ? contextIds : undefined,
+            parameters: !coerceError ? parameters : undefined,
+          });
+          if (preview.available) {
+            data = entityBound ? overlayHtmlPilotPayload(data, preview.data) : preview.data;
+          }
+        }
         data = {
           ...data,
           companyName: data.companyName || orgChrome.company,
@@ -382,7 +425,13 @@ export function ReportGeneratePanel({
           logoUrl: data.logoUrl || orgChrome.logoUrl,
         };
 
-        if (isInvoiceFormatPdf && !isReferenceAccuratePdfCode(resolved.code)) {
+        // Measured / reference-accurate invoice faces must not use the generic JSON shell
+        // (wrong colours, tables, and bilingual header vs Fresa: logo left, company right).
+        if (
+          isInvoiceFormatPdf &&
+          !isReferenceAccuratePdfCode(resolved.code) &&
+          !isOfficialMeasuredNativeCode(resolved.code)
+        ) {
           const invoiceId = contextIds.invoice_id;
           if (invoiceId && isUuid(invoiceId)) {
             try {
@@ -635,10 +684,20 @@ export function ReportGeneratePanel({
       entityBound: entityBoundForUi,
       hasOfficialSample: officialSampleForUi,
     });
+  const flowClientPdf = format === 'PDF' && isClientFlowInvoiceCode(resolved.code);
+  const v2HardBlocked =
+    !flowClientPdf &&
+    reportsCodeGenerateBlocked({
+      gate: reportsCatalogueGate(),
+      engine: reportsEngine(),
+      code: resolved.code,
+      status: reportConformanceStatus(resolved.code),
+    });
   const generateBlocked =
     busy ||
     detail.isLoading ||
-    (!packReadyForGenerate && !canClientLayoutPdf);
+    v2HardBlocked ||
+    (!flowClientPdf && !packReadyForGenerate && !canClientLayoutPdf);
 
   const rendererStatus = reportRendererStatus(resolved);
   const activateLikely = canActivateReportTemplate(resolved);
@@ -675,9 +734,11 @@ export function ReportGeneratePanel({
             {formatStatus.detail}
           </p>
         </div>
-        <Button type="button" variant="secondary" onClick={onClose}>
-          Close
-        </Button>
+        {presentation === 'page' ? null : (
+          <Button type="button" variant="secondary" onClick={onClose}>
+            Close
+          </Button>
+        )}
       </div>
 
       <div
@@ -689,13 +750,26 @@ export function ReportGeneratePanel({
         {previewSource.detail}
       </div>
 
+      {v2HardBlocked ? (
+        <p className="text-xs font-semibold text-amber-800">{FORMAT_NOT_AVAILABLE_YET}</p>
+      ) : null}
+
+      {flowClientPdf ? (
+        <p className="text-xs text-[var(--color-neutral-600)]">
+          Generate builds this PDF in the browser from the open job or invoice. A missing backend
+          template does not block it.
+        </p>
+      ) : null}
+
       {isInvoiceFormat &&
       invoiceV2SpecCodes.has(resolved.code) &&
+      !v2HardBlocked &&
       shouldUseInvoiceV2({
         engine: reportsEngine(),
         entry: 'formats',
         document: 'invoice',
         style: 'classic',
+        code: resolved.code,
       }) ? (
         <InvoiceV2Preview code={resolved.code} invoiceId={context?.invoice_id} />
       ) : null}
@@ -723,16 +797,14 @@ export function ReportGeneratePanel({
         <p className="text-xs text-[var(--color-neutral-500)]">Loading parameter schema…</p>
       ) : null}
 
-      {detailFailed ? (
+      {detailFailed && !flowClientPdf ? (
         <div
           role="status"
           className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900"
         >
-          Template not on API yet. Use <strong>Import registry</strong>, then Live API + Include
-          inactive.
-          {canClientLayoutPdf
-            ? ' Generate uses Freightnest layouts (org branding) — not Fresa sample PDFs.'
-            : ''}
+          {canClientLayoutPdf || presentation === 'page'
+            ? 'Listed by default from the local catalogue. Freightnest client PDF opens without Import or Activate. Backend pack is optional.'
+            : 'Template not on API yet. Use Import registry, then Live API + Include inactive.'}
         </div>
       ) : null}
 
@@ -763,15 +835,15 @@ export function ReportGeneratePanel({
           role="status"
           className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900"
         >
-          {canClientLayoutPdf
+          {canClientLayoutPdf || flowClientPdf
             ? entityBoundForUi
-              ? 'Live pack not bound yet — Generate uses Freightnest client layouts with registered organization branding and live record data. Bind + Activate a pack when available.'
-              : 'Generate uses Freightnest client layouts with registered organization branding. Official Fresa PDFs are browse-only references.'
+              ? 'Freightnest client PDF uses this record and organization branding. Binding a backend pack is optional.'
+              : 'Freightnest client PDF uses organization branding. Official Fresa PDFs are browse-only references. No Activate step is required.'
             : 'Format not enabled for print yet. Bind a Puppeteer pack, then Activate to enable Generate (organization branding on packs).'}
         </div>
       ) : null}
 
-      {!detailFailed && !resolved.is_active && activateLikely ? (
+      {!detailFailed && !resolved.is_active && activateLikely && !canClientLayoutPdf && !flowClientPdf ? (
         <div
           role="status"
           className="rounded-md border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs text-emerald-900"
@@ -905,7 +977,7 @@ export function ReportGeneratePanel({
         </p>
       ) : null}
 
-      <div className="flex flex-wrap justify-end gap-2">
+      <div className={presentation === 'page' ? 'flex flex-wrap gap-2' : 'flex flex-wrap justify-end gap-2'}>
         {!detailFailed && needsPackBind ? (
           <Button
             type="button"

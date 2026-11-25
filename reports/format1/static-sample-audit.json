@@ -1,0 +1,207 @@
+{
+  "staticSamples": [
+    {
+      "id": "p1s6",
+      "sample": "1",
+      "x": 556.4,
+      "y": 16.9,
+      "painted": "(spec static, not overwritten)",
+      "status": "still-paints-sample"
+    },
+    {
+      "id": "p1s8",
+      "sample": "1",
+      "x": 563.1,
+      "y": 16.9,
+      "painted": "(spec static, not overwritten)",
+      "status": "still-paints-sample"
+    },
+    {
+      "id": "p1s40",
+      "sample": "28-JAN-19",
+      "x": 134.2,
+      "y": 685.7,
+      "painted": "",
+      "status": "blanked"
+    },
+    {
+      "id": "p1s84",
+      "sample": "28-JAN-19",
+      "x": 415.1,
+      "y": 624.6,
+      "painted": "10-NOV-26",
+      "status": "rebound"
+    },
+    {
+      "id": "p1s93",
+      "sample": "05-FEB-19",
+      "x": 415.1,
+      "y": 614.5,
+      "painted": "03-DEC-26",
+      "status": "rebound"
+    },
+    {
+      "id": "p1s99",
+      "sample": "INR",
+      "x": 415.1,
+      "y": 586.2,
+      "painted": "AED 1.000000",
+      "status": "rebound"
+    },
+    {
+      "id": "p1s160",
+      "sample": "1",
+      "x": 125.3,
+      "y": 487.8,
+      "painted": "",
+      "status": "blanked"
+    },
+    {
+      "id": "p1s162",
+      "sample": "USD",
+      "x": 184.1,
+      "y": 487.8,
+      "painted": "",
+      "status": "blanked"
+    },
+    {
+      "id": "p1s171",
+      "sample": "1",
+      "x": 125.3,
+      "y": 455.6,
+      "painted": "",
+      "status": "blanked"
+    },
+    {
+      "id": "p1s173",
+      "sample": "INR",
+      "x": 185.6,
+      "y": 455.6,
+      "painted": "",
+      "status": "blanked"
+    },
+    {
+      "id": "p1s183",
+      "sample": "1",
+      "x": 125.3,
+      "y": 427.9,
+      "painted": "",
+      "status": "blanked"
+    },
+    {
+      "id": "p1s185",
+      "sample": "INR",
+      "x": 185.6,
+      "y": 427.9,
+      "painted": "",
+      "status": "blanked"
+    },
+    {
+      "id": "p1s195",
+      "sample": "1",
+      "x": 125.3,
+      "y": 413.8,
+      "painted": "",
+      "status": "blanked"
+    },
+    {
+      "id": "p1s197",
+      "sample": "INR",
+      "x": 185.6,
+      "y": 413.8,
+      "painted": "",
+      "status": "blanked"
+    }
+  ],
+  "stillPaintsSample": [
+    {
+      "id": "p1s6",
+      "sample": "1",
+      "x": 556.4,
+      "y": 16.9,
+      "painted": "(spec static, not overwritten)",
+      "status": "still-paints-sample"
+    },
+    {
+      "id": "p1s8",
+      "sample": "1",
+      "x": 563.1,
+      "y": 16.9,
+      "painted": "(spec static, not overwritten)",
+      "status": "still-paints-sample"
+    }
+  ],
+  "qtyProof": {
+    "values": [
+      "line-0-desc=LINE A",
+      "line-0-qty=2",
+      "line-0-ccy=INR",
+      "line-0-p1s172=",
+      "line-0-p1s174=",
+      "line-0-p1s175=",
+      "line-0-p1s176=",
+      "line-0-p1s177=",
+      "line-0-p1s178=",
+      "line-0-p1s179=",
+      "line-0-p1s180=",
+      "line-0-p1s181=20.00",
+      "line-1-desc=LINE B",
+      "line-1-qty=3",
+      "line-1-ccy=INR",
+      "line-1-p1s172=",
+      "line-1-p1s174=",
+      "line-1-p1s175=",
+      "line-1-p1s176=",
+      "line-1-p1s177=",
+      "line-1-p1s178=",
+      "line-1-p1s179=",
+      "line-1-p1s180=",
+      "line-1-p1s181=30.00",
+      "line-2-desc=LINE C",
+      "line-2-qty=12.5",
+      "line-2-ccy=INR",
+      "line-2-p1s172=",
+      "line-2-p1s174=",
+      "line-2-p1s175=",
+      "line-2-p1s176=",
+      "line-2-p1s177=",
+      "line-2-p1s178=",
+      "line-2-p1s179=",
+      "line-2-p1s180=",
+      "line-2-p1s181=50.00"
+    ],
+    "printedQty": [
+      {
+        "qty": "2",
+        "line": "LINE A",
+        "inValues": true,
+        "inPdfNearLine": true,
+        "inPdf": true
+      },
+      {
+        "qty": "3",
+        "line": "LINE B",
+        "inValues": true,
+        "inPdfNearLine": true,
+        "inPdf": true
+      },
+      {
+        "qty": "12.5",
+        "line": "LINE C",
+        "inValues": true,
+        "inPdfNearLine": true,
+        "inPdf": true
+      }
+    ],
+    "pdfSnippet": [
+      "   11/20/2026\r",
+      "                                        100123456700003\r",
+      "   LINE A                           2                INR                                                                                           20.00\r",
+      "   LINE B                           3                INR                                                                                           30.00\r",
+      "   LINE C                           12.5             INR                                                                                           50.00\r",
+      "                                                                                  100.00                                                          100.00\r",
+      "                                                                                                                                                       0.00\r",
+      "                                                                                                                                                       0.00\r"
+    ]
+  }
+}

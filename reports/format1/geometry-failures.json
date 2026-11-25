@@ -1,0 +1,48 @@
+{
+  "missingLineCount": 0,
+  "missingRectCount": 0,
+  "boxes": [
+    {
+      "kind": "logo",
+      "x": 27.4,
+      "y": 784.6,
+      "width": 82,
+      "height": 39.6
+    },
+    {
+      "kind": "company-name",
+      "x": 352.9,
+      "y": 811.7,
+      "width": 202.26,
+      "height": 15.8285,
+      "binding": "company.name"
+    },
+    {
+      "kind": "logo",
+      "x": 27.4,
+      "y": 784.6,
+      "width": 82,
+      "height": 39.6
+    },
+    {
+      "kind": "omitted-branding",
+      "x": 26.5,
+      "y": 16.9,
+      "width": 590.38,
+      "height": 810.6285
+    },
+    {
+      "kind": "org-header-band",
+      "x": 440,
+      "y": 775,
+      "width": 140,
+      "height": 60
+    }
+  ],
+  "failures": [],
+  "outsideAllowed": [],
+  "referenceLineCount": 265,
+  "renderedLineCount": 265,
+  "referenceRectCount": 38,
+  "renderedRectCount": 38
+}

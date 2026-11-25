@@ -1,0 +1,434 @@
+family,code,name,module,output_format,layout_file,spec_path,status
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_11,Arrival Notice Report Format-11,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_12,Arrival Notice Report Format-12,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_13,Arrival Notice Report Format-13,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_14,Arrival Notice Report Format-14,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_15,Arrival Notice Report Format-15,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_16,Arrival Notice Report Format-16,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_17,Arrival Notice Report Format-17,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_18,Arrival Notice Report Format-18,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_19,Arrival Notice Report Format-19,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_20,Arrival Notice Report Format-20,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_21,Arrival Notice Report Format-21,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_22,Arrival Notice Report Format-22,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_23,Arrival Notice Report Format-23,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_24,Arrival Notice Report Format-24,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_25,Arrival Notice Report Format-25,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_26,Arrival Notice Report Format-26,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_27,Arrival Notice Report Format-27,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_28,Arrival Notice Report Format-28,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_29,Arrival Notice Report Format-29,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_30,Arrival Notice Report Format-30,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_31,Arrival Notice Report Format-31,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_32,Arrival Notice Report Format-32,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_33,Arrival Notice Report Format-33,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_34,Arrival Notice Report Format-34,documentation,PDF,,,NOT_VALIDATED
+sea_docs,ARRIVAL_NOTICE_REPORT_FORMAT_35,Arrival Notice Report Format-35,documentation,PDF,,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_10,Cargo Manifest Report Format-10,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_11,Cargo Manifest Report Format-11,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_12,Cargo Manifest Report Format-12,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_13,Cargo Manifest Report Format-13,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_14,Cargo Manifest Report Format-14,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_15,Cargo Manifest Report Format-15,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_16,Cargo Manifest Report Format-16,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_17,Cargo Manifest Report Format-17,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_18,Cargo Manifest Report Format-18,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_19,Cargo Manifest Report Format-19,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_2,Cargo Manifest Report Format-2,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_20,Cargo Manifest Report Format-20,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_21,Cargo Manifest Report Format-21,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_3,Cargo Manifest Report Format-3,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_4,Cargo Manifest Report Format-4,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_5,Cargo Manifest Report Format-5,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_6,Cargo Manifest Report Format-6,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_7,Cargo Manifest Report Format-7,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_8,Cargo Manifest Report Format-8,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,CARGO_MANIFEST_REPORT_FORMAT_9,Cargo Manifest Report Format-9,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,DELIVERY_ORDER_REPORT_FORMAT_17,Delivery Order Report Format-17,documentation,PDF,src/features/reports/data/deliveryOrderFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,DELIVERY_ORDER_REPORT_FORMAT_FCL_VIETNAM,Delivery Order FCL Vietnam,documentation,PDF,src/features/reports/data/deliveryOrderFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,DELIVERY_ORDER_REPORT_FORMAT_LCL_VIETNAM_WITHOUT_STAMP,Delivery Order LCL Vietnam Without Stamp,documentation,PDF,src/features/reports/data/deliveryOrderFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,FG_ARRIVAL_NOTICE_WITHOUT_CHARGES,FG Arrival Notice Without Charges,documentation,PDF,src/features/reports/data/arrivalNoticeFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,FG_DELIVERY_ORDER_ABU_DHABI,FG Delivery Order Abu Dhabi,documentation,PDF,src/features/reports/data/deliveryOrderFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,FG_E_DELIVERY_ORDER,FG E-Delivery Order,documentation,PDF,src/features/reports/data/deliveryOrderFormatUiLayouts.json,,NOT_VALIDATED
+sea_docs,HBL_DRAFT_REPORT_FORMAT_21,HBL Draft Report Format-21,documentation,PDF,,,NOT_VALIDATED
+sea_docs,HBL_DRAFT_REPORT_FORMAT_22,HBL Draft Report Format-22,documentation,PDF,,,NOT_VALIDATED
+sea_docs,HBL_DRAFT_REPORT_FORMAT_24,HBL Draft Report Format-24,documentation,PDF,,,NOT_VALIDATED
+sea_docs,HBL_DRAFT_REPORT_FORMAT_28,HBL Draft Report Format-28,documentation,PDF,,,NOT_VALIDATED
+sea_docs,HBL_DRAFT_REPORT_FORMAT_30,HBL Draft Report Format-30,documentation,PDF,,,NOT_VALIDATED
+sea_docs,HBL_DRAFT_REPORT_FORMAT_31,HBL Draft Report Format-31,documentation,PDF,,,NOT_VALIDATED
+sea_docs,HBL_DRAFT_REPORT_FORMAT_32,HBL Draft Report Format-32,documentation,PDF,,,NOT_VALIDATED
+sea_docs,HBL_DRAFT_REPORT_FORMAT_34,HBL Draft Report Format-34,documentation,PDF,,,NOT_VALIDATED
+sea_docs,HBL_DRAFT_REPORT_FORMAT_35,HBL Draft Report Format-35,documentation,PDF,,,NOT_VALIDATED
+sea_docs,HBL_DRAFT_REPORT_FORMAT_37,HBL Draft Report Format-37,documentation,PDF,,,NOT_VALIDATED
+sea_docs,HBL_DRAFT_REPORT_FORMAT_38,HBL Draft Report Format-38,documentation,PDF,,,NOT_VALIDATED
+sea_docs,HBL_DRAFT_REPORT_FORMAT_39,HBL Draft Report Format-39,documentation,PDF,,,NOT_VALIDATED
+sea_docs,PROOF_OF_DELIVERY_RPM_SAMPLE,Proof Of Delivery (RPM Sample),documentation,PDF,src/features/reports/data/deliveryOrderFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,DELIVERY_ORDER_REPORT_FORMAT_10,Delivery Order Report Format-10,documentation,PDF,src/features/reports/data/deliveryOrderFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,DELIVERY_ORDER_REPORT_FORMAT_11,Delivery Order Report Format-11,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,DELIVERY_ORDER_REPORT_FORMAT_12,Delivery Order Report Format-12,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,DELIVERY_ORDER_REPORT_FORMAT_2,Delivery Order Report Format-2,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,DELIVERY_ORDER_REPORT_FORMAT_3,Delivery Order Report Format-3,documentation,PDF,src/features/reports/data/deliveryOrderFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,DELIVERY_ORDER_REPORT_FORMAT_4,Delivery Order Report Format-4,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,DELIVERY_ORDER_REPORT_FORMAT_5,Delivery Order Report Format-5,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,DELIVERY_ORDER_REPORT_FORMAT_6,Delivery Order Report Format-6,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,DELIVERY_ORDER_REPORT_FORMAT_7,Delivery Order Report Format-7,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,DELIVERY_ORDER_REPORT_FORMAT_8,Delivery Order Report Format-8,documentation,PDF,src/features/reports/data/deliveryOrderFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,DELIVERY_ORDER_REPORT_FORMAT_9,Delivery Order Report Format-9,documentation,PDF,src/features/reports/data/deliveryOrderFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_10,HAWB Draft Report Format-10,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_11,HAWB Draft Report Format-11,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_12,HAWB Draft Report Format-12,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_13,HAWB Draft Report Format-13,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_14,HAWB Draft Report Format-14,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_15,HAWB Draft Report Format-15,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_16,HAWB Draft Report Format-16,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_17,HAWB Draft Report Format-17,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_18,HAWB Draft Report Format-18,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_19,HAWB Draft Report Format-19,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_20,HAWB Draft Report Format-20,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_21,HAWB Draft Report Format-21,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_22,HAWB Draft Report Format-22,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_23,HAWB Draft Report Format-23,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_24,HAWB Draft Report Format-24,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_25,HAWB Draft Report Format-25,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_26,HAWB Draft Report Format-26,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_27,HAWB Draft Report Format-27,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_3,HAWB Draft Report Format-3,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_4,HAWB Draft Report Format-4,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_5,HAWB Draft Report Format-5,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_6,HAWB Draft Report Format-6,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_7,HAWB Draft Report Format-7,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_8,HAWB Draft Report Format-8,documentation,PDF,,,NOT_VALIDATED
+air_docs,HAWB_DRAFT_REPORT_FORMAT_9,HAWB Draft Report Format-9,documentation,PDF,,,NOT_VALIDATED
+air_docs,MAWB_DRAFT_REPORT_FORMAT_10,MAWB Draft Report Format-10,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,MAWB_DRAFT_REPORT_FORMAT_11,MAWB Draft Report Format-11,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,MAWB_DRAFT_REPORT_FORMAT_12,MAWB Draft Report Format-12,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,MAWB_DRAFT_REPORT_FORMAT_13,MAWB Draft Report Format-13,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,MAWB_DRAFT_REPORT_FORMAT_14,MAWB Draft Report Format-14,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,MAWB_DRAFT_REPORT_FORMAT_15,MAWB Draft Report Format-15,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,MAWB_DRAFT_REPORT_FORMAT_16,MAWB Draft Report Format-16,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,MAWB_DRAFT_REPORT_FORMAT_2,MAWB Draft Report Format-2,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,MAWB_DRAFT_REPORT_FORMAT_3,MAWB Draft Report Format-3,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,MAWB_DRAFT_REPORT_FORMAT_4,MAWB Draft Report Format-4,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,MAWB_DRAFT_REPORT_FORMAT_5,MAWB Draft Report Format-5,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,MAWB_DRAFT_REPORT_FORMAT_6,MAWB Draft Report Format-6,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,MAWB_DRAFT_REPORT_FORMAT_7,MAWB Draft Report Format-7,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,MAWB_DRAFT_REPORT_FORMAT_8,MAWB Draft Report Format-8,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+air_docs,MAWB_DRAFT_REPORT_FORMAT_9,MAWB Draft Report Format-9,documentation,PDF,src/features/reports/data/seaDocsExtraFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_LOCATION_SUMMARY,Advance Shipping Note Location Summary,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_LOCATION_WISE_2,Advance Shipping Note Location Wise-2,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_10,Advance Shipping Note Report Format-10,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_11,Advance Shipping Note Report Format-11,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_12,Advance Shipping Note Report Format-12,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_13,Advance Shipping Note Report Format-13,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_14,Advance Shipping Note Report Format-14,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_15,Advance Shipping Note Report Format-15,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_16,Advance Shipping Note Report Format-16,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_17,Advance Shipping Note Report Format-17,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_18,Advance Shipping Note Report Format-18,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_19,Advance Shipping Note Report Format-19,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_2,Advance Shipping Note Report Format-2,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_20,Advance Shipping Note Report Format-20,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_21,Advance Shipping Note Report Format-21,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_3,Advance Shipping Note Report Format-3,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_4,Advance Shipping Note Report Format-4,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_5,Advance Shipping Note Report Format-5,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_6,Advance Shipping Note Report Format-6,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_7,Advance Shipping Note Report Format-7,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_8,Advance Shipping Note Report Format-8,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_9,Advance Shipping Note Report Format-9,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GDO_REPORT_FORMAT_1,WMS GDO Report Format-1,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GDO_REPORT_FORMAT_10,WMS GDO Report Format-10,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GDO_REPORT_FORMAT_2,WMS GDO Report Format-2,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GDO_REPORT_FORMAT_3,WMS GDO Report Format-3,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GDO_REPORT_FORMAT_4,WMS GDO Report Format-4,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GDO_REPORT_FORMAT_5,WMS GDO Report Format-5,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GDO_REPORT_FORMAT_6,WMS GDO Report Format-6,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GDO_REPORT_FORMAT_7,WMS GDO Report Format-7,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GDO_REPORT_FORMAT_8,WMS GDO Report Format-8,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GDO_REPORT_FORMAT_9,WMS GDO Report Format-9,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GRN_REPORT_FORMAT_1,WMS GRN Report Format-1,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GRN_REPORT_FORMAT_10,WMS GRN Report Format-10,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GRN_REPORT_FORMAT_2,WMS GRN Report Format-2,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GRN_REPORT_FORMAT_3,WMS GRN Report Format-3,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GRN_REPORT_FORMAT_4,WMS GRN Report Format-4,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GRN_REPORT_FORMAT_5,WMS GRN Report Format-5,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GRN_REPORT_FORMAT_6,WMS GRN Report Format-6,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GRN_REPORT_FORMAT_7,WMS GRN Report Format-7,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GRN_REPORT_FORMAT_8,WMS GRN Report Format-8,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_GRN_REPORT_FORMAT_9,WMS GRN Report Format-9,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_STOCK_REPORT_FORMAT_1,WMS Stock Report Format-1,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_STOCK_REPORT_FORMAT_10,WMS Stock Report Format-10,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_STOCK_REPORT_FORMAT_11,WMS Stock Report Format-11,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_STOCK_REPORT_FORMAT_12,WMS Stock Report Format-12,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_STOCK_REPORT_FORMAT_13,WMS Stock Report Format-13,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_STOCK_REPORT_FORMAT_14,WMS Stock Report Format-14,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_STOCK_REPORT_FORMAT_15,WMS Stock Report Format-15,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_STOCK_REPORT_FORMAT_2,WMS Stock Report Format-2,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_STOCK_REPORT_FORMAT_3,WMS Stock Report Format-3,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_STOCK_REPORT_FORMAT_4,WMS Stock Report Format-4,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_STOCK_REPORT_FORMAT_5,WMS Stock Report Format-5,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_STOCK_REPORT_FORMAT_6,WMS Stock Report Format-6,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_STOCK_REPORT_FORMAT_7,WMS Stock Report Format-7,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_STOCK_REPORT_FORMAT_8,WMS Stock Report Format-8,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+wms,WMS_STOCK_REPORT_FORMAT_9,WMS Stock Report Format-9,wms,PDF,src/features/reports/data/wmsFormatUiLayouts.json,,NOT_VALIDATED
+finance,JOURNAL_VOUCHER_REPORT_FORMAT_10,Journal Voucher Report Format-10,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,JOURNAL_VOUCHER_REPORT_FORMAT_11,Journal Voucher Report Format-11,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,JOURNAL_VOUCHER_REPORT_FORMAT_12,Journal Voucher Report Format-12,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,JOURNAL_VOUCHER_REPORT_FORMAT_3,Journal Voucher Report Format-3,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,JOURNAL_VOUCHER_REPORT_FORMAT_4,Journal Voucher Report Format-4,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,JOURNAL_VOUCHER_REPORT_FORMAT_5,Journal Voucher Report Format-5,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,JOURNAL_VOUCHER_REPORT_FORMAT_6,Journal Voucher Report Format-6,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,JOURNAL_VOUCHER_REPORT_FORMAT_7,Journal Voucher Report Format-7,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,JOURNAL_VOUCHER_REPORT_FORMAT_8,Journal Voucher Report Format-8,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,JOURNAL_VOUCHER_REPORT_FORMAT_9,Journal Voucher Report Format-9,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,OUTSTANDING_LETTER_REPORT_FORMAT_10,Outstanding Letter Report Format-10,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,OUTSTANDING_LETTER_REPORT_FORMAT_11,Outstanding Letter Report Format-11,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,OUTSTANDING_LETTER_REPORT_FORMAT_12,Outstanding Letter Report Format-12,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,OUTSTANDING_LETTER_REPORT_FORMAT_13,Outstanding Letter Report Format-13,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,OUTSTANDING_LETTER_REPORT_FORMAT_14,Outstanding Letter Report Format-14,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,OUTSTANDING_LETTER_REPORT_FORMAT_15,Outstanding Letter Report Format-15,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,OUTSTANDING_LETTER_REPORT_FORMAT_16,Outstanding Letter Report Format-16,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,OUTSTANDING_LETTER_REPORT_FORMAT_17,Outstanding Letter Report Format-17,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,OUTSTANDING_LETTER_REPORT_FORMAT_18,Outstanding Letter Report Format-18,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,OUTSTANDING_LETTER_REPORT_FORMAT_19,Outstanding Letter Report Format-19,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,OUTSTANDING_LETTER_REPORT_FORMAT_20,Outstanding Letter Report Format-20,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,OUTSTANDING_LETTER_REPORT_FORMAT_6,Outstanding Letter Report Format-6,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,OUTSTANDING_LETTER_REPORT_FORMAT_7,Outstanding Letter Report Format-7,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,OUTSTANDING_LETTER_REPORT_FORMAT_8,Outstanding Letter Report Format-8,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,OUTSTANDING_LETTER_REPORT_FORMAT_9,Outstanding Letter Report Format-9,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PAYMENT_VOUCHER_REPORT_FORMAT_10,Payment Voucher Report Format-10,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PAYMENT_VOUCHER_REPORT_FORMAT_4,Payment Voucher Report Format-4,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PAYMENT_VOUCHER_REPORT_FORMAT_5,Payment Voucher Report Format-5,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PAYMENT_VOUCHER_REPORT_FORMAT_6,Payment Voucher Report Format-6,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PAYMENT_VOUCHER_REPORT_FORMAT_7,Payment Voucher Report Format-7,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PAYMENT_VOUCHER_REPORT_FORMAT_8,Payment Voucher Report Format-8,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PAYMENT_VOUCHER_REPORT_FORMAT_9,Payment Voucher Report Format-9,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PROFIT_AND_LOSS_REPORT_FORMAT_10,Profit and Loss Report Format-10,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PROFIT_AND_LOSS_REPORT_FORMAT_11,Profit and Loss Report Format-11,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PROFIT_AND_LOSS_REPORT_FORMAT_12,Profit and Loss Report Format-12,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PROFIT_AND_LOSS_REPORT_FORMAT_13,Profit and Loss Report Format-13,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PROFIT_AND_LOSS_REPORT_FORMAT_14,Profit and Loss Report Format-14,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PROFIT_AND_LOSS_REPORT_FORMAT_15,Profit and Loss Report Format-15,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PROFIT_AND_LOSS_REPORT_FORMAT_4,Profit and Loss Report Format-4,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PROFIT_AND_LOSS_REPORT_FORMAT_5,Profit and Loss Report Format-5,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PROFIT_AND_LOSS_REPORT_FORMAT_6,Profit and Loss Report Format-6,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PROFIT_AND_LOSS_REPORT_FORMAT_7,Profit and Loss Report Format-7,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PROFIT_AND_LOSS_REPORT_FORMAT_8,Profit and Loss Report Format-8,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,PROFIT_AND_LOSS_REPORT_FORMAT_9,Profit and Loss Report Format-9,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_2,Statement Of Accounts Report Format-2,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_3,Statement Of Accounts Report Format-3,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_4,Statement Of Accounts Report Format-4,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_5,Statement Of Accounts Report Format-5,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_6,Statement Of Accounts Report Format-6,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_7,Statement Of Accounts Report Format-7,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_8,Statement Of Accounts Report Format-8,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_9,Statement Of Accounts Report Format-9,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,TRIAL_BALANCE_REPORT_FORMAT_10,Trial Balance Report Format-10,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,TRIAL_BALANCE_REPORT_FORMAT_11,Trial Balance Report Format-11,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,TRIAL_BALANCE_REPORT_FORMAT_12,Trial Balance Report Format-12,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,TRIAL_BALANCE_REPORT_FORMAT_13,Trial Balance Report Format-13,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,TRIAL_BALANCE_REPORT_FORMAT_14,Trial Balance Report Format-14,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,TRIAL_BALANCE_REPORT_FORMAT_15,Trial Balance Report Format-15,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,TRIAL_BALANCE_REPORT_FORMAT_16,Trial Balance Report Format-16,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,TRIAL_BALANCE_REPORT_FORMAT_7,Trial Balance Report Format-7,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,TRIAL_BALANCE_REPORT_FORMAT_8,Trial Balance Report Format-8,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+finance,TRIAL_BALANCE_REPORT_FORMAT_9,Trial Balance Report Format-9,finance,PDF,src/features/reports/data/accountsFormatUiLayouts.json,,NOT_VALIDATED
+commercial,CREDIT_NOTE_REPORT_FORMAT_1,Credit Note Report Format-1,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,CREDIT_NOTE_REPORT_FORMAT_10,Credit Note Report Format-10,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,CREDIT_NOTE_REPORT_FORMAT_2,Credit Note Report Format-2,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,CREDIT_NOTE_REPORT_FORMAT_3,Credit Note Report Format-3,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,CREDIT_NOTE_REPORT_FORMAT_4,Credit Note Report Format-4,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,CREDIT_NOTE_REPORT_FORMAT_5,Credit Note Report Format-5,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,CREDIT_NOTE_REPORT_FORMAT_6,Credit Note Report Format-6,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,CREDIT_NOTE_REPORT_FORMAT_7,Credit Note Report Format-7,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,CREDIT_NOTE_REPORT_FORMAT_8,Credit Note Report Format-8,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,CREDIT_NOTE_REPORT_FORMAT_9,Credit Note Report Format-9,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,DEBIT_NOTE_REPORT_FORMAT_1,Debit Note Report Format-1,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,DEBIT_NOTE_REPORT_FORMAT_10,Debit Note Report Format-10,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,DEBIT_NOTE_REPORT_FORMAT_2,Debit Note Report Format-2,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,DEBIT_NOTE_REPORT_FORMAT_3,Debit Note Report Format-3,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,DEBIT_NOTE_REPORT_FORMAT_4,Debit Note Report Format-4,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,DEBIT_NOTE_REPORT_FORMAT_5,Debit Note Report Format-5,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,DEBIT_NOTE_REPORT_FORMAT_6,Debit Note Report Format-6,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,DEBIT_NOTE_REPORT_FORMAT_7,Debit Note Report Format-7,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,DEBIT_NOTE_REPORT_FORMAT_8,Debit Note Report Format-8,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,DEBIT_NOTE_REPORT_FORMAT_9,Debit Note Report Format-9,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_22,Invoice Report Format-22 Standard Tax Invoice Format-22,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_23,Invoice Report Format-23 Purchase Invoice,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_24,Invoice Report Format-24 Simple Invoice With OS,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_25,Invoice Report Format-25 Simple Invoice India With OS,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_26,Invoice Report Format-26 FG Simple Invoice,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_27,Invoice Report Format-27 Standard Invoice Tanzania,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_28,Invoice Report Format Singapore,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_29,Invoice Report Format Land Freight Transportation,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_30,Invoice Report Format Overseas Debit Note Format-2,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_34,Invoice Report Format-34 Standard Invoice Arabic,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_35,Invoice Report Format-35 Standard Invoice Arabic Format-1,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_36,Invoice Report Format-36 Standard Invoice Arabic Format-1 Alt,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_37,Invoice Report Format-37 Standard Invoice Arabic Oman,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_38,Invoice Report Format-38 Standard Invoice Arabic Format-2,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_39,Invoice Report Format-39 Standard Invoice Arabic Format-3,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_40,Invoice Report Format-40 Standard Invoice Arabic Format-4,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_41,Invoice Report Format-41 Standard Invoice Arabic Format-5,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_42,Invoice Report Format-42 Standard Invoice Arabic Format-7,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_43,Invoice Report Format-43 Standard Courier Invoice,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_44,Invoice Report Format-44 Standard Invoice FCY,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_45,Invoice Report Format-45 Standard Invoice FCY Format-2,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_46,Invoice Report Format-46 FG Standard Invoice FCY,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_47,Invoice Report Format-47 Standard Invoice Kampala,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_48,Invoice Report Format-48 Standard Invoice USA,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_49,Invoice Report Format-49 Standard Tax Invoice Format-16 Cum AN,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_50,Invoice Report Format-50 Standard Invoice Malaysia,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_51,Invoice Report Format-51 Standard Invoice USA Format-2,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_52,Invoice Report Format-52 Standard Tax Invoice,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_53,Invoice Report Format-53 Summary Invoice,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_54,Invoice Report Format-54 Tax Invoice India,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_55,Invoice Report Format-55 Tax Invoice India Reimbursement Bill,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_56,Invoice Report Format-56 FG Tax Invoice India,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_57,Invoice Report Format-57 FG Tax Invoice India Format-1,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_58,Invoice Report Format-58 Tax Invoice India Format-1,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_59,Invoice Report Format-59 Tax Invoice India Format-2,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_60,Invoice Report Format-60 FG Tax Invoice India Format-2,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_61,Invoice Report Format-61 FG Tax Invoice India Format-6,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_62,Invoice Report Format-62 FG Tax Invoice India Format-7,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_63,Invoice Report Format-63 FG Tax Invoice India Format-8,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_64,Invoice Report Format-64 FG Tax Invoice India Format-3,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_65,Invoice Report Format-65 FG Tax Invoice India Format-4,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_66,Invoice Report Format-66 FG Tax Invoice India Format-5,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_67,Invoice Report Format-67 FG Tax Invoice Malaysia,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_68,Invoice Report Format-68 FG Tax Invoice Singapore,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_69,Invoice Report Format-69 Warehouse Invoice,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_70,Invoice Report Format-70 Warehouse Invoice India Format,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_71,Invoice Report Format-71 Proforma Invoice All Charges,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_72,Invoice Report Format-72 Standard Tax Invoice Format-13,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_73,Invoice Report Format-73 Standard Tax Invoice Format-14,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_74,Invoice Report Format-74 Standard Tax Invoice Format-15,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_75,Invoice Report Format-75 Standard Tax Invoice Format-16,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_76,Invoice Report Format-76 Standard Tax Invoice Format-17,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_77,Invoice Report Format-77 Standard Tax Invoice Format-18,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_78,Invoice Report Format-78 Standard Tax Invoice Format-19,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_79,Invoice Report Format-79 Standard Tax Invoice Format-20,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_80,Invoice Report Format-80 Standard Tax Invoice Format-21,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_81,Invoice Report Format-81 Standard Tax Invoice Format-22,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_82,Invoice Report Format-82 Standard Tax Invoice Format-5,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_83,Invoice Report Format-83 Standard Tax Invoice Format-6,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_84,Invoice Report Format-84 Standard Tax Invoice Format-9,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,INVOICE_REPORT_FORMAT_85,Invoice Report Format-85 Standard Invoice Format-2,finance,PDF,src/features/reports/data/invoiceFormatUiLayouts.json,,NOT_VALIDATED
+commercial,LEFTOVER_HBL_DRAFT_JASPER,HBL Draft- Jasper,finance,PDF,src/features/reports/data/leftoverFormatUiLayouts.json,,NOT_VALIDATED
+commercial,LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1,HBL Draft- Jasper format 1,finance,PDF,src/features/reports/data/leftoverFormatUiLayouts.json,,NOT_VALIDATED
+commercial,LEFTOVER_VIETNAM_INVOICE,Vietnam Invoice,finance,PDF,src/features/reports/data/leftoverFormatUiLayouts.json,,NOT_VALIDATED
+commercial,PROFORMA_INVOICE_REPORT_FORMAT_10,Proforma Invoice Report Format-10,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,PROFORMA_INVOICE_REPORT_FORMAT_11,Proforma Invoice Report Format-11,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,PROFORMA_INVOICE_REPORT_FORMAT_12,Proforma Invoice Report Format-12,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,PROFORMA_INVOICE_REPORT_FORMAT_13,Proforma Invoice Report Format-13,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,PROFORMA_INVOICE_REPORT_FORMAT_14,Proforma Invoice Report Format-14,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,PROFORMA_INVOICE_REPORT_FORMAT_15,Proforma Invoice Report Format-15,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,PROFORMA_INVOICE_REPORT_FORMAT_16,Proforma Invoice Report Format-16,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,PROFORMA_INVOICE_REPORT_FORMAT_17,Proforma Invoice Report Format-17,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,PROFORMA_INVOICE_REPORT_FORMAT_3,Proforma Invoice Report Format-3,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,PROFORMA_INVOICE_REPORT_FORMAT_4,Proforma Invoice Report Format-4,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,PROFORMA_INVOICE_REPORT_FORMAT_5,Proforma Invoice Report Format-5,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,PROFORMA_INVOICE_REPORT_FORMAT_6,Proforma Invoice Report Format-6,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,PROFORMA_INVOICE_REPORT_FORMAT_7,Proforma Invoice Report Format-7,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,PROFORMA_INVOICE_REPORT_FORMAT_8,Proforma Invoice Report Format-8,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+commercial,PROFORMA_INVOICE_REPORT_FORMAT_9,Proforma Invoice Report Format-9,finance,PDF,src/features/reports/data/commercialExtraFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_10,Daily Status Report Format-10,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_11,Daily Status Report Format-11,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_12,Daily Status Report Format-12,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_13,Daily Status Report Format-13,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_14,Daily Status Report Format-14,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_15,Daily Status Report Format-15,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_16,Daily Status Report Format-16,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_17,Daily Status Report Format-17,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_18,Daily Status Report Format-18,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_19,Daily Status Report Format-19,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_20,Daily Status Report Format-20,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_21,Daily Status Report Format-21,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_22,Daily Status Report Format-22,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_3,Daily Status Report Format-3,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_4,Daily Status Report Format-4,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_5,Daily Status Report Format-5,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_6,Daily Status Report Format-6,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_7,Daily Status Report Format-7,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_8,Daily Status Report Format-8,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,DAILY_STATUS_REPORT_FORMAT_9,Daily Status Report Format-9,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_1,Job Status List Report Format-1,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_10,Job Status List Report Format-10,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_11,Job Status List Report Format-11,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_12,Job Status List Report Format-12,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_13,Job Status List Report Format-13,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_14,Job Status List Report Format-14,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_15,Job Status List Report Format-15,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_16,Job Status List Report Format-16,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_17,Job Status List Report Format-17,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_18,Job Status List Report Format-18,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_19,Job Status List Report Format-19,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_2,Job Status List Report Format-2,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_20,Job Status List Report Format-20,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_3,Job Status List Report Format-3,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_4,Job Status List Report Format-4,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_5,Job Status List Report Format-5,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_6,Job Status List Report Format-6,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_7,Job Status List Report Format-7,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_8,Job Status List Report Format-8,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,JOB_STATUS_LIST_REPORT_FORMAT_9,Job Status List Report Format-9,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_1,Pending Shipments List Report Format-1,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_10,Pending Shipments List Report Format-10,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_11,Pending Shipments List Report Format-11,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_12,Pending Shipments List Report Format-12,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_13,Pending Shipments List Report Format-13,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_14,Pending Shipments List Report Format-14,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_15,Pending Shipments List Report Format-15,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_16,Pending Shipments List Report Format-16,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_17,Pending Shipments List Report Format-17,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_18,Pending Shipments List Report Format-18,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_19,Pending Shipments List Report Format-19,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_2,Pending Shipments List Report Format-2,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_20,Pending Shipments List Report Format-20,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_21,Pending Shipments List Report Format-21,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_22,Pending Shipments List Report Format-22,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_23,Pending Shipments List Report Format-23,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_24,Pending Shipments List Report Format-24,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_25,Pending Shipments List Report Format-25,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_3,Pending Shipments List Report Format-3,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_4,Pending Shipments List Report Format-4,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_5,Pending Shipments List Report Format-5,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_6,Pending Shipments List Report Format-6,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_7,Pending Shipments List Report Format-7,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_8,Pending Shipments List Report Format-8,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+ops_list,PENDING_SHIPMENTS_LIST_REPORT_FORMAT_9,Pending Shipments List Report Format-9,operations,PDF,src/features/reports/data/opsListFormatUiLayouts.json,,NOT_VALIDATED
+quotation,QUOTATION_REPORT_FORMAT_1,Quotation Report Format-1,sales,PDF,src/features/reports/data/quotationFormatUiLayouts.json,,NOT_VALIDATED
+quotation,QUOTATION_REPORT_FORMAT_10,Quotation Report Format-10,sales,PDF,src/features/reports/data/quotationFormatUiLayouts.json,,NOT_VALIDATED
+quotation,QUOTATION_REPORT_FORMAT_11,Quotation Report Format-11,sales,PDF,src/features/reports/data/quotationFormatUiLayouts.json,,NOT_VALIDATED
+quotation,QUOTATION_REPORT_FORMAT_12,Quotation Report Format-12,sales,PDF,src/features/reports/data/quotationFormatUiLayouts.json,,NOT_VALIDATED
+quotation,QUOTATION_REPORT_FORMAT_13,Quotation Report Format-13,sales,PDF,src/features/reports/data/quotationFormatUiLayouts.json,,NOT_VALIDATED
+quotation,QUOTATION_REPORT_FORMAT_14,Quotation Report Format-14,sales,PDF,src/features/reports/data/quotationFormatUiLayouts.json,,NOT_VALIDATED
+quotation,QUOTATION_REPORT_FORMAT_15,Quotation Report Format-15,sales,PDF,src/features/reports/data/quotationFormatUiLayouts.json,,NOT_VALIDATED
+quotation,QUOTATION_REPORT_FORMAT_2,Quotation Report Format-2,sales,PDF,src/features/reports/data/quotationFormatUiLayouts.json,,NOT_VALIDATED
+quotation,QUOTATION_REPORT_FORMAT_3,Quotation Report Format-3,sales,PDF,src/features/reports/data/quotationFormatUiLayouts.json,,NOT_VALIDATED
+quotation,QUOTATION_REPORT_FORMAT_4,Quotation Report Format-4,sales,PDF,src/features/reports/data/quotationFormatUiLayouts.json,,NOT_VALIDATED
+quotation,QUOTATION_REPORT_FORMAT_5,Quotation Report Format-5,sales,PDF,src/features/reports/data/quotationFormatUiLayouts.json,,NOT_VALIDATED
+quotation,QUOTATION_REPORT_FORMAT_6,Quotation Report Format-6,sales,PDF,src/features/reports/data/quotationFormatUiLayouts.json,,NOT_VALIDATED
+quotation,QUOTATION_REPORT_FORMAT_7,Quotation Report Format-7,sales,PDF,src/features/reports/data/quotationFormatUiLayouts.json,,NOT_VALIDATED
+quotation,QUOTATION_REPORT_FORMAT_8,Quotation Report Format-8,sales,PDF,src/features/reports/data/quotationFormatUiLayouts.json,,NOT_VALIDATED
+quotation,QUOTATION_REPORT_FORMAT_9,Quotation Report Format-9,sales,PDF,src/features/reports/data/quotationFormatUiLayouts.json,,NOT_VALIDATED
+other,BOOKING_CONFIRMATION_REPORT_FORMAT_10,Booking Confirmation Report Format-10,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,BOOKING_CONFIRMATION_REPORT_FORMAT_3,Booking Confirmation Report Format-3,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,BOOKING_CONFIRMATION_REPORT_FORMAT_4,Booking Confirmation Report Format-4,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,BOOKING_CONFIRMATION_REPORT_FORMAT_5,Booking Confirmation Report Format-5,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,BOOKING_CONFIRMATION_REPORT_FORMAT_6,Booking Confirmation Report Format-6,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,BOOKING_CONFIRMATION_REPORT_FORMAT_7,Booking Confirmation Report Format-7,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,BOOKING_CONFIRMATION_REPORT_FORMAT_8,Booking Confirmation Report Format-8,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,BOOKING_CONFIRMATION_REPORT_FORMAT_9,Booking Confirmation Report Format-9,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,PRE_ALERT_REPORT_FORMAT_1,Pre Alert Report Format-1,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,PRE_ALERT_REPORT_FORMAT_10,Pre Alert Report Format-10,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,PRE_ALERT_REPORT_FORMAT_11,Pre Alert Report Format-11,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,PRE_ALERT_REPORT_FORMAT_12,Pre Alert Report Format-12,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,PRE_ALERT_REPORT_FORMAT_2,Pre Alert Report Format-2,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,PRE_ALERT_REPORT_FORMAT_3,Pre Alert Report Format-3,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,PRE_ALERT_REPORT_FORMAT_4,Pre Alert Report Format-4,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,PRE_ALERT_REPORT_FORMAT_5,Pre Alert Report Format-5,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,PRE_ALERT_REPORT_FORMAT_6,Pre Alert Report Format-6,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,PRE_ALERT_REPORT_FORMAT_7,Pre Alert Report Format-7,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,PRE_ALERT_REPORT_FORMAT_8,Pre Alert Report Format-8,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED
+other,PRE_ALERT_REPORT_FORMAT_9,Pre Alert Report Format-9,,PDF,src/features/reports/data/otherReportsFormatUiLayouts.json,,NOT_VALIDATED

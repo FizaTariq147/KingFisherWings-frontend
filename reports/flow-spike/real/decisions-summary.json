@@ -1,0 +1,445 @@
+{
+  "fillBefore": {
+    "air": {
+      "filled": 6,
+      "total": 30,
+      "share": 0.2,
+      "pct": "20.0%"
+    },
+    "fcl": {
+      "filled": 9,
+      "total": 40,
+      "share": 0.225,
+      "pct": "22.5%"
+    },
+    "lcl": {
+      "filled": 6,
+      "total": 30,
+      "share": 0.2,
+      "pct": "20.0%"
+    }
+  },
+  "fillAfter": {
+    "air": {
+      "filled": 10,
+      "total": 30,
+      "share": 0.3333,
+      "pct": "33.3%"
+    },
+    "fcl": {
+      "filled": 18,
+      "total": 40,
+      "share": 0.45,
+      "pct": "45.0%"
+    },
+    "lcl": {
+      "filled": 14,
+      "total": 30,
+      "share": 0.4667,
+      "pct": "46.7%"
+    }
+  },
+  "remainingEmpty": [
+    {
+      "number": "QT/FE/26/00119",
+      "bucket": "fcl",
+      "empty": [
+        {
+          "field": "incoterm",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "carrier_airline",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "flight",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "transit",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "volume_cbm",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "terms",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "number": "QT/FE/26/00118",
+      "bucket": "fcl",
+      "empty": [
+        {
+          "field": "incoterm",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "carrier_airline",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "flight",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "transit",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "volume_cbm",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "containers",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "terms",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "number": "QT/FE/26/00117",
+      "bucket": "fcl",
+      "empty": [
+        {
+          "field": "incoterm",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "carrier_airline",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "flight",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "transit",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "volume_cbm",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "containers",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "terms",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "number": "QT/FE/26/00116",
+      "bucket": "fcl",
+      "empty": [
+        {
+          "field": "flight",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "terms",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "number": "QT/AE/26/00105",
+      "bucket": "air",
+      "empty": [
+        {
+          "field": "incoterm",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "carrier_airline",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "flight",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "transit",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "volume_cbm",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "containers",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "terms",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "number": "QT/AE/26/00089",
+      "bucket": "air",
+      "empty": [
+        {
+          "field": "incoterm",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "carrier_airline",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "flight",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "transit",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "volume_cbm",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "containers",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "terms",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "number": "QT/AE/26/00073",
+      "bucket": "air",
+      "empty": [
+        {
+          "field": "incoterm",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "carrier_airline",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "flight",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "transit",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "containers",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "terms",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "number": "QT/LE/26/00063",
+      "bucket": "lcl",
+      "empty": [
+        {
+          "field": "incoterm",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "carrier_airline",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "flight",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "transit",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "containers",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "terms",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "number": "QT/LE/26/00014",
+      "bucket": "lcl",
+      "empty": [
+        {
+          "field": "valid_until",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "incoterm",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "carrier_airline",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "flight",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "transit",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "volume_cbm",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "containers",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "terms",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "number": "QT/LE/26/00003",
+      "bucket": "lcl",
+      "empty": [
+        {
+          "field": "flight",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "terms",
+          "reason": "empty in the record"
+        }
+      ]
+    }
+  ],
+  "taxViolations": [],
+  "taxOk": {
+    "quotation": 10,
+    "creditNote": 10,
+    "debitNote": 10,
+    "invoice": 10
+  },
+  "wording": {
+    "creditNote": {
+      "title": "CREDIT NOTE",
+      "numberLabel": "Credit Note #",
+      "dateLabel": "Credit Note Date",
+      "relatedInvoiceLabel": "Related Invoice",
+      "dueDateLabel": "Due Date",
+      "termsSource": "record.remarks (classic TERMS & CONDITIONS)"
+    },
+    "debitNote": {
+      "title": "DEBIT NOTE",
+      "numberLabel": "Debit Note #",
+      "dateLabel": "Debit Note Date",
+      "relatedInvoiceLabel": "Related Invoice",
+      "dueDateLabel": "Due Date",
+      "termsSource": "record.remarks (classic TERMS & CONDITIONS)"
+    },
+    "fixedWordingList": [
+      {
+        "wording": "CREDIT NOTE / DEBIT NOTE (title)",
+        "source": "classic commercialNoteToPdfModel labelsFor documentTitle",
+        "kept": true
+      },
+      {
+        "wording": "Credit Note # / Debit Note #",
+        "source": "classic labelsFor numberLabel",
+        "kept": true
+      },
+      {
+        "wording": "Credit Note Date / Debit Note Date",
+        "source": "classic labelsFor dateLabel",
+        "kept": true
+      },
+      {
+        "wording": "Related Invoice",
+        "source": "classic jobRefLabel when credited_invoice_* set",
+        "kept": true
+      },
+      {
+        "wording": "Due Date",
+        "source": "classic labelsFor dueDateLabel",
+        "kept": true
+      },
+      {
+        "wording": "Bill To",
+        "source": "shared flow face (classic CUSTOMER role)",
+        "kept": true
+      },
+      {
+        "wording": "Charges / Qty / Rate / Tax / Total",
+        "source": "shared flow charge table",
+        "kept": true
+      },
+      {
+        "wording": "Sub Total / Discount / Tax / Rounding / Total",
+        "source": "shared flow totals",
+        "kept": true
+      },
+      {
+        "wording": "Bank Details labels",
+        "source": "printed only when bank.* fields set",
+        "kept": true
+      },
+      {
+        "wording": "Terms body",
+        "source": "record.remarks (classic TERMS & CONDITIONS)",
+        "kept": true
+      },
+      {
+        "wording": "Original Invoice",
+        "source": "removed — replaced with classic Related Invoice",
+        "kept": false
+      },
+      {
+        "wording": "This credit/debit note adjusts…",
+        "source": "removed — no classic or record source",
+        "kept": false
+      },
+      {
+        "wording": "Status",
+        "source": "removed — not on classic commercial note face",
+        "kept": false
+      }
+    ],
+    "cnRelatedInvoicePrinted": true,
+    "inventedTermsRemoved": true
+  },
+  "affectedInvoicesVsClassicTax": [
+    "INV/26/00089",
+    "INV/26/00093",
+    "INV/26/00094",
+    "INV/26/00095",
+    "INV/26/00097",
+    "INV/26/00098"
+  ],
+  "staging": {
+    "creditDebitCatalogName": "staging only: no real records tested",
+    "requires": [
+      "VITE_REPORTS_GATE soft (default)",
+      "VITE_REPORTS_FLOW_STAGING=1"
+    ]
+  }
+}

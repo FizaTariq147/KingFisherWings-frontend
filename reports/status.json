@@ -850,5 +850,9 @@
   "WMS_STOCK_REPORT_FORMAT_6": "reference_only",
   "WMS_STOCK_REPORT_FORMAT_7": "reference_only",
   "WMS_STOCK_REPORT_FORMAT_8": "reference_only",
-  "WMS_STOCK_REPORT_FORMAT_9": "reference_only"
+  "WMS_STOCK_REPORT_FORMAT_9": "reference_only",
+  "INVOICE_FLOW_TAX_INVOICE_1": "reference_only",
+  "QUOTATION_FLOW_1": "reference_only",
+  "CREDIT_NOTE_FLOW_1": "reference_only",
+  "DEBIT_NOTE_FLOW_1": "reference_only"
 }

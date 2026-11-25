@@ -16,6 +16,8 @@ import {
   FRESA_REFERENCE_SAMPLE_LABEL,
   REPORT_PDF_WORKFLOW,
 } from '../utils/reportPdfWorkflow';
+import { isOfficialMeasuredNativeCode } from '../templates/official';
+import { isReferenceAccuratePdfCode } from '../templates/referenceAccurate';
 
 type UseCatalogFormatLayoutPdfArgs = {
   autoOpen?: boolean;
@@ -87,11 +89,21 @@ export function useCatalogFormatLayoutPdf({
             companyEmail: data.companyEmail || orgChrome.email,
             logoUrl: data.logoUrl || orgChrome.logoUrl,
           };
-          // Phase 3: unbound official samples → reference browse; else Freightnest generate.
-          if (unboundBrowse || supportsTemplateV2(previewCode) || data.entityBound) {
+          // Measured / reference faces always use catalogue generate (Fresa geometry),
+          // never the generic teal/KSA JSON shell.
+          const preferCatalog =
+            unboundBrowse ||
+            supportsTemplateV2(previewCode) ||
+            data.entityBound ||
+            isOfficialMeasuredNativeCode(previewCode) ||
+            isReferenceAccuratePdfCode(previewCode);
+          if (preferCatalog) {
             const generated = await generateCatalogLayoutPdf(previewCode, merged, {
               logoUrl: orgChrome.logoUrl,
-              preferTemplateV2: !unboundBrowse,
+              preferTemplateV2:
+                !unboundBrowse &&
+                !isOfficialMeasuredNativeCode(previewCode) &&
+                !isReferenceAccuratePdfCode(previewCode),
               purpose: unboundBrowse ? 'browse' : 'generate',
               workflow: unboundBrowse
                 ? REPORT_PDF_WORKFLOW.REFERENCE_BROWSE

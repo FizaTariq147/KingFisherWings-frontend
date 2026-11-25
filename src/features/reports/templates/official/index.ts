@@ -1,4 +1,10 @@
-export { officialCompanyName, assertNoFresaIdentity, isFresaIdentityText } from './officialBranding';
+export {
+  officialCompanyName,
+  assertNoFresaIdentity,
+  isFresaIdentityText,
+  isSampleCompanyPlaceholder,
+  replaceSampleCompanyPlaceholder,
+} from './officialBranding';
 export {
   getOfficialMeasuredFace,
   isOfficialMeasuredNativeCode,
@@ -6,6 +12,12 @@ export {
   listOfficialMeasuredFacesByFamily,
 } from './officialFaceRegistry';
 export { generateOfficialMeasuredPdf } from './generateOfficialMeasuredPdf';
+export { getReportBrandingSlots, listReportBrandingSlots } from './brandingSlots';
 export { summarizeOfficialFaceEvidence, generatedPageMatchesFace } from './officialEvidence';
 export { generateMyReportXlsx, getMyReportColumns, listMyReportColumns } from './officialWorkbook';
-export type { OfficialFaceData, OfficialMeasuredFace, MyReportColumnSpec } from './officialFace.types';
+export type {
+  OfficialFaceData,
+  OfficialMeasuredFace,
+  MyReportColumnSpec,
+  ReportBrandingSlots,
+} from './officialFace.types';

@@ -9,6 +9,13 @@ import {
 import { filterCatalogStripRows } from './filterCatalogStripRows';
 
 describe('catalogFormatStatus (Phase 0)', () => {
+  it('marks the flow tax invoice as a native flow renderer', () => {
+    const status = resolveCatalogFormatStatus('INVOICE_FLOW_TAX_INVOICE_1');
+    expect(status.id).toBe('native_layout');
+    expect(status.label).toBe('Native Layout');
+    expect(status.detail).toMatch(/flow renderer/i);
+  });
+
   it('marks HBL Jasper as Native Layout', () => {
     expect(isHblJasperPilotCode('HBL_DRAFT_REPORT_FORMAT_JASPER')).toBe(true);
     const status = resolveCatalogFormatStatus('HBL_DRAFT_REPORT_FORMAT_JASPER');

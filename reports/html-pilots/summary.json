@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "pilots": [
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+      "renderOk": true,
+      "generatedPng": true,
+      "referencePng": true
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "renderOk": true,
+      "generatedPng": true,
+      "referencePng": true
+    },
+    {
+      "code": "JOB_LIST_SUMMARY_REPORT_FORMAT",
+      "renderOk": true,
+      "generatedPng": true,
+      "referencePng": false
+    }
+  ]
+}

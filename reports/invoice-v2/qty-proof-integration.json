@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "code": "INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE",
+  "printedQty": [
+    {
+      "qty": "2",
+      "line": "LINE A",
+      "inValues": true,
+      "inPdfNearLine": true,
+      "pass": true
+    },
+    {
+      "qty": "3",
+      "line": "LINE B",
+      "inValues": true,
+      "inPdfNearLine": true,
+      "pass": true
+    },
+    {
+      "qty": "12.5",
+      "line": "LINE C",
+      "inValues": true,
+      "inPdfNearLine": true,
+      "pass": true
+    }
+  ],
+  "note": "Filled values line-0/1/2-p1s86 = 2/3/12.5; pdftotext shows each qty on the same row as LINE A/B/C."
+}

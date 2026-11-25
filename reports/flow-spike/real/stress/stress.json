@@ -1,0 +1,31 @@
+{
+  "cases": [
+    {
+      "case": "quotation-40-lines",
+      "pages": 2,
+      "lastLineInText": true,
+      "silentlyClipped": false
+    },
+    {
+      "case": "credit-note-long-name",
+      "namePresent": true,
+      "silentlyClipped": false
+    },
+    {
+      "case": "debit-note-multi-currency",
+      "currencyInPdf": true,
+      "totalInPdf": true
+    },
+    {
+      "case": "quotation-missing-party-job",
+      "rendered": true,
+      "leak": false
+    },
+    {
+      "case": "fallback-on-flow-failure",
+      "notice": "Showing the classic invoice. The selected format could not be built.",
+      "noticeMatches": true,
+      "classicReturned": true
+    }
+  ]
+}
