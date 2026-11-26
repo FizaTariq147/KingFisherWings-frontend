@@ -1,0 +1,41 @@
+{
+  "inventory": {
+    "diskPdfCount": 401,
+    "layoutCsvRows": 375,
+    "layoutFingerprintSuffixes": 375,
+    "uniqueMemberFilesInLayouts": 401,
+    "manifestPdfBasenames": 401,
+    "diskNotInLayoutsMembersCount": 0,
+    "diskNotInLayoutsMembersSample": [],
+    "layoutMembersMissingOnDisk": [],
+    "diskNotInManifestCount": 0,
+    "diskNotInManifest": [],
+    "manifestMissingOnDisk": [],
+    "layoutCountsJson": {
+      "pdfs": 402,
+      "strictLayouts": 376,
+      "detailRowNormalizedLayouts": 374,
+      "failed": 0
+    }
+  },
+  "liveRecount": {
+    "pdfsFingerprinted": 401,
+    "failed": [],
+    "strictLayoutCount": 375,
+    "detailNormalizedLayoutCount": 373,
+    "multiMemberStrict": 18
+  },
+  "vsLayoutsCsv": {
+    "liveStrictNotInCsv": [],
+    "csvFingerprintNotInLiveCount": 0,
+    "csvFingerprintNotInLiveSample": []
+  },
+  "vsLayoutCountsJson": {
+    "jsonClaimedPdfs": 402,
+    "jsonClaimedStrict": 376,
+    "livePdfs": 401,
+    "liveStrict": 375,
+    "deltaPdfs": -1,
+    "deltaStrict": -1
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "generatedAt": "2026-11-26T08:04:59.079Z",
+  "productionFormatMapUntouched": "reports/references/fresa-system-format-map.csv",
+  "method": "Manual verified runtime table (not regenerated production map)",
+  "verifiedRuntime": {
+    "HAWB_DRAFT_REPORT_FORMAT": {
+      "entry": "generateHawbOfficialPdf",
+      "renderer": "generateOfficialMeasuredPdf",
+      "verified": true
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_1": {
+      "entry": "generateHawbOfficialPdf",
+      "renderer": "generateOfficialMeasuredPdf",
+      "verified": true
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_2": {
+      "entry": "generateHawbOfficialPdf → optional Playwright then generateOfficialMeasuredPdf",
+      "renderer": "generateOfficialMeasuredPdf",
+      "verified": true
+    },
+    "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1": {
+      "entry": "generateHawbOfficialPdf",
+      "renderer": "generateHawbSparsePdf",
+      "verified": true
+    },
+    "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2": {
+      "entry": "generateHawbOfficialPdf",
+      "renderer": "generateHawbSparsePdf",
+      "verified": true
+    }
+  },
+  "staleMappingWarning": "Production format-map still labels official HAWB five as json_shell_fallback. Use this file + HAWB_IMPLEMENTATION_TRACE.md for verified paths."
+}

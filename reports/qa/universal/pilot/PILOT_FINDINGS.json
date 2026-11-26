@@ -1,0 +1,538 @@
+{
+  "byVerdict": {
+    "REVIEW_REQUIRED": 16,
+    "WARNING": 22
+  },
+  "findingsRows": [
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "fixtureId": "base",
+      "verdict": "REVIEW_REQUIRED",
+      "failCodes": [],
+      "warningCodes": [],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "fixtureId": "long_party",
+      "verdict": "REVIEW_REQUIRED",
+      "failCodes": [],
+      "warningCodes": [],
+      "visualInspectionRequired": true,
+      "visualStatus": null
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_1",
+      "fixtureId": "base",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_1",
+      "fixtureId": "long_party",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": null
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+      "fixtureId": "base",
+      "verdict": "REVIEW_REQUIRED",
+      "failCodes": [],
+      "warningCodes": [],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+      "fixtureId": "long_party",
+      "verdict": "REVIEW_REQUIRED",
+      "failCodes": [],
+      "warningCodes": [],
+      "visualInspectionRequired": true,
+      "visualStatus": null
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+      "fixtureId": "base",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "region_overflow_heuristic",
+        "region_overflow_heuristic",
+        "region_overflow_heuristic"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+      "fixtureId": "long_party",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "region_overflow_heuristic",
+        "region_overflow_heuristic",
+        "region_overflow_heuristic",
+        "region_overflow_heuristic",
+        "region_overflow_heuristic",
+        "region_overflow_heuristic",
+        "region_overflow_heuristic",
+        "region_overflow_heuristic",
+        "region_overflow_heuristic",
+        "region_overflow_heuristic"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": null
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+      "fixtureId": "base",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_bbox_collision"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+      "fixtureId": "long_party",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "region_overflow_heuristic",
+        "region_overflow_heuristic",
+        "region_overflow_heuristic",
+        "region_overflow_heuristic",
+        "region_overflow_heuristic"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": null
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "fixtureId": "base",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_outside_page",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "fixtureId": "long_party",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": null
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+      "fixtureId": "base",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+      "fixtureId": "long_party",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_outside_page",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": null
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
+      "fixtureId": "base",
+      "verdict": "REVIEW_REQUIRED",
+      "failCodes": [],
+      "warningCodes": [],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
+      "fixtureId": "base",
+      "verdict": "REVIEW_REQUIRED",
+      "failCodes": [],
+      "warningCodes": [],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
+      "fixtureId": "long_party",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_outside_page",
+        "text_outside_page"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": null
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA",
+      "fixtureId": "base",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_outside_page",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA",
+      "fixtureId": "base",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_outside_page",
+        "text_bbox_collision"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE",
+      "fixtureId": "base",
+      "verdict": "REVIEW_REQUIRED",
+      "failCodes": [],
+      "warningCodes": [],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
+      "fixtureId": "base",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_bbox_collision"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
+      "fixtureId": "long_party",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_outside_page",
+        "text_outside_page",
+        "text_bbox_collision"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": null
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA",
+      "fixtureId": "base",
+      "verdict": "REVIEW_REQUIRED",
+      "failCodes": [],
+      "warningCodes": [],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE",
+      "fixtureId": "base",
+      "verdict": "REVIEW_REQUIRED",
+      "failCodes": [],
+      "warningCodes": [],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND",
+      "fixtureId": "base",
+      "verdict": "REVIEW_REQUIRED",
+      "failCodes": [],
+      "warningCodes": [],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED",
+      "fixtureId": "base",
+      "verdict": "REVIEW_REQUIRED",
+      "failCodes": [],
+      "warningCodes": [],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA",
+      "fixtureId": "base",
+      "verdict": "REVIEW_REQUIRED",
+      "failCodes": [],
+      "warningCodes": [],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_14_INVOICE",
+      "fixtureId": "base",
+      "verdict": "REVIEW_REQUIRED",
+      "failCodes": [],
+      "warningCodes": [],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_15_INVOICE_FCY",
+      "fixtureId": "base",
+      "verdict": "REVIEW_REQUIRED",
+      "failCodes": [],
+      "warningCodes": [],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_16_STANDARD_TAX_INVOICE_PREPRINTED",
+      "fixtureId": "base",
+      "verdict": "REVIEW_REQUIRED",
+      "failCodes": [],
+      "warningCodes": [],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_17_INVOICE_JASPER",
+      "fixtureId": "base",
+      "verdict": "REVIEW_REQUIRED",
+      "failCodes": [],
+      "warningCodes": [],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE",
+      "fixtureId": "base",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_outside_page",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_19_DEBIT_NOTE_VIETNAM",
+      "fixtureId": "base",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_outside_page",
+        "text_bbox_collision"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_20_TAX_INVOICE_INDIA",
+      "fixtureId": "base",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_outside_page",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE",
+      "fixtureId": "base",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_bbox_collision",
+        "text_bbox_collision"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT",
+      "fixtureId": "base",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_outside_page",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "PROFORMA_INVOICE_REPORT_FORMAT_1_PROFORMA_INVOICE_ALL_CHARGES",
+      "fixtureId": "base",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_outside_page",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision",
+        "text_bbox_collision"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    },
+    {
+      "code": "PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES",
+      "fixtureId": "base",
+      "verdict": "WARNING",
+      "failCodes": [],
+      "warningCodes": [
+        "text_outside_page",
+        "text_bbox_collision",
+        "text_bbox_collision"
+      ],
+      "visualInspectionRequired": true,
+      "visualStatus": "review"
+    }
+  ],
+  "genOk": 65,
+  "genFail": 0
+}

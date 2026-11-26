@@ -116,6 +116,33 @@ export type OfficialFaceData = {
   hawbNo?: string;
   hblNo?: string;
   mawbNo?: string;
+  /** HAWB cargo / routing (measured HAWB faces). */
+  pieces?: string;
+  grossWeight?: string;
+  chargeableWeight?: string;
+  nature?: string;
+  handling?: string;
+  accounting?: string;
+  packagesLine?: string;
+  departure?: string;
+  destination?: string;
+  flightDate?: string;
+  toCode?: string;
+  currency?: string;
+  declaredCarriage?: string;
+  declaredCustoms?: string;
+  insurance?: string;
+  carrier?: string;
+  /** Short flight designator for By first Carrier (e.g. EK9876). */
+  byCarrier?: string;
+  executedOn?: string;
+  executedAt?: string;
+  total?: string;
+  rateCharge?: string;
+  prepaidMark?: string;
+  carrierSign?: string;
+  /** Optional explicit company stamp (HAWB Issued-by / agent). */
+  companyNameSlot?: string;
 };
 
 export type MyReportColumnSpec = {

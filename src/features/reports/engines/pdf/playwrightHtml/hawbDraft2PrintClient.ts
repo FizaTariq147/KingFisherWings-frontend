@@ -1,4 +1,5 @@
 import type { InvoiceFormatPdfData } from '@/features/reports/utils/invoiceFormatToInvoicePdfModel';
+import { mergeHawbCatalogPreviewFixture } from '@/features/reports/templates/hawb/official/hawbOfficialCatalogFixture';
 
 const PRINT_PATH = '/api/reports/hawb-draft2-pdf';
 
@@ -30,13 +31,14 @@ export async function fetchHawbDraft2PlaywrightPdf(
 ): Promise<Blob | null> {
   if (typeof fetch !== 'function') return null;
   try {
-    const logoUrl = await inlineLogo(data.logoUrl);
+    const merged = mergeHawbCatalogPreviewFixture(data);
+    const logoUrl = await inlineLogo(merged.logoUrl);
     const response = await fetch(PRINT_PATH, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         code: 'HAWB_DRAFT_REPORT_FORMAT_2',
-        data: { ...data, logoUrl },
+        data: { ...merged, logoUrl },
       }),
     });
     if (!response.ok) return null;

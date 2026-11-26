@@ -101,6 +101,26 @@ describe('Phase 2 official HAWB layouts', () => {
     expect(model.companyName).toBe('Org Only');
   });
 
+  it('fills catalogue preview fixture when unbound (never Fresa identity)', async () => {
+    const { mergeHawbCatalogPreviewFixture } = await import('./hawbOfficialCatalogFixture');
+    const merged = mergeHawbCatalogPreviewFixture({
+      companyName: 'KingFisher Wings Logistics',
+      logoUrl: '',
+    });
+    expect(merged.entityBound).toBeFalsy();
+    expect(merged.shipperLines?.[0]).toBeTruthy();
+    expect(merged.hawbNo).toBeTruthy();
+    expect(merged.pieces).toBe('100');
+    const blob = JSON.stringify(merged).toLowerCase();
+    expect(blob).not.toMatch(/fresa/);
+    expect(blob).not.toMatch(/babu sector/);
+    expect(blob).not.toMatch(/al naser/);
+    const model = mapToHawbOfficialModel('HAWB_DRAFT_REPORT_FORMAT_2', merged);
+    expect(model.shipperLines[0]).toContain('GLOBAL EXPORT');
+    expect(model.companyName).toBe('KingFisher Wings Logistics');
+    expect(model.hawbNo).toBe('MAA/DXB/1900014');
+  });
+
   it('does not use bill-to as shipper', () => {
     const model = mapToHawbOfficialModel('HAWB_DRAFT_REPORT_FORMAT', {
       entityBound: true,
@@ -118,6 +138,36 @@ describe('Phase 2 official HAWB layouts', () => {
     expect(model.toCode).toBe('DXB');
     expect(model.mawbNo).toBe('');
     expect(model.carrier).toBe('');
+    // Job stays on jobNo — Accounting no longer duplicates JOB NO. (overlap fix).
+    expect(model.jobNo).toBe('JOB-260014');
+    expect(model.accounting).toBe('');
+    expect(model.agentLines[0]).toBe('KingFisher Wings Logistics');
+  });
+
+  it('maps bare job port codes into departure / To / destination', () => {
+    const model = mapToHawbOfficialModel('HAWB_DRAFT_REPORT_FORMAT', {
+      entityBound: true,
+      companyName: 'Zoyan Logistics',
+      companyAddress: 'Dubai',
+      shipperLines: ['Usman Ahmed', 'Faisalabad'],
+      consigneeLines: ['Usman Ahmed', 'Faisalabad'],
+      pol: 'AEAUH',
+      pod: 'AUABP',
+      pieces: '10',
+      grossWeight: '100',
+      commodity: 'General merchandise',
+      hawbNo: '176-MAA23456882',
+      jobNumber: 'JOB-1',
+      invoiceDate: '06-NOV-2026',
+    });
+    expect(model.departure).toBe('AEAUH');
+    expect(model.destination).toBe('AUABP');
+    expect(model.toCode).toBe('AUABP');
+    expect(model.agentLines[0]).toBe('Zoyan Logistics');
+    expect(model.jobNo).toBe('JOB-1');
+    expect(model.accounting).toBe('');
+    expect(model.pieces).toBe('10');
+    expect(model.chargeableWeight).toBe('100');
   });
 
   it('preserves historical HAWB resolution for non-official codes', () => {

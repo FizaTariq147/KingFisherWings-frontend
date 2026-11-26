@@ -16,7 +16,8 @@ const FACE_FILE = path.join(
   'src/features/reports/templates/official/measuredFaces.generated.ts',
 );
 
-const HAWB_LOCK = new Set([
+/** Prefer `node scripts/promote-hawb-to-measured.mjs` for HAWB (demo→fieldSlots). */
+const HAWB_CODES = new Set([
   'HAWB_DRAFT_REPORT_FORMAT',
   'HAWB_DRAFT_REPORT_FORMAT_1',
   'HAWB_DRAFT_REPORT_FORMAT_2',
@@ -270,7 +271,8 @@ let added = 0;
 let skipped = 0;
 for (const file of specFiles) {
   const code = file.replace(/\.json$/i, '');
-  if (HAWB_LOCK.has(code)) {
+  if (HAWB_CODES.has(code)) {
+    // Dedicated HAWB promoter strips demo cargo into fieldSlots.
     skipped += 1;
     continue;
   }

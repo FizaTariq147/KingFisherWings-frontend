@@ -82,7 +82,7 @@ import {
   segmentFromPath,
 } from '../utils/jobRoute';
 import {
-  buildCatalogHref,
+  buildDashboardHref,
   catalogFamiliesForJobType,
 } from '@/features/reports/utils/moduleCatalogFamily';
 import { useAuth } from '@/hooks/useAuth';
@@ -714,12 +714,15 @@ export default function JobDetailPage() {
       icon: <FileText />,
       onClick: () =>
         navigate(
-          buildCatalogHref({
+          buildDashboardHref({
             context: 'job',
             job_id: id,
             quotation_id: resolvedQuotationId,
             shipment_id: resolvedShipmentId,
+            party_id: job.shipper_id || job.billing_party_id,
             families: catalogFamiliesForJobType(job.job_type),
+            layouts: 'all',
+            return_to: jobDetailPath(job),
           }),
         ),
       variant: 'report' as const,

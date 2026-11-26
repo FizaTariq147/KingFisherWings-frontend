@@ -13,16 +13,19 @@ import { FRESA_PAGE_COLUMNS } from '../constants/fresaPageColumns';
 import { filterDashboardCards, type DashboardFilterState } from '../utils/dashboardFilters';
 import {
   isInvoiceRelatedReport,
+  isTransportDocRelatedReport,
+  parseCatalogFamiliesParam,
   reportContextQuery,
 } from '../utils/moduleCatalogFamily';
+import type { ReportFamily } from '../types/reportCatalog.types';
 
 /**
  * Reporting dashboard laid out like the sample-format catalogue:
  * S.No, Sea Freight, Air Freight, Accounts, My Reports.
  * Selecting a name opens that format on the next screen.
  *
- * Deep-linked from Invoice Detail (Formats / Reports catalog) with
- * `invoice_id` (+ `job_id` / `party_id`) so generate uses live invoice + job data.
+ * Deep-linked from Invoice Detail (Formats) or Job Detail (Reports / BL Formats)
+ * with record ids so generate uses live invoice / job data.
  */
 export default function ReportingDashboardPage() {
   const navigate = useNavigate();
@@ -35,6 +38,10 @@ export default function ReportingDashboardPage() {
   const shipmentId = searchParams.get('shipment_id') || undefined;
   const contextFilter = searchParams.get('context') || '';
   const familyFilter = searchParams.get('family') || '';
+  const familiesFromUrl = useMemo(
+    () => parseCatalogFamiliesParam(searchParams.get('families')),
+    [searchParams],
+  );
   const jobIdFromUrl = searchParams.get('job_id') || undefined;
 
   const [resolvedJobId, setResolvedJobId] = useState<string | undefined>(jobIdFromUrl);
@@ -81,6 +88,34 @@ export default function ReportingDashboardPage() {
   const invoiceBound = Boolean(invoiceId && isUuid(invoiceId));
   const fromInvoiceContext =
     invoiceBound || contextFilter === 'invoice' || familyFilter === 'commercial';
+  const jobBound = Boolean(
+    (resolvedJobId || jobIdFromUrl) && isUuid(resolvedJobId || jobIdFromUrl || ''),
+  );
+  const jobFamilies = useMemo(() => {
+    const set = new Set<ReportFamily>();
+    if (familyFilter && familyFilter !== 'all') {
+      set.add(familyFilter as ReportFamily);
+    }
+    for (const f of familiesFromUrl) set.add(f);
+    return [...set];
+  }, [familyFilter, familiesFromUrl]);
+  const transportFamily: Extract<ReportFamily, 'air_docs' | 'sea_docs'> | null =
+    jobFamilies.length === 1 &&
+    (jobFamilies[0] === 'air_docs' || jobFamilies[0] === 'sea_docs')
+      ? jobFamilies[0]
+      : familyFilter === 'air_docs' || familyFilter === 'sea_docs'
+        ? familyFilter
+        : null;
+  const fromTransportDocContext =
+    !fromInvoiceContext &&
+    (contextFilter === 'job' || jobBound) &&
+    transportFamily != null &&
+    jobFamilies.length <= 1;
+  const fromJobContext =
+    !fromInvoiceContext &&
+    !fromTransportDocContext &&
+    (contextFilter === 'job' || jobBound) &&
+    jobFamilies.length > 0;
 
   const filters: DashboardFilterState = useMemo(
     () => ({
@@ -116,9 +151,32 @@ export default function ReportingDashboardPage() {
           name: row.name,
         }),
       );
+    } else if (fromTransportDocContext && transportFamily) {
+      rows = rows.filter((row) =>
+        isTransportDocRelatedReport(
+          {
+            code: row.code,
+            family: row.family,
+            contexts: row.template?.contexts,
+            name: row.name,
+          },
+          transportFamily,
+        ),
+      );
+    } else if (fromJobContext && jobFamilies.length > 0) {
+      const allowed = new Set(jobFamilies.map((f) => f.toLowerCase()));
+      rows = rows.filter((row) => allowed.has(String(row.family || '').toLowerCase()));
     }
     return rows;
-  }, [catalog.rows, filters, fromInvoiceContext]);
+  }, [
+    catalog.rows,
+    filters,
+    fromInvoiceContext,
+    fromTransportDocContext,
+    transportFamily,
+    fromJobContext,
+    jobFamilies,
+  ]);
 
   const templates = useMemo(
     () => filteredRows.map((row) => row.template),
@@ -137,14 +195,20 @@ export default function ReportingDashboardPage() {
     [invoiceId, resolvedJobId, jobIdFromUrl, partyId, quotationId, shipmentId],
   );
 
+  const activeJobId = resolvedJobId || jobIdFromUrl;
+  const returnToRaw = searchParams.get('return_to') || '';
+  const returnTo =
+    returnToRaw.startsWith('/') && !returnToRaw.startsWith('//') ? returnToRaw : null;
   const backToInvoice =
     invoiceBound && invoiceId ? `/invoices/${encodeURIComponent(invoiceId)}` : null;
 
   return (
     <div className="space-y-4">
       <PageBackLink
-        to={backToInvoice || '/reports'}
-        label={backToInvoice ? 'Back to invoice' : 'Back to Reports'}
+        to={backToInvoice || returnTo || '/reports'}
+        label={
+          backToInvoice ? 'Back to invoice' : returnTo ? 'Back to job' : 'Back to Reports'
+        }
       />
 
       <div className="min-w-0">
@@ -154,16 +218,37 @@ export default function ReportingDashboardPage() {
           {FRESA_PAGE_COLUMNS.map((column) => column.title).join(', ')}.
           {' '}
           {filteredRows.length} of {catalog.rows.length} formats
-          {fromInvoiceContext ? ' (invoice-related)' : ''}. Choose a name to open that format.
+          {fromInvoiceContext
+            ? ' (invoice-related)'
+            : fromTransportDocContext
+              ? transportFamily === 'air_docs'
+                ? ' (air / HAWB)'
+                : ' (sea / HBL)'
+              : fromJobContext
+                ? ' (job-related)'
+                : ''}
+          . Choose a name to open that format.
         </p>
         {invoiceBound ? (
           <p className="mt-2 rounded-lg border border-[var(--color-primary-200)] bg-[var(--color-primary-50)] px-3 py-2 text-sm text-[var(--color-primary-900)]">
             Live data bound
             {invoiceLabel ? ` for invoice ${invoiceLabel}` : ''}.
-            {resolvedJobId || jobIdFromUrl
+            {activeJobId
               ? ' Linked job charges and parties load into each PDF.'
               : ' Invoice fields load into each PDF.'}{' '}
             Generate never returns a Fresa sample file.
+          </p>
+        ) : (fromTransportDocContext || fromJobContext) && jobBound ? (
+          <p className="mt-2 rounded-lg border border-[var(--color-primary-200)] bg-[var(--color-primary-50)] px-3 py-2 text-sm text-[var(--color-primary-900)]">
+            Live job data bound
+            {activeJobId ? ` for job ${activeJobId.slice(0, 8)}…` : ''}. Parties and shipment
+            fields load into each PDF
+            {fromTransportDocContext
+              ? transportFamily === 'air_docs'
+                ? ' (airway bill formats)'
+                : ' (bill of lading formats)'
+              : ''}
+            . Generate never returns a Fresa sample file.
           </p>
         ) : (
           <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
@@ -226,14 +311,30 @@ export default function ReportingDashboardPage() {
         emptyHint={
           fromInvoiceContext
             ? 'No invoice-related formats match this search.'
-            : 'No formats match this search.'
+            : fromTransportDocContext
+              ? transportFamily === 'air_docs'
+                ? 'No air / HAWB formats match this search.'
+                : 'No sea / HBL formats match this search.'
+              : fromJobContext
+                ? 'No job-related formats match this search.'
+                : 'No formats match this search.'
         }
         appearance="index"
-        focusColumn={fromInvoiceContext ? 'accounts' : null}
+        focusColumn={
+          fromInvoiceContext
+            ? 'accounts'
+            : fromTransportDocContext
+              ? transportFamily === 'air_docs'
+                ? 'air'
+                : 'sea'
+              : null
+        }
         invoiceCurrency={null}
       />
 
-      {!fromInvoiceContext ? <RecentReportsPanel compact /> : null}
+      {!fromInvoiceContext && !fromTransportDocContext && !fromJobContext ? (
+        <RecentReportsPanel compact />
+      ) : null}
     </div>
   );
 }

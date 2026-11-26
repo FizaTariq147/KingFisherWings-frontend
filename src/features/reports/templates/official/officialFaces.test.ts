@@ -41,13 +41,16 @@ describe('official face factory', () => {
     expect(onPage.length).toBeGreaterThan(80);
   });
 
-  it('locks the five HAWB faces outside the measured kit', () => {
+  it('promotes the five HAWB faces into the measured kit (vector Fresa geometry)', () => {
     expect(HAWB_OFFICIAL_LAYOUTS).toHaveLength(5);
     expect(hawbOfficialLayoutCodesMatchGovernance()).toBe(true);
     for (const code of OFFICIAL_HAWB_FORMAT_CODES) {
       expect(isHawbOfficialNativeCode(code)).toBe(true);
-      expect(isOfficialMeasuredNativeCode(code)).toBe(false);
-      expect(getOfficialMeasuredFace(code)).toBeUndefined();
+      expect(isOfficialMeasuredNativeCode(code)).toBe(true);
+      const face = getOfficialMeasuredFace(code);
+      expect(face).toBeTruthy();
+      expect(face!.widthPt).toBeGreaterThan(500);
+      expect(face!.heightPt).toBeGreaterThan(800);
       expect(resolveCatalogFormatStatus(code).id).toBe('native_layout');
     }
   });

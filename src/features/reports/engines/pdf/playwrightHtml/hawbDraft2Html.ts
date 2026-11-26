@@ -4,6 +4,7 @@ import type { InvoiceFormatPdfData } from '@/features/reports/utils/invoiceForma
 import { isFresaIdentityText } from '@/features/reports/templates/official/officialBranding';
 import { HawbDraft2Document } from '@/features/reports/templates/hawb/official/documents/HawbDraft2Document';
 import { mapToHawbOfficialModel } from '@/features/reports/templates/hawb/official/mapToHawbOfficialModel';
+import { mergeHawbCatalogPreviewFixture } from '@/features/reports/templates/hawb/official/hawbOfficialCatalogFixture';
 import { PAGE_HAWB_NEAR_A4 } from '@/features/reports/engines/pdf/pageGeometry';
 import {
   isPlaywrightHtmlCode,
@@ -91,8 +92,9 @@ export function buildHawbDraft2Html(data: InvoiceFormatPdfData = {}): string {
     }
   }
   assertSafeInlinedLogo(data.logoUrl);
-  const model = mapToHawbOfficialModel(PLAYWRIGHT_HTML_PILOT_CODE, data, {
-    showPlaceholders: false,
+  const pdfData = mergeHawbCatalogPreviewFixture(data);
+  const model = mapToHawbOfficialModel(PLAYWRIGHT_HTML_PILOT_CODE, pdfData, {
+    showPlaceholders: !pdfData.entityBound,
   });
   const body = renderToStaticMarkup(createElement(HawbDraft2Document, { model }));
   if (/fresa/i.test(body)) {

@@ -169,6 +169,8 @@ type CatalogHrefOpts = {
   view?: 'strips' | 'fresa' | null;
   /** When `all`, catalogue lists every layout variant (not only distinct shells). */
   layouts?: 'all' | 'distinct' | null;
+  /** Optional path to return to (e.g. job detail) from the dashboard back link. */
+  return_to?: string | null;
 };
 
 function buildReportQueryParams(opts: CatalogHrefOpts): URLSearchParams {
@@ -193,6 +195,9 @@ function buildReportQueryParams(opts: CatalogHrefOpts): URLSearchParams {
   if (opts.shipment_id?.trim()) params.set('shipment_id', opts.shipment_id.trim());
   if (opts.view === 'strips') params.set('view', 'strips');
   if (opts.layouts === 'all') params.set('layouts', 'all');
+  if (opts.return_to?.trim().startsWith('/')) {
+    params.set('return_to', opts.return_to.trim());
+  }
   return params;
 }
 
@@ -239,4 +244,66 @@ export function isInvoiceRelatedReport(input: {
   }
   const name = String(input.name || '');
   return /\binvoice\b|\bdebit\s*note\b|\bcredit\s*note\b|\bproforma\b/i.test(name);
+}
+
+/**
+ * Sea HBL vs Air HAWB family for job Bills of Lading / Airway Bill → Formats.
+ * Air job types → air_docs; everything else defaults to sea_docs.
+ */
+export function transportDocFamilyForJobType(
+  jobType?: string | null,
+): Extract<ReportFamily, 'air_docs' | 'sea_docs'> {
+  const t = String(jobType || '')
+    .trim()
+    .toUpperCase()
+    .replace(/-/g, '_');
+  if (t.includes('AIR') || t.includes('HAWB') || t.includes('AWB')) {
+    return 'air_docs';
+  }
+  return 'sea_docs';
+}
+
+/** True when a catalogue row belongs to sea_docs / air_docs transport documents. */
+export function isTransportDocRelatedReport(
+  input: {
+    code?: string;
+    family?: string;
+    contexts?: string[];
+    name?: string;
+  },
+  family: Extract<ReportFamily, 'air_docs' | 'sea_docs'>,
+): boolean {
+  const fam = String(input.family || '').toLowerCase();
+  if (fam === family) return true;
+  const code = String(input.code || '').toUpperCase();
+  if (family === 'air_docs') {
+    return /^(HAWB_|MAWB_|FG_HAWB|AIR_)/i.test(code) || /\bhawb\b|\bmawb\b|\bawb\b/i.test(
+      String(input.name || ''),
+    );
+  }
+  return /^(HBL_|MBL_|FG_HBL|SEA_)/i.test(code) || /\bhbl\b|\bmbl\b|\bbill of lading\b/i.test(
+    String(input.name || ''),
+  );
+}
+
+/** Job BL / Airway Bill → report formats dashboard with live job context. */
+export function buildJobTransportDocFormatsPath(
+  jobId: string,
+  jobType?: string | null,
+  opts?: {
+    party_id?: string | null;
+    shipment_id?: string | null;
+    return_to?: string | null;
+  },
+): string {
+  const family = transportDocFamilyForJobType(jobType);
+  return buildDashboardHref({
+    context: 'job',
+    family,
+    job_id: jobId,
+    party_id: opts?.party_id,
+    shipment_id: opts?.shipment_id,
+    layouts: 'all',
+    return_to: opts?.return_to,
+  });
 }

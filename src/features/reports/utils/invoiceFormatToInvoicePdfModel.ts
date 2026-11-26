@@ -96,6 +96,15 @@ export type InvoiceFormatPdfData = {
   bankAccountNumber?: string;
   bankIban?: string;
   bankSwift?: string;
+  /** Optional HAWB face slots (catalogue fixture or enriched shipment). */
+  carrier?: string;
+  declaredCarriage?: string;
+  declaredCustoms?: string;
+  insurance?: string;
+  handling?: string;
+  accounting?: string;
+  otherCharges?: string;
+  executedAt?: string;
 };
 
 export const REPORT_FIELD_NA = 'N/A';

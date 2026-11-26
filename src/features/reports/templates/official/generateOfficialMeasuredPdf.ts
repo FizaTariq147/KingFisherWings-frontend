@@ -115,7 +115,8 @@ function drawSafeText(
       ? cleaned.slice(0, 180)
       : winAnsiLabel(cleaned).slice(0, 180);
   if (!printable) return;
-  const fontSize = Math.max(6, Math.min(size || 8, 18));
+  // HAWB Draft-1 pin uses 4–5pt legal/micro labels — do not clamp those up to 6.
+  const fontSize = Math.max(4, Math.min(size || 8, 18));
   let drawX = x;
   let drawY = y;
   if (align === 'right') {
@@ -1385,7 +1386,14 @@ function drawFacePage(
   const footerKeep =
     /^(printed by\s*:?|printed date\s*:?|created by\b.*|powered by|this is a computer|user\s*:)/i;
   const isHblFacePage = /^(HBL_|FG_HBL_)/i.test(face.code);
+  const isHawbFacePage = /^HAWB_/i.test(face.code);
   const isInvoiceFacePage = /^INVOICE_REPORT_FORMAT_/i.test(face.code);
+  const hawbDemoLeftover =
+    /BABU|AL NASER|FRESA|176-?23456882|\d{3}\|[A-Z0-9]+\|\d+|[A-Z]{3}\/[A-Z]{3}\/\d+|MAA\/DXB|1,?250\.00|EK9876|18-FEB|20-FEB|STC:|CTN\s|N\.V\.D|AS PER INV|N\.C\.V|^NIL$|^INR$|^DXB$|^PP$|AS ARRANGED|^RAM$|PAPER CUPS|DIMS IN|CHENNAI, INDIA|DUBAI INTERNATIONAL|NEELANKARAI|MAKTHOOM|UNITED ARAB|SHARJAH|PHONE:|04-233|CAE190028|GLOBAL EXPORT|GULF IMPORT|^100$|^0\.00$|TOTAL\s*:\s*\(|EMIRATES|PACKAGES ONLY/i;
+  // Invoice sample party/demo leftovers (Format 2/14/15/17): wipe+label skip alone
+  // misses same-column Consignee blocks and rotated Format 2 value glyphs.
+  const invoiceDemoLeftover =
+    /BABU|AL NASER|FRESA\s*DEMO|YOUR COMPANY NAME|4G\s*LOGISTICS|GLOBAL EXPORT|GULF IMPORT/i;
   // When the job/invoice is bound, drop Fresa demo party glyphs so live stamps
   // do not stack on top of 4G / AL NASER sample lines (wipe alone is unreliable).
   const skipHblPartySamples = isHblFacePage && Boolean(data.entityBound);
@@ -1393,13 +1401,16 @@ function drawFacePage(
     ? collectHblPartyBands(facePage, face)
     : [];
   const invoiceSampleKeys =
-    isInvoiceFacePage && data.entityBound && !textRotateDeg
+    isInvoiceFacePage && data.entityBound
       ? collectInvoiceSampleValueRuns(facePage, face)
       : null;
   for (const run of facePage.texts) {
     const [raw, x, y, size, bold] = run;
     const text = plainLabel(raw || '');
     if (!text || isFresaIdentityText(text)) continue;
+    // HAWB measured faces: never leave pin demo cargo glyphs under live stamps.
+    if (isHawbFacePage && hawbDemoLeftover.test(text)) continue;
+    if (isInvoiceFacePage && data.entityBound && invoiceDemoLeftover.test(text)) continue;
     if (
       skipHblPartySamples &&
       isInsideHblPartyBand(x, y, text, face.widthPt, hblPartyBands)
@@ -1478,7 +1489,8 @@ function drawFacePage(
       frame,
       { width: face.widthPt, height: face.heightPt },
     );
-  } else if (pageIndex === 0) {
+  } else if (pageIndex === 0 && !/^HAWB_/i.test(face.code)) {
+    // HAWB Issued-by sits right of shipper — heuristic top-left letterhead would overlap.
     drawHeuristicLetterhead(
       page,
       fonts,
@@ -1489,7 +1501,9 @@ function drawFacePage(
     );
   }
 
-  if (pageIndex !== 0) return;
+  const isHawbFaceEarly = /^HAWB_/i.test(face.code);
+  // HAWB Draft-1 is a 9-page copy set — stamp every face. Other formats: page 0 only.
+  if (pageIndex !== 0 && !isHawbFaceEarly) return;
   // /Rotate 90 measured fieldSlots are often mediaBox-misaligned vs the visible
   // sample values (Format-2 Tax Invoice India). Stamping them double-prints and
   // can land on IGM/body cells — skip until slots are re-extracted.
@@ -1505,7 +1519,52 @@ function drawFacePage(
     hawbNo: data.hawbNo || '',
     hblNo: data.hblNo || '',
     mawbNo: data.mawbNo || '',
+    pieces: data.pieces || '',
+    grossWeight: data.grossWeight || '',
+    chargeableWeight: data.chargeableWeight || '',
+    nature: data.nature || '',
+    handling: data.handling || '',
+    accounting: data.accounting || '',
+    packagesLine: data.packagesLine || '',
+    departure: data.departure || '',
+    destination: data.destination || '',
+    flightDate: data.flightDate || '',
+    toCode: data.toCode || '',
+    currency: data.currency || '',
+    declaredCarriage: data.declaredCarriage || '',
+    declaredCustoms: data.declaredCustoms || '',
+    insurance: data.insurance || '',
+    carrier: data.carrier || '',
+    byCarrier: data.byCarrier || data.carrier || '',
+    executedOn: data.executedOn || '',
+    executedAt: data.executedAt || '',
+    total: data.total || '',
+    rateCharge: data.rateCharge || '',
+    prepaidMark: data.prepaidMark || '',
+    carrierSign: data.carrierSign || '',
+    companyPhone: data.companyPhone || '',
+    companyName: officialCompanyName(data.companyName),
+    cargo: data.nature || data.handling || '',
   };
+
+  const isHawbFace = isHawbFaceEarly;
+  if (isHawbFace) {
+    stampHawbMultiLine(page, fonts, face, 'shipper', data.shipperLines, textRotateDeg, frame);
+    stampHawbMultiLine(page, fonts, face, 'consignee', data.consigneeLines, textRotateDeg, frame);
+    stampHawbMultiLine(page, fonts, face, 'notify', data.notifyLines, textRotateDeg, frame);
+    stampHawbMultiLine(
+      page,
+      fonts,
+      face,
+      'nature',
+      String(data.nature || '')
+        .split(/\n/)
+        .map((l) => l.trim())
+        .filter(Boolean),
+      textRotateDeg,
+      frame,
+    );
+  }
 
   // HBL: measured fieldSlots for parties often sit on the label row. When the
   // record is bound, stamp live parties at the sample value anchors (left column).
@@ -1626,6 +1685,16 @@ function drawFacePage(
     ) {
       continue;
     }
+    // HAWB multi-line parties / nature stamped above.
+    if (
+      isHawbFace &&
+      (field.key === 'shipper' ||
+        field.key === 'consignee' ||
+        field.key === 'notify' ||
+        field.key === 'nature')
+    ) {
+      continue;
+    }
     // Invoice parties/doc nos stamped at label-adjacent sample anchors above.
     if (
       isInvoiceFace &&
@@ -1639,13 +1708,303 @@ function drawFacePage(
     ) {
       continue;
     }
+    // HAWB: one stamp per key (first slot) except multi-line parties handled above.
+    if (isHawbFace && field.key === 'companyName') {
+      const first = face.fieldSlots.find((s) => s.key === 'companyName');
+      if (first && (first.x !== field.x || first.y !== field.y)) continue;
+    }
+    if (
+      isHawbFace &&
+      !['shipper', 'consignee', 'notify', 'nature', 'prepaidMark'].includes(field.key)
+    ) {
+      const first = face.fieldSlots.find((s) => s.key === field.key);
+      if (first && (first.x !== field.x || first.y !== field.y)) continue;
+    }
+    // Skip stray handling stamps in the cargo table (keep left CTN-under-pieces slot).
+    if (
+      isHawbFace &&
+      field.key === 'handling' &&
+      field.y < face.heightPt * 0.45 &&
+      field.x > 80
+    ) {
+      continue;
+    }
+    // Misclassified "cargo" slot lands in the kg column on Draft-1 — nature already stamped.
+    if (isHawbFace && field.key === 'cargo') continue;
+    // Draft-1 footer HAWB NO is drawn in stampHawbDraft1Chrome at pin size 11.
+    if (/HAWB_DRAFT_REPORT_FORMAT_1$/i.test(face.code) && field.key === 'hawbNo') continue;
     const value = values[field.key];
     if (!value || isFresaIdentityText(value)) continue;
     const size = field.size || 8;
-    const advance = Math.min(220, Math.max(36, value.length * size * 0.55 + 8));
+    const lines = value.split(/\n/).map((l) => l.trim()).filter(Boolean);
+    lines.slice(0, 3).forEach((line, lineIndex) => {
+      const y = field.y - lineIndex * (size * 1.15);
+      const advance = Math.min(
+        isHawbFace ? 280 : 220,
+        Math.max(40, line.length * size * 0.55 + 10),
+      );
+      wipeTextSlot(
+        page,
+        {
+          x: Math.max(0, field.x - 1),
+          y: y - 1,
+          width: advance,
+          height: size + (isHawbFace ? 5 : 2),
+          size,
+        },
+        textRotateDeg,
+        1,
+        frame,
+      );
+      drawSafeText(
+        page,
+        fonts,
+        line.slice(0, isHawbFace ? 100 : 80),
+        field.x,
+        y,
+        size,
+        false,
+        rgb(0.05, 0.05, 0.08),
+        'left',
+        undefined,
+        textRotateDeg,
+      );
+    });
+  }
+
+  // Draft-1 pin: top-right inverted HAWB NO badge + Issued-by company under title
+  // (on every copy face — Fresa 9-page set is identical).
+  if (/HAWB_DRAFT_REPORT_FORMAT_1$/i.test(face.code)) {
+    stampHawbDraft1Chrome(page, fonts, face, data, textRotateDeg, frame);
+  }
+  // Draft / Draft-2: fill agent / Issued-by / cargo marks the fieldSlots miss.
+  if (
+    /^HAWB_DRAFT_REPORT_FORMAT$/i.test(face.code) ||
+    /^HAWB_DRAFT_REPORT_FORMAT_2$/i.test(face.code)
+  ) {
+    stampHawbDraftDenseChrome(page, fonts, face, data, textRotateDeg, frame);
+  }
+}
+
+/** Fresa Draft-1 chrome missing from fieldSlots: black HAWB badge + title company. */
+function stampHawbDraft1Chrome(
+  page: PDFPage,
+  fonts: FaceFonts,
+  face: OfficialMeasuredFace,
+  data: OfficialFaceData,
+  textRotateDeg: number,
+  frame: PageFrame | null,
+): void {
+  const hawb = String(data.hawbNo || '').trim();
+  const mawb = String(data.mawbNo || '').trim();
+  const hawbLabel = hawb
+    ? /^HAWB NO\./i.test(hawb)
+      ? hawb
+      : `HAWB NO. ${hawb}`
+    : '';
+  const mawbLabel = mawb
+    ? /^MAWB NO\./i.test(mawb)
+      ? mawb
+      : `MAWB NO. ${mawb}`
+    : '';
+
+  if (hawbLabel) {
+    // Pin: black inverted badge @ ~415.9,799 (11pt). Keep clear of HOUSE AIR WAYBILL.
+    const size = 11;
+    const x = 416;
+    const y = 799;
+    const padX = 6;
+    const maxW = 170;
+    let badge = hawbLabel;
+    while (badge.length > 8 && fonts.latinBold.widthOfTextAtSize(badge, size) > maxW - padX * 2) {
+      badge = badge.slice(0, -1);
+    }
+    if (badge.length < hawbLabel.length) badge = `${badge.slice(0, -1)}…`;
+    const w = Math.min(maxW, fonts.latinBold.widthOfTextAtSize(badge, size) + padX * 2);
+    const h = size + 6;
+    wipeTextSlot(page, { x, y: y - 2, width: w, height: h, size }, textRotateDeg, 1, frame);
+    page.drawRectangle({
+      x,
+      y: y - 2,
+      width: w,
+      height: h,
+      color: rgb(0, 0, 0),
+    });
+    drawSafeText(
+      page,
+      fonts,
+      badge,
+      x + padX,
+      y,
+      size,
+      true,
+      rgb(1, 1, 1),
+      'left',
+      undefined,
+      textRotateDeg,
+    );
+  }
+
+  const company = officialCompanyName(data.companyName);
+  if (company && !isFresaIdentityText(company)) {
+    const size = 11;
+    const x = 282;
+    const y = 744.8;
     wipeTextSlot(
       page,
-      { x: field.x, y: field.y, width: advance, height: size + 2, size },
+      { x, y: y - 1, width: Math.min(280, company.length * size * 0.55 + 8), height: size + 4, size },
+      textRotateDeg,
+      1,
+      frame,
+    );
+    drawSafeText(page, fonts, company, x, y, size, true, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+  }
+
+  // Pin job block: MAWB NO. / HAWB NO. under JOB NO. (285,667.6 / 285,656.6).
+  if (mawbLabel) {
+    drawSafeText(page, fonts, mawbLabel, 285, 667.6, 9, false, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+  }
+  if (hawbLabel) {
+    drawSafeText(page, fonts, hawbLabel, 285, 656.6, 9, false, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+  }
+
+  // Second PP mark (WT/VAL PPD) — pin has PP @ 316.8 and 353.8.
+  if (String(data.prepaidMark || '').trim()) {
+    drawSafeText(page, fonts, 'PP', 316.8, 509.3, 10, true, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+  }
+
+  // Pin cargo kg column "K" @ 149,383.7
+  if (data.pieces || data.grossWeight) {
+    drawSafeText(page, fonts, 'K', 149, 383.7, 9, false, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+  }
+
+  // Pin Weight Charge + Total Prepaid "AS ARRANGED" when rate/total use that convention.
+  const arranged = /AS ARRANGED/i.test(`${data.total || ''} ${data.rateCharge || ''}`);
+  if (arranged) {
+    drawSafeText(page, fonts, 'AS ARRANGED', 46.9, 203.4, 8, false, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+    drawSafeText(page, fonts, 'AS ARRANGED', 44.4, 60.4, 8, false, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+  }
+
+  // Footer HAWB badge text — pin size 11 @ 392,29.9
+  if (hawbLabel) {
+    drawSafeText(page, fonts, hawbLabel, 392, 29.9, 11, true, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+  }
+}
+
+/**
+ * Draft / Draft-2 chrome the promote pass left thin: top AWB strip, Issued-by
+ * carrier, agent name, kg/rate-class marks, CTN under pieces, charge zeros.
+ */
+function stampHawbDraftDenseChrome(
+  page: PDFPage,
+  fonts: FaceFonts,
+  face: OfficialMeasuredFace,
+  data: OfficialFaceData,
+  textRotateDeg: number,
+  frame: PageFrame | null,
+): void {
+  const isDraft2 = /FORMAT_2$/i.test(face.code);
+  const mawb = String(data.mawbNo || '').trim();
+  const hawb = String(data.hawbNo || '').trim();
+  const company = officialCompanyName(data.companyName);
+  const carrier = String(data.carrier || '').trim();
+
+  // Top AWB strip (Draft pin: left pipe form + right dashed). Skip Draft-2 badges.
+  if (!isDraft2 && (mawb || hawb)) {
+    const digits = (mawb || hawb).replace(/\D/g, '');
+    const left =
+      digits.length >= 11
+        ? `${digits.slice(0, 3)}|${(data.toCode || 'MAA').slice(0, 5)}|${digits.slice(3)}`
+        : (mawb || hawb).replace(/-/g, '|');
+    const right = mawb || hawb;
+    drawSafeText(page, fonts, left, 13, 828.1, 11, true, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+    drawSafeText(page, fonts, right, 513.1, 828.1, 11, true, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+  }
+
+  // Issued by — Draft carrier @ 345,786.3; Draft-2 title company @ 353.9,772.2
+  if (!isDraft2 && carrier) {
+    drawSafeText(page, fonts, carrier, 345, 786.3, 10, true, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+  }
+  if (isDraft2 && company && !isFresaIdentityText(company)) {
+    drawSafeText(page, fonts, company, 353.9, 772.2, 12, true, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+  }
+
+  // Agent name under "Issuing Carrier's Agent" (both Draft + Draft-2 pin @ 13,617.5)
+  if (company && !isFresaIdentityText(company)) {
+    drawSafeText(page, fonts, company, 13, 617.5, 8, false, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+  }
+
+  // Cargo marks: K + rate class S (Draft S@138; Draft-2 S@140) + charge zeros
+  if (data.pieces || data.grossWeight) {
+    drawSafeText(page, fonts, 'K', 124, 403.4, 8, false, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+    if (data.nature) {
+      drawSafeText(
+        page,
+        fonts,
+        'S',
+        isDraft2 ? 140 : 138,
+        403.4,
+        8,
+        false,
+        rgb(0.05, 0.05, 0.08),
+        'left',
+        undefined,
+        textRotateDeg,
+      );
+    }
+    const zero = data.total?.trim() || '0.00';
+    drawSafeText(page, fonts, zero, 64.9, 215.9, 7, false, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+    drawSafeText(page, fonts, zero, 64.9, 76.9, 7, false, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+  }
+
+  // Draft-2 HAWB ref beside "HAWB NO." (pin @ 458,829.9 / 458,37.9)
+  if (isDraft2 && hawb) {
+    const ref = hawb.replace(/^HAWB NO\.\s*/i, '').trim();
+    if (ref) {
+      drawSafeText(page, fonts, ref, 458, 829.9, 9, true, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+      drawSafeText(page, fonts, ref, 458, 37.9, 9, true, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+    }
+  }
+
+  void face;
+  void frame;
+}
+
+/** Stamp successive HAWB party/nature lines onto measured fieldSlots (top→bottom). */
+function stampHawbMultiLine(
+  page: PDFPage,
+  fonts: FaceFonts,
+  face: OfficialMeasuredFace,
+  key: string,
+  lines: string[] | undefined,
+  textRotateDeg: number,
+  frame: PageFrame | null,
+): void {
+  const rows = (lines || []).map((l) => String(l || '').trim()).filter(Boolean);
+  if (!rows.length) return;
+  const slots = face.fieldSlots
+    .filter((s) => s.key === key)
+    .sort((a, b) => b.y - a.y);
+  if (!slots.length) return;
+  // Never stack multiple lines on the same baseline (was causing phone/email
+  // to paint over city on the last shipper/consignee slot).
+  const capped = rows.slice(0, slots.length);
+  // Left party column must not spill into JOB/AGENT (≈ x 280).
+  const maxWidth =
+    key === 'shipper' || key === 'consignee' || key === 'notify' ? 250 : 280;
+  capped.forEach((line, index) => {
+    const slot = slots[index];
+    if (!slot || isFresaIdentityText(line)) return;
+    const size = slot.size || 8;
+    let draw = line;
+    while (draw.length > 4 && fonts.latin.widthOfTextAtSize(draw, size) > maxWidth - 4) {
+      draw = draw.slice(0, -1);
+    }
+    if (draw.length < line.length) draw = `${draw.slice(0, -1)}…`;
+    const advance = Math.min(maxWidth, Math.max(40, draw.length * size * 0.55 + 8));
+    wipeTextSlot(
+      page,
+      { x: slot.x, y: slot.y, width: advance, height: size + 2, size },
       textRotateDeg,
       1,
       frame,
@@ -1653,9 +2012,9 @@ function drawFacePage(
     drawSafeText(
       page,
       fonts,
-      value.replace(/\n/g, ', ').slice(0, 80),
-      field.x,
-      field.y,
+      draw.slice(0, 90),
+      slot.x,
+      slot.y,
       size,
       false,
       rgb(0.05, 0.05, 0.08),
@@ -1663,7 +2022,7 @@ function drawFacePage(
       undefined,
       textRotateDeg,
     );
-  }
+  });
 }
 
 type HblPartyBand = { topY: number; bottomY: number };
@@ -1801,10 +2160,35 @@ function stampHblPartyBlock(
 }
 
 /**
- * Invoice faces: sample party/doc values sit to the right of labels, while
- * fieldSlots often land on the label. Skip those sample glyphs when bound, then
- * stamp live values at the sample anchors.
+ * Invoice faces: sample party/doc values sit to the right of labels OR in the
+ * same column under Shipper/Consignee headers (Format 14/15/17). fieldSlots
+ * often land on the label. Skip those sample glyphs when bound, then stamp
+ * live values at the sample anchors.
  */
+function isInvoiceSampleNearLabel(
+  lx: number,
+  ly: number,
+  tx: number,
+  ty: number,
+  labelText: string,
+): boolean {
+  const partyHeader = /^(Shipper|Consignee|Bill\s*To|Client)\b/i.test(labelText);
+  // Same row, value to the right of the label.
+  if (tx > lx + 8 && tx < lx + 240 && Math.abs(ty - ly) <= 3) return true;
+  // Value block under the label (multi-line Bill To / Client).
+  if (tx > lx + 8 && tx < lx + 240 && ty < ly - 2 && ty > ly - 52) return true;
+  // Same-column party block under SHIPPER / CONSIGNEE headers (Format 14 family).
+  if (
+    partyHeader &&
+    Math.abs(tx - lx) <= 6 &&
+    ty < ly - 2 &&
+    ty > ly - 56
+  ) {
+    return true;
+  }
+  return false;
+}
+
 function collectInvoiceSampleValueRuns(
   facePage: OfficialMeasuredFace['pages'][number],
   face: OfficialMeasuredFace,
@@ -1818,17 +2202,14 @@ function collectInvoiceSampleValueRuns(
   for (const label of labels) {
     const lx = label[1] || 0;
     const ly = label[2] || 0;
+    const labelText = String(label[0] || '');
     for (const run of facePage.texts) {
       const tx = run[1] || 0;
       const ty = run[2] || 0;
       const text = String(run[0] || '');
       if (labelRe.test(text)) continue;
-      if (tx <= lx + 8) continue;
-      if (tx > lx + 240) continue;
-      // Same row or value block just under the label (multi-line Bill To / Client).
-      if (Math.abs(ty - ly) <= 3 || (ty < ly - 2 && ty > ly - 52)) {
-        keys.add(`${Math.round(tx * 10)}:${Math.round(ty * 10)}:${text.slice(0, 40)}`);
-      }
+      if (!isInvoiceSampleNearLabel(lx, ly, tx, ty, labelText)) continue;
+      keys.add(`${Math.round(tx * 10)}:${Math.round(ty * 10)}:${text.slice(0, 40)}`);
     }
   }
   return keys;
@@ -1850,18 +2231,17 @@ function stampInvoiceLabeledValue(
   if (!label) return;
   const lx = label[1] || 0;
   const ly = label[2] || 0;
+  const labelText = String(label[0] || '');
   const samples = facePage.texts
     .filter(
       (run) =>
-        (run[1] || 0) > lx + 8 &&
-        (run[1] || 0) < lx + 240 &&
         !labelRe.test(String(run[0] || '')) &&
-        (Math.abs((run[2] || 0) - ly) <= 3 ||
-          ((run[2] || 0) < ly - 2 && (run[2] || 0) > ly - 52)),
+        isInvoiceSampleNearLabel(lx, ly, run[1] || 0, run[2] || 0, labelText),
     )
     .sort((a, b) => (b[2] || 0) - (a[2] || 0) || (a[1] || 0) - (b[1] || 0));
   const sample = samples[0];
-  const x = sample?.[1] ?? lx + 110;
+  const sameColumn = sample != null && Math.abs((sample[1] || 0) - lx) <= 6;
+  const x = sample?.[1] ?? (sameColumn ? lx : lx + 110);
   const y = sample?.[2] ?? ly;
   const size = sample?.[3] || 8;
   const wipeBottom = Math.min(y, ...samples.map((s) => s[2] || y)) - 2;
@@ -1881,9 +2261,9 @@ function stampInvoiceLabeledValue(
   const wipeW = Math.max(
     48,
     Math.min(
-      180,
+      sameColumn ? 220 : 180,
       face.widthPt * 0.34,
-      nextLabelX != null ? nextLabelX - x - 6 : 180,
+      nextLabelX != null ? nextLabelX - x - 6 : sameColumn ? 220 : 180,
     ),
   );
   wipeBox(
@@ -1986,17 +2366,20 @@ export async function generateOfficialMeasuredPdf(
     : null;
   const fonts: FaceFonts = { latin, latinBold, arabic };
   const pages = face.pages.length > 0 ? face.pages : [{ rects: [], lines: [], texts: [] }];
-  const rawSlots = getReportBrandingSlots(face.code) || getReportBrandingSlots(code);
+  const isHawbFaceDoc = /^HAWB_/i.test(face.code);
+  // HAWB Fresa samples have no invoice Printed-By footer / blue letterhead chrome.
+  const rawSlots = isHawbFaceDoc
+    ? null
+    : getReportBrandingSlots(face.code) || getReportBrandingSlots(code);
   const rotateDeg = Number(face.rotateDeg) || 0;
   const firstPage = pages[0];
   const frame =
     !rotateDeg && firstPage
       ? inferOuterFrame(firstPage, face.widthPt, face.heightPt)
       : null;
-  const slots = fitSlotsInsideHeaderBand(
-    ensureReportBrandingChrome(rawSlots, face),
-    frame,
-  );
+  const slots = isHawbFaceDoc
+    ? undefined
+    : fitSlotsInsideHeaderBand(ensureReportBrandingChrome(rawSlots, face), frame);
   const hasLogo = Boolean(data.logoUrl && !/fresa/i.test(data.logoUrl));
 
   for (let index = 0; index < pages.length; index += 1) {
@@ -2010,16 +2393,22 @@ export async function generateOfficialMeasuredPdf(
     });
     if (index === 0) {
       const isHblFace = /^(HBL_|FG_HBL_)/i.test(face.code);
-      // HBL: never invent a top-left invoice logo (lands in Shipper). Measured
-      // agent/carrier logo slots (any side) are still painted.
-      if (slots.logo || !isHblFace) {
+      const isHawbFace = /^HAWB_/i.test(face.code);
+      // HBL/HAWB: never invent a top-left invoice logo (lands in Shipper). Measured
+      // agent/carrier / Issued-by logo slots are still painted when present.
+      if (slots?.logo || (!isHblFace && !isHawbFace)) {
         await drawOrgLogoInSlot(
           doc,
           page,
           data.logoUrl,
-          slots.logo,
-          isHblFace
-            ? { x: slots.logo!.x, y: slots.logo!.y, width: slots.logo!.width, height: slots.logo!.height }
+          slots?.logo ?? null,
+          isHblFace || isHawbFace
+            ? {
+                x: slots!.logo!.x,
+                y: slots!.logo!.y,
+                width: slots!.logo!.width,
+                height: slots!.logo!.height,
+              }
             : defaultLogoFallback(face, rotateDeg),
           rotateDeg,
           frame,

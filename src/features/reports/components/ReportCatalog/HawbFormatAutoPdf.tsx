@@ -12,8 +12,6 @@ import { generateCatalogLayoutPdf } from '../../utils/generateCatalogLayoutPdf';
 import { resolveReportOrgChrome } from '../../utils/resolveReportOrgChrome';
 import { catalogPreviewSourceLabel } from '../../utils/catalogFormatStatus';
 import { getSharedLayoutSource } from '../../data/sharedLayoutSource';
-import { FRESA_REFERENCE_SAMPLE_LABEL } from '../../utils/reportPdfWorkflow';
-
 type Props = {
   code: string;
   context?: ReportContextIds | null;
@@ -64,7 +62,7 @@ export function HawbFormatAutoPdf({ code, context, autoOpen = true }: Props) {
             setBoundLabel(
               data.entityBound
                 ? `${source.label}${record ? ` · ${record}` : ''} — ${source.detail}`
-                : `${FRESA_REFERENCE_SAMPLE_LABEL}. Preview uses Freightnest native with your organization branding.`,
+                : `Native Layout · catalogue preview cargo (pin density) + your organization branding — never a Fresa sample PDF.`,
             );
           }
 

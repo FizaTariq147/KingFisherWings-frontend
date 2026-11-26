@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { BlDraftFromBookingPanel } from '@/features/shared/bl-draft/BlDraftFromBookingPanel';
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
+import { buildJobTransportDocFormatsPath } from '@/features/reports/utils/moduleCatalogFamily';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import { useJob, useJobBillsOfLading } from '../../hooks/useJobs';
 import { isAirwayBillJobType } from '../../utils/jobDetailTabs';
+import { jobDetailPath } from '../../utils/jobRoute';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
 interface JobBillsOfLadingPanelProps {
@@ -14,6 +17,7 @@ interface JobBillsOfLadingPanelProps {
 }
 
 export function JobBillsOfLadingPanel({ jobId }: JobBillsOfLadingPanelProps) {
+  const navigate = useNavigate();
   const { data: job } = useJob(jobId);
   const { data: bills = [], refetch } = useJobBillsOfLading(jobId);
   const mutations = useJobSubresourceMutations(jobId);
@@ -23,6 +27,16 @@ export function JobBillsOfLadingPanel({ jobId }: JobBillsOfLadingPanelProps) {
   const [blType, setBlType] = useState('');
   const [blNumber, setBlNumber] = useState('');
   const draftBlComment = job?.draft_bl_customer_comment?.trim();
+
+  const openFormats = () => {
+    navigate(
+      buildJobTransportDocFormatsPath(jobId, job?.job_type, {
+        party_id: job?.shipper_id || job?.billing_party_id,
+        shipment_id: job?.shipment_id,
+        return_to: job ? jobDetailPath(job) : undefined,
+      }),
+    );
+  };
 
   useEffect(() => {
     if (!job?.job_type || blType) return;
@@ -71,6 +85,9 @@ export function JobBillsOfLadingPanel({ jobId }: JobBillsOfLadingPanelProps) {
       <Card>
         <CardHeader>
           <CardTitle>{panelTitle}</CardTitle>
+          <Button type="button" size="sm" variant="secondary" onClick={openFormats}>
+            Formats
+          </Button>
         </CardHeader>
         <div className="px-4 pb-4 space-y-2 text-sm">
           {bills.length === 0 ? (

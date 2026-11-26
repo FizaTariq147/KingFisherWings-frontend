@@ -25,7 +25,7 @@ export const HAWB_DRAFT1_LAYOUT: HawbOfficialLayoutConfig = {
   showIataAgentCells: false,
   preprinted: false,
   sparseOverlay: false,
-  customsDefaultWhenEmpty: '',
+  customsDefaultWhenEmpty: 'AS PER INV',
   copyBanners: [
     'COPY FACE 1/9',
     'COPY FACE 2/9',

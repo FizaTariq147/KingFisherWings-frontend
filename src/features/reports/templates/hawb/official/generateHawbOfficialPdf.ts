@@ -13,12 +13,17 @@ import {
 } from '../../../engines/pdf/pageGeometry';
 import { getHawbOfficialLayout, isHawbOfficialNativeCode } from './layouts';
 import { mapToHawbOfficialModel } from './mapToHawbOfficialModel';
+import { mergeHawbCatalogPreviewFixture } from './hawbOfficialCatalogFixture';
 import type { HawbOfficialLayoutConfig, HawbOfficialModel } from './hawbOfficial.types';
 import { HawbDraftDocument } from './documents/HawbDraftDocument';
 import { HawbDraft1Document } from './documents/HawbDraft1Document';
 import { HawbDraft2Document } from './documents/HawbDraft2Document';
 import { HawbOriginal1Document } from './documents/HawbOriginal1Document';
 import { HawbOriginal2Document } from './documents/HawbOriginal2Document';
+import { generateHawbSparsePdf, isHawbSparseNativeCode } from './generateHawbSparsePdf';
+import { generateOfficialMeasuredPdf } from '../../official/generateOfficialMeasuredPdf';
+import { getOfficialMeasuredFace } from '../../official/officialFaceRegistry';
+import { mapHawbToOfficialFaceData } from './mapHawbToOfficialFaceData';
 
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -73,8 +78,8 @@ export type GenerateHawbOfficialPdfOptions = {
   appendCustomerTerms?: boolean;
   showPlaceholders?: boolean;
   /**
-   * Original-1/2 only. Default true for digital PDF (neutral form underlay).
-   * Pass false when printing onto physical preprinted stationery.
+   * Original-1/2 React capture path only (unused when sparse vector Generate runs).
+   * Fresa pin is data-only; default false.
    */
   showUnderlay?: boolean;
 };
@@ -91,10 +96,49 @@ export async function generateHawbOfficialPdf(
   if (!isHawbOfficialNativeCode(code)) {
     throw new Error(`HAWB official generator only supports the five verified codes (got ${code})`);
   }
+  // Original-1/2: Fresa samples are sparse data islands — never Draft dense + html2canvas.
+  if (isHawbSparseNativeCode(code)) {
+    return generateHawbSparsePdf(code, data, {
+      appendCustomerTerms: options.appendCustomerTerms,
+    });
+  }
+
+  // Draft / Draft-1 / Draft-2: vector measured face (Fresa pin geometry + Arimo).
+  // html2canvas path produced ~200MB raster pages with 0% text fidelity.
+  const measuredFace = getOfficialMeasuredFace(code);
+  if (measuredFace) {
+    const layout = getHawbOfficialLayout(code)!;
+    const faceData = mapHawbToOfficialFaceData(code, data);
+    const { blob: measuredBlob } = await generateOfficialMeasuredPdf(code, faceData);
+    let layoutBlob = measuredBlob;
+    const appendTerms =
+      typeof options.appendCustomerTerms === 'boolean' ? options.appendCustomerTerms : true;
+    if (appendTerms) {
+      layoutBlob = await appendOfficialCustomerTermsPdf(layoutBlob, {
+        kind: 'airway',
+        formatCode: layout.code,
+      });
+    }
+    const model0 = mapToHawbOfficialModel(code, mergeHawbCatalogPreviewFixture(data), {
+      showPlaceholders: options.showPlaceholders,
+    });
+    return {
+      blob: layoutBlob,
+      fileName: formatPdfFilename(
+        `HAWB-${layout.variant}-${model0.hawbNo || model0.jobNo || layout.code}`,
+        'hawb-format',
+      ),
+      layout,
+    };
+  }
+
   const layout = getHawbOfficialLayout(code)!;
   const geometry = layout.page;
   const banners =
     layout.copyBanners.length > 0 ? layout.copyBanners : [undefined as string | undefined];
+  // Catalogue browse (!entityBound): pin-density preview cargo + org chrome.
+  // Entity-bound jobs keep live fields only (no invented parties).
+  const pdfData = mergeHawbCatalogPreviewFixture(data);
 
   const host = document.createElement('div');
   host.setAttribute('data-hawb-official-capture', layout.variant);
@@ -117,12 +161,17 @@ export async function generateHawbOfficialPdf(
       color: #000000;
     }
     [data-hawb-official-capture] p {
-      margin: 0 !important;
-      padding: 0 !important;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
     }
     [data-hawb-official-capture] table {
       border-collapse: collapse !important;
       border-spacing: 0 !important;
+    }
+    [data-hawb-official-capture] td,
+    [data-hawb-official-capture] th {
+      overflow: hidden !important;
+      vertical-align: top !important;
     }
     [data-hawb-official-capture] img {
       display: block;
@@ -140,7 +189,7 @@ export async function generateHawbOfficialPdf(
 
     root = createRoot(stack);
     const pages = banners.map((banner, index) => {
-      const model = mapToHawbOfficialModel(code, data, {
+      const model = mapToHawbOfficialModel(code, pdfData, {
         showPlaceholders: options.showPlaceholders,
         copyBanner: banner,
         copyIndex: banners.length > 1 ? index + 1 : undefined,
@@ -192,12 +241,10 @@ export async function generateHawbOfficialPdf(
 
     let layoutBlob = pdf.output('blob');
 
-    // Draft-1 already emits a 9-face copy set matching the reference page count;
-    // append T&C only when explicitly requested or for single-face formats.
+    // Same Airway T&C PDF after every HAWB face set (Draft / Draft-1 / Draft-2).
+    // Default on; caller may pass appendCustomerTerms:false for face-only harness.
     const appendTerms =
-      typeof options.appendCustomerTerms === 'boolean'
-        ? options.appendCustomerTerms
-        : layout.copyBanners.length === 0;
+      typeof options.appendCustomerTerms === 'boolean' ? options.appendCustomerTerms : true;
 
     if (appendTerms) {
       layoutBlob = await appendOfficialCustomerTermsPdf(layoutBlob, {
@@ -206,7 +253,7 @@ export async function generateHawbOfficialPdf(
       });
     }
 
-    const model0 = mapToHawbOfficialModel(code, data, {
+    const model0 = mapToHawbOfficialModel(code, pdfData, {
       showPlaceholders: options.showPlaceholders,
     });
     const fileName = formatPdfFilename(

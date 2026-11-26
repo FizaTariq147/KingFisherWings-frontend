@@ -22,7 +22,7 @@ export function HawbOfficialPage({ layout, children, pageIndex, pageTotal }: Pro
     overflow: 'hidden',
     // Metric-compatible with Fresa ArialUnicodeMS / Helvetica faces (MASTER_PROMPT fonts rule).
     fontFamily: 'Arial, Helvetica, "Helvetica Neue", sans-serif',
-    color: '#101010',
+    color: '#000000',
     pageBreakAfter: pageIndex != null && pageTotal != null && pageIndex < pageTotal ? 'always' : 'auto',
   };
 

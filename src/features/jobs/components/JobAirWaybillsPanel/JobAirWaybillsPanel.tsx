@@ -1,12 +1,15 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { BlDraftFromBookingPanel } from '@/features/shared/bl-draft/BlDraftFromBookingPanel';
+import { buildJobTransportDocFormatsPath } from '@/features/reports/utils/moduleCatalogFamily';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import { useJob, useJobAirWaybills } from '../../hooks/useJobs';
 import type { AirWaybillType, UpsertAirWaybillDto } from '../../types/job.types';
+import { jobDetailPath } from '../../utils/jobRoute';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { AIR_BOOKING_FORM_LIMITS } from '../../utils/airBookingFormLimits';
 
@@ -19,6 +22,7 @@ interface JobAirWaybillsPanelProps {
  * Sea modes keep bills-of-lading; other job types cannot use this API.
  */
 export function JobAirWaybillsPanel({ jobId }: JobAirWaybillsPanelProps) {
+  const navigate = useNavigate();
   const { data: job } = useJob(jobId);
   const { data: bills = [], refetch } = useJobAirWaybills(jobId);
   const mutations = useJobSubresourceMutations(jobId);
@@ -28,6 +32,16 @@ export function JobAirWaybillsPanel({ jobId }: JobAirWaybillsPanelProps) {
   const [flightNumber, setFlightNumber] = useState('');
   const [flightStatus, setFlightStatus] = useState('');
   const draftBlComment = job?.draft_bl_customer_comment?.trim();
+
+  const openFormats = () => {
+    navigate(
+      buildJobTransportDocFormatsPath(jobId, job?.job_type ?? 'AIR_EXPORT', {
+        party_id: job?.shipper_id || job?.billing_party_id,
+        shipment_id: job?.shipment_id,
+        return_to: job ? jobDetailPath(job) : undefined,
+      }),
+    );
+  };
 
   const run = async (fn: () => Promise<unknown>) => {
     setError(null);
@@ -78,6 +92,9 @@ export function JobAirWaybillsPanel({ jobId }: JobAirWaybillsPanelProps) {
       <Card>
         <CardHeader>
           <CardTitle>Airway bills</CardTitle>
+          <Button type="button" size="sm" variant="secondary" onClick={openFormats}>
+            Formats
+          </Button>
         </CardHeader>
         <div className="space-y-2 px-4 pb-4 text-sm">
           {bills.length === 0 ? (
