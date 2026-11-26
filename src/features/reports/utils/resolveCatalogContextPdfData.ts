@@ -120,6 +120,8 @@ export function jobRecordToFormatPdfData(job: {
   const consigneeLines = job.consignee_name?.trim()
     ? [job.consignee_name.trim()]
     : undefined;
+  const pieces = job.pieces != null ? String(job.pieces) : undefined;
+  const grossWeight = job.gross_weight != null ? String(job.gross_weight) : undefined;
   return {
     invoiceNumber: jobNo,
     jobNumber: jobNo,
@@ -131,17 +133,23 @@ export function jobRecordToFormatPdfData(job: {
     billToAddress: [route, job.commodity].filter(Boolean).join(' · ') || undefined,
     shipperLines,
     consigneeLines,
+    // HAWB Notify often mirrors consignee when the job has no separate notify party.
+    notifyLines: consigneeLines,
     pol: origin,
     pod: dest,
     commodity: job.commodity || undefined,
     vesselFlight: job.carrier_name || undefined,
+    carrier: job.carrier_name || undefined,
     currencyCode: job.currency_code || undefined,
     hawbNo: job.hawb_number || job.hawb_no || undefined,
     mawbNo: job.mawb_number || job.mawb_no || undefined,
     hblNo: job.hbl_number || undefined,
-    pieces: job.pieces != null ? String(job.pieces) : undefined,
-    grossWeight: job.gross_weight != null ? String(job.gross_weight) : undefined,
-    measurement: job.volume_cbm != null ? String(job.volume_cbm) : undefined,
+    pieces,
+    grossWeight,
+    // Air chargeable weight often equals gross when volume is the only extra metric.
+    measurement: grossWeight || (job.volume_cbm != null ? String(job.volume_cbm) : undefined),
+    accounting: jobNo ? `JOB NO.: ${jobNo}` : undefined,
+    executedAt: origin || undefined,
   };
 }
 

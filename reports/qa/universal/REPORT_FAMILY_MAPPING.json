@@ -1,0 +1,300 @@
+{
+  "auditMode": "READ_ONLY",
+  "verifiedAt": "2026-11-26T07:50:46.482Z",
+  "classifier": "enrichReportMeta.classifyTemplateFamily (src/features/reports/registry/enrichReportMeta.ts) — replicated in audit script for counts",
+  "documentTypes": {
+    "shipping": [
+      "hbl",
+      "hawb",
+      "mawb",
+      "arrival_notice",
+      "delivery_order",
+      "cargo_manifest"
+    ],
+    "commercial": [
+      "invoice",
+      "purchase_invoice",
+      "quotation"
+    ],
+    "financial": [
+      "voucher",
+      "ledger",
+      "financial_statement"
+    ],
+    "list": [
+      "ops_list"
+    ],
+    "operational": [
+      "ops_form",
+      "wms",
+      "other"
+    ]
+  },
+  "templateFamilies": {
+    "ops_list": {
+      "count": 110,
+      "sample": [
+        "ACTIVITY_COMPLETED_JOBS_LIST_REPORT_FORMAT",
+        "AGENT_NOMINATION_SHIPMENTS_LIST_REPORT_FORMAT",
+        "BANK_CASH_BOOK_SUMMARY_LIST_REPORT_FORMAT",
+        "BILL_OF_LADING_IS_NOT_ISSUED_LIST_REPORT_FORMAT",
+        "CANCELLED_JOB_LIST_REPORT_FORMAT",
+        "CASH_COLLECTION_REPORT_LIST_REPORT_FORMAT",
+        "CHEQUE_COLLECTION_REPORT_LIST_REPORT_FORMAT",
+        "CLIENT_LOST_REPORT_FOR_LAST_N_DAYS_LIST_REPORT_FORMAT"
+      ]
+    },
+    "wms": {
+      "count": 61,
+      "sample": [
+        "ADVANCE_SHIPPING_NOTE",
+        "ADVANCE_SHIPPING_NOTE_FORMAT_1",
+        "ADVANCE_SHIPPING_NOTE_LOCATION_SUMMARY",
+        "ADVANCE_SHIPPING_NOTE_LOCATION_WISE",
+        "ADVANCE_SHIPPING_NOTE_LOCATION_WISE_2",
+        "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_10",
+        "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_11",
+        "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_12"
+      ]
+    },
+    "other": {
+      "count": 137,
+      "sample": [
+        "AIR_FREIGHT_ATD_CONFIRMATION_REPORT_FORMAT",
+        "AP_OUTSTANDING_STATEMENT_REPORT_FORMAT",
+        "AR_JOB_NOT_INVOICE_REPORT_FORMAT",
+        "ARRIVAL_CONFIRMATION",
+        "ARRIVAL_CONFIRMATION_FORMAT_1",
+        "ARRIVAL_INFORMATION",
+        "BARCODE_AWB_REPORT_FORMAT",
+        "CARGO_RECEIPT_NOTE_FOR_EXPORT_CFS_REPORT_FORMAT"
+      ]
+    },
+    "quotation": {
+      "count": 18,
+      "sample": [
+        "AIR_QUOTATION_REPORT_FORMAT",
+        "AIR_QUOTATION_WITH_AIRLINE_REPORT_FORMAT",
+        "FCL_QUOTATION_REPORT_FORMAT",
+        "QUOTATION_REPORT_FORMAT_1",
+        "QUOTATION_REPORT_FORMAT_10",
+        "QUOTATION_REPORT_FORMAT_11",
+        "QUOTATION_REPORT_FORMAT_12",
+        "QUOTATION_REPORT_FORMAT_13"
+      ]
+    },
+    "financial_statement": {
+      "count": 34,
+      "sample": [
+        "AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT",
+        "AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT_1",
+        "PROFIT_AND_LOSS_REPORT_FORMAT_1_LANDSCAPE",
+        "PROFIT_AND_LOSS_REPORT_FORMAT_10",
+        "PROFIT_AND_LOSS_REPORT_FORMAT_11",
+        "PROFIT_AND_LOSS_REPORT_FORMAT_12",
+        "PROFIT_AND_LOSS_REPORT_FORMAT_13",
+        "PROFIT_AND_LOSS_REPORT_FORMAT_14"
+      ]
+    },
+    "ledger": {
+      "count": 12,
+      "sample": [
+        "AP_AGING_SUMMARY_REPORT_FORMAT",
+        "AR_AGING_SUMMARY_REPORT_FORMAT",
+        "OUTSTANDING_LETTER_REPORT_FORMAT_3_OUTSTANDING_LETTER_WITH_AGING",
+        "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT",
+        "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_2",
+        "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_3",
+        "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_4",
+        "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_5"
+      ]
+    },
+    "arrival_notice": {
+      "count": 55,
+      "sample": [
+        "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+        "ARRIVAL_NOTICE_REPORT_FORMAT_10_SEA_ARRIVAL_NOTICE_FCL_VIETNAM",
+        "ARRIVAL_NOTICE_REPORT_FORMAT_11",
+        "ARRIVAL_NOTICE_REPORT_FORMAT_12",
+        "ARRIVAL_NOTICE_REPORT_FORMAT_13",
+        "ARRIVAL_NOTICE_REPORT_FORMAT_14",
+        "ARRIVAL_NOTICE_REPORT_FORMAT_15",
+        "ARRIVAL_NOTICE_REPORT_FORMAT_16"
+      ]
+    },
+    "ops_form": {
+      "count": 27,
+      "sample": [
+        "BOOKING_CONFIRMATION_AIR_REPORT_FORMAT",
+        "BOOKING_CONFIRMATION_REPORT_FORMAT_1",
+        "BOOKING_CONFIRMATION_REPORT_FORMAT_10",
+        "BOOKING_CONFIRMATION_REPORT_FORMAT_2",
+        "BOOKING_CONFIRMATION_REPORT_FORMAT_3",
+        "BOOKING_CONFIRMATION_REPORT_FORMAT_4",
+        "BOOKING_CONFIRMATION_REPORT_FORMAT_5",
+        "BOOKING_CONFIRMATION_REPORT_FORMAT_6"
+      ]
+    },
+    "cargo_manifest": {
+      "count": 30,
+      "sample": [
+        "CARGO_MANIFEST_AIR_HOUSE_REPORT_FORMAT",
+        "CARGO_MANIFEST_AIR_JASPER_REPORT_FORMAT",
+        "CARGO_MANIFEST_AIR_LC_JASPER_REPORT_FORMAT",
+        "CARGO_MANIFEST_REPORT_FORMAT",
+        "CARGO_MANIFEST_REPORT_FORMAT_10",
+        "CARGO_MANIFEST_REPORT_FORMAT_11",
+        "CARGO_MANIFEST_REPORT_FORMAT_12",
+        "CARGO_MANIFEST_REPORT_FORMAT_13"
+      ]
+    },
+    "invoice": {
+      "count": 122,
+      "sample": [
+        "CREDIT_NOTE_REPORT_FORMAT_1",
+        "CREDIT_NOTE_REPORT_FORMAT_10",
+        "CREDIT_NOTE_REPORT_FORMAT_2",
+        "CREDIT_NOTE_REPORT_FORMAT_3",
+        "CREDIT_NOTE_REPORT_FORMAT_4",
+        "CREDIT_NOTE_REPORT_FORMAT_5",
+        "CREDIT_NOTE_REPORT_FORMAT_6",
+        "CREDIT_NOTE_REPORT_FORMAT_7"
+      ]
+    },
+    "delivery_order": {
+      "count": 45,
+      "sample": [
+        "DELIVERY_ORDER_AIR_JASPER_REPORT_FORMAT",
+        "DELIVERY_ORDER_REPORT_FORMAT_10",
+        "DELIVERY_ORDER_REPORT_FORMAT_11",
+        "DELIVERY_ORDER_REPORT_FORMAT_12",
+        "DELIVERY_ORDER_REPORT_FORMAT_13",
+        "DELIVERY_ORDER_REPORT_FORMAT_14",
+        "DELIVERY_ORDER_REPORT_FORMAT_15",
+        "DELIVERY_ORDER_REPORT_FORMAT_16"
+      ]
+    },
+    "hbl": {
+      "count": 125,
+      "sample": [
+        "FG_HBL_FORMAT_1",
+        "FG_HBL_HKG",
+        "FG_HBL_MAGICLOGISYS",
+        "FG_HBL_ORIGINAL_FORMAT_87",
+        "HBL_DRAFT_REPORT_FORMAT_10",
+        "HBL_DRAFT_REPORT_FORMAT_100",
+        "HBL_DRAFT_REPORT_FORMAT_101",
+        "HBL_DRAFT_REPORT_FORMAT_102"
+      ]
+    },
+    "hawb": {
+      "count": 30,
+      "sample": [
+        "HAWB_DRAFT_REPORT_FORMAT",
+        "HAWB_DRAFT_REPORT_FORMAT_1",
+        "HAWB_DRAFT_REPORT_FORMAT_10",
+        "HAWB_DRAFT_REPORT_FORMAT_11",
+        "HAWB_DRAFT_REPORT_FORMAT_12",
+        "HAWB_DRAFT_REPORT_FORMAT_13",
+        "HAWB_DRAFT_REPORT_FORMAT_14",
+        "HAWB_DRAFT_REPORT_FORMAT_15"
+      ]
+    },
+    "voucher": {
+      "count": 25,
+      "sample": [
+        "JOURNAL_VOUCHER_REPORT_FORMAT_1",
+        "JOURNAL_VOUCHER_REPORT_FORMAT_10",
+        "JOURNAL_VOUCHER_REPORT_FORMAT_11",
+        "JOURNAL_VOUCHER_REPORT_FORMAT_12",
+        "JOURNAL_VOUCHER_REPORT_FORMAT_2",
+        "JOURNAL_VOUCHER_REPORT_FORMAT_3",
+        "JOURNAL_VOUCHER_REPORT_FORMAT_4",
+        "JOURNAL_VOUCHER_REPORT_FORMAT_5"
+      ]
+    },
+    "mawb": {
+      "count": 17,
+      "sample": [
+        "MAWB_DRAFT_REPORT_FORMAT",
+        "MAWB_DRAFT_REPORT_FORMAT_10",
+        "MAWB_DRAFT_REPORT_FORMAT_11",
+        "MAWB_DRAFT_REPORT_FORMAT_12",
+        "MAWB_DRAFT_REPORT_FORMAT_13",
+        "MAWB_DRAFT_REPORT_FORMAT_14",
+        "MAWB_DRAFT_REPORT_FORMAT_15",
+        "MAWB_DRAFT_REPORT_FORMAT_16"
+      ]
+    },
+    "purchase_invoice": {
+      "count": 4,
+      "sample": [
+        "PURCHASE_INVOICE_REPORT_FORMAT_1",
+        "PURCHASE_INVOICE_REPORT_FORMAT_2",
+        "SHIPMENTS_WITH_NO_PURCHASE_INVOICES_LIST",
+        "SHIPMENTS_WITH_NO_PURCHASE_INVOICES_LIST_REPORT_FORMAT"
+      ]
+    }
+  },
+  "counts": {
+    "ops_list": 110,
+    "wms": 61,
+    "other": 137,
+    "quotation": 18,
+    "financial_statement": 34,
+    "ledger": 12,
+    "arrival_notice": 55,
+    "ops_form": 27,
+    "cargo_manifest": 30,
+    "invoice": 122,
+    "delivery_order": 45,
+    "hbl": 125,
+    "hawb": 30,
+    "voucher": 25,
+    "mawb": 17,
+    "purchase_invoice": 4
+  },
+  "businessFamiliesFromRegistry": {
+    "ops_list": 114,
+    "wms": 61,
+    "air_docs": 75,
+    "quotation": 18,
+    "finance": 93,
+    "sea_docs": 256,
+    "other": 30,
+    "commercial": 205
+  },
+  "renderingBuckets": {
+    "note": "Primary generate path for catalogue codes is resolved at runtime by generateCatalogLayoutPdf; format-map is the inventory view.",
+    "formatMapPaths": {
+      "json_shell_fallback": 538,
+      "measured_fresa_face": 412,
+      "unmapped": 62,
+      "reference_accurate": 4
+    },
+    "dedicatedNatives": {
+      "hawbOfficialFive": [
+        "HAWB_DRAFT_REPORT_FORMAT",
+        "HAWB_DRAFT_REPORT_FORMAT_1",
+        "HAWB_DRAFT_REPORT_FORMAT_2",
+        "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+        "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2"
+      ],
+      "hawbOriginalSparse": true,
+      "hblJasperPilot": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+      "classicInvoice": "src/features/invoices/utils/generateInvoicePdf.ts (do not replace per MASTER_PROMPT)",
+      "classicQuotation": "src/features/quotations/utils/generateQuotationPdf.ts",
+      "playwrightHtmlPilotAllowlist": "src/features/reports/engines/pdf/playwrightHtml/playwrightHtmlCodes.ts"
+    },
+    "libraries": {
+      "pdf-lib": "^1.17.1",
+      "jspdf": "^4.2.1",
+      "html2canvas": "^1.4.1",
+      "playwright": "^1.61.0",
+      "jsbarcode": "^3.12.3",
+      "qrcode": "^1.5.4 (dependency present; unused in report PDF drawers — verified)",
+      "pdfmake": "invoice flow V2 (renderInvoiceFlowPdf)"
+    },
+    "hawbRuntimeNote": "Official five: Draft/Draft-1/Draft-2 → measured vector; Original-1/2 → sparse. HAWB_LOCK removed. html2canvas is fallback only if measured face missing."
+  }
+}

@@ -2,6 +2,7 @@ import type { HawbOfficialLayoutConfig, HawbOfficialModel } from '../hawbOfficia
 import {
   hawbAccountChip,
   hawbBody,
+  hawbCapLines,
   hawbCell,
   hawbColHead,
   hawbInk,
@@ -33,8 +34,8 @@ export function HawbDenseIataFace({ layout, model }: Props) {
   const isAir = layout.titleMode === 'Air Waybill';
   const legal = layout.legalVariant === 'air' ? AIR_LEGAL : HOUSE_LEGAL;
   const customs = displayOrBlank(model.declaredCustoms, layout.customsDefaultWhenEmpty);
-  const partyLines = (lines: string[]) =>
-    (lines.length ? lines : model.showPlaceholders ? [''] : []).map((line, i) => (
+  const partyLines = (rows: string[]) =>
+    hawbCapLines(rows.length ? rows : model.showPlaceholders ? [''] : [], 4).map((line, i) => (
       <p key={`${line}-${i}`} style={hawbBody}>
         {line}
       </p>
@@ -104,7 +105,7 @@ export function HawbDenseIataFace({ layout, model }: Props) {
         </colgroup>
         <tbody>
           <tr>
-            <td colSpan={2} style={{ ...hawbCell, minHeight: 72, padding: 0 }}>
+            <td colSpan={2} style={{ ...hawbCell, minHeight: 72, overflow: 'hidden', padding: 0 }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', minHeight: 72 }}>
                 <div style={{ flex: 1, padding: '1px 3px' }}>
                   <p style={hawbLabel}>Shipper&apos;s Name and Address</p>
@@ -160,7 +161,7 @@ export function HawbDenseIataFace({ layout, model }: Props) {
           </tr>
 
           <tr>
-            <td colSpan={2} style={{ ...hawbCell, minHeight: 64, padding: 0 }}>
+            <td colSpan={2} style={{ ...hawbCell, minHeight: 64, overflow: 'hidden', padding: 0 }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', minHeight: 64 }}>
                 <div style={{ flex: 1, padding: '1px 3px' }}>
                   <p style={hawbLabel}>Consignee&apos;s Name and Address</p>
@@ -316,7 +317,7 @@ export function HawbDenseIataFace({ layout, model }: Props) {
           {cargoRows.map((row, ri) => (
             <tr key={ri} className="fn-no-break">
               {Array.from({ length: 8 }).map((_, ci) => (
-                <td key={ci} style={{ ...hawbCell, minHeight: 56, fontWeight: ci === 7 ? 600 : 500 }}>
+                <td key={ci} style={{ ...hawbCell, minHeight: 56, overflow: 'hidden', fontWeight: ci === 7 ? 600 : 500 }}>
                   {row[ci] ?? ''}
                 </td>
               ))}

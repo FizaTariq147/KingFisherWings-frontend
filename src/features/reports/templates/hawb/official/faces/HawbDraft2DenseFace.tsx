@@ -1,15 +1,20 @@
 import type { HawbOfficialModel } from '../hawbOfficial.types';
 import { HAWB_DRAFT2_LAYOUT } from '../layouts/hawbDraft2.layout';
 import {
+  displayOrBlank,
   hawbBody,
+  hawbCapLines,
   hawbCell,
+  hawbClipBand,
   hawbColHead,
+  hawbFirstFlightCode,
   hawbInk,
+  hawbIsPrepaid,
   hawbLabel,
   hawbLegal,
+  hawbNatureLines,
   hawbNoBadge,
   hawbTitle,
-  displayOrBlank,
 } from '../hawbOfficialStyles';
 
 const LEGAL =
@@ -20,15 +25,14 @@ const CERT =
 
 /** Band heights tuned to Fresa hawb-draft-report-format-2.pdf landmarks. */
 const H = {
-  shipper: 86,
-  consignee: 78,
-  agent: 50,
-  departure: 32,
-  destination: 34,
-  handling: 38,
-  cargoMin: 130,
-  otherCharges: 26,
-  signatureGap: 16,
+  shipper: 78,
+  consignee: 70,
+  agent: 46,
+  departure: 30,
+  destination: 32,
+  handling: 34,
+  cargoMin: 118,
+  signatureGap: 14,
 } as const;
 
 function HawbNoBadge({ value }: { value: string }) {
@@ -49,22 +53,26 @@ export function HawbDraft2DenseFace({ model }: { model: HawbOfficialModel }) {
   const carriage = model.declaredCarriage;
   const insurance = model.insurance;
   const lines = (rows: string[]) =>
-    rows.map((line, i) => (
+    hawbCapLines(rows, 4).map((line, i) => (
       <p key={`${line}-${i}`} style={{ ...hawbBody, fontWeight: 700 }}>
         {line}
       </p>
     ));
+  const natureLines = hawbNatureLines(model.natureOfGoods, model.handling);
+  const natureOnly = natureLines[0] || '';
   const cargoRow = model.tableRows[0] || [
     model.pieces,
     model.grossWeight,
     model.pieces || model.grossWeight ? 'K' : '',
-    model.natureOfGoods ? 'S' : '',
+    natureOnly ? 'S' : '',
     model.chargeableWeight,
     model.rateCharge,
     model.total,
-    model.natureOfGoods,
+    natureOnly,
   ];
   const packagesLine = model.pieces ? `TOTAL : (${model.pieces}) PACKAGES ONLY` : '';
+  const prepaid = hawbIsPrepaid(model.handling, model.accounting);
+  const byCarrier = hawbFirstFlightCode(model.flightDate, model.carrier);
 
   return (
     <div
@@ -107,68 +115,54 @@ export function HawbDraft2DenseFace({ model }: { model: HawbOfficialModel }) {
         </colgroup>
         <tbody>
           <tr>
-            <td
-              style={{
-                ...hawbCell,
-                minHeight: H.shipper,
-                height: H.shipper,
-                verticalAlign: 'top',
-              }}
-            >
+            <td style={{ ...hawbCell, ...hawbClipBand(H.shipper), verticalAlign: 'top' }}>
               <p style={hawbLabel}>Shippers Name and Address</p>
               {lines(model.shipperLines)}
             </td>
-            <td style={{ ...hawbCell, textAlign: 'center', verticalAlign: 'top' }}>
+            <td style={{ ...hawbCell, ...hawbClipBand(H.shipper), textAlign: 'center', verticalAlign: 'top' }}>
               <p style={{ ...hawbLabel, textAlign: 'left' }}>Non Negotiable</p>
-              <p style={{ ...hawbTitle, textAlign: 'center', fontSize: 14 }}>{layout.titleMode}</p>
-              <p style={{ ...hawbLabel, textAlign: 'left', marginTop: 2 }}>Issued by</p>
+              <p style={{ ...hawbTitle, textAlign: 'center', fontSize: 13 }}>{layout.titleMode}</p>
+              <p style={{ ...hawbLabel, textAlign: 'left', marginTop: 1 }}>Issued by</p>
               {model.logoUrl ? (
                 <img
                   src={model.logoUrl}
                   alt=""
                   style={{
-                    height: 28,
-                    maxWidth: 100,
+                    height: 20,
+                    maxWidth: 80,
                     objectFit: 'contain',
                     display: 'block',
-                    margin: '4px auto 2px',
+                    margin: '2px auto 1px',
                   }}
                 />
               ) : null}
-              <p style={{ ...hawbBody, fontWeight: 700, textAlign: 'center', marginTop: 2 }}>
+              <p style={{ ...hawbBody, fontWeight: 700, textAlign: 'center', marginTop: 1 }}>
                 {model.companyName}
               </p>
-              <p style={{ ...hawbBody, textAlign: 'center', fontSize: 7.5 }}>
-                {model.companyAddress}
+              <p style={{ ...hawbBody, textAlign: 'center', fontSize: 7 }}>
+                {hawbCapLines((model.companyAddress || '').split(/\n/), 2).join(', ')}
               </p>
-              <p style={{ ...hawbLegal, marginTop: 4, textAlign: 'left' }}>
+              <p style={{ ...hawbLegal, marginTop: 2, textAlign: 'left' }}>
                 {layout.copiesValidityLine}
               </p>
             </td>
           </tr>
           <tr>
-            <td
-              style={{
-                ...hawbCell,
-                minHeight: H.consignee,
-                height: H.consignee,
-                verticalAlign: 'top',
-              }}
-            >
+            <td style={{ ...hawbCell, ...hawbClipBand(H.consignee), verticalAlign: 'top' }}>
               <p style={hawbLabel}>Consignee&apos;s Name and Address</p>
               {lines(model.consigneeLines)}
             </td>
-            <td style={hawbCell}>
+            <td style={{ ...hawbCell, ...hawbClipBand(H.consignee) }}>
               <p style={hawbLegal}>{LEGAL}</p>
             </td>
           </tr>
           <tr>
             <td
-              style={{ ...hawbCell, minHeight: H.agent, height: H.agent, verticalAlign: 'top' }}
+              style={{ ...hawbCell, ...hawbClipBand(H.agent), verticalAlign: 'top' }}
             >
               <p style={hawbLabel}>Issuing Carrier&apos; Agent Name and City</p>
               <p style={{ ...hawbBody, fontWeight: 700, whiteSpace: 'pre-line' }}>
-                {model.agentLines.join('\n') || model.companyName}
+                {hawbCapLines(model.agentLines, 2).join('\n') || model.companyName}
               </p>
               <div
                 style={{
@@ -187,39 +181,34 @@ export function HawbDraft2DenseFace({ model }: { model: HawbOfficialModel }) {
                 </div>
               </div>
             </td>
-            <td style={{ ...hawbCell, minHeight: H.agent, height: H.agent, verticalAlign: 'top' }}>
+            <td style={{ ...hawbCell, ...hawbClipBand(H.agent), verticalAlign: 'top' }}>
               <p style={hawbLabel}>Accounting Information</p>
-              <p style={{ ...hawbBody, fontWeight: 700 }}>{model.accounting}</p>
+              <p
+                style={{
+                  ...hawbBody,
+                  fontWeight: 700,
+                  textAlign: 'right',
+                  fontSize: 9,
+                  marginTop: 4,
+                }}
+              >
+                {model.accounting}
+              </p>
               <p style={{ ...hawbLabel, marginTop: 6 }}>Master AWB No.</p>
               <p style={{ ...hawbBody, fontWeight: 700, fontSize: 10 }}>{model.mawbNo}</p>
-              {model.handling ? (
-                <p
-                  style={{
-                    ...hawbBody,
-                    fontWeight: 700,
-                    textAlign: 'right',
-                    marginTop: 8,
-                    fontSize: 9,
-                  }}
-                >
-                  {model.handling}
-                </p>
-              ) : null}
             </td>
           </tr>
           <tr>
             <td
               style={{
-                ...hawbCell,
-                minHeight: H.departure,
-                height: H.departure,
+                ...hawbCell, ...hawbClipBand(H.departure),
                 verticalAlign: 'top',
               }}
             >
               <p style={hawbLabel}>Airport of Departure</p>
               <p style={{ ...hawbBody, fontWeight: 700 }}>{model.departure}</p>
             </td>
-            <td style={{ ...hawbCell, minHeight: H.departure, height: H.departure, padding: 0 }}>
+            <td style={{ ...hawbCell, ...hawbClipBand(H.departure), padding: 0 }}>
               <div
                 style={{
                   display: 'grid',
@@ -230,10 +219,10 @@ export function HawbDraft2DenseFace({ model }: { model: HawbOfficialModel }) {
                 {(
                   [
                     ['To', model.toCode],
-                    ['By First Carrier', model.carrier || model.flightDate],
+                    ['By First Carrier', byCarrier],
                     ['to / by', ''],
                     ['Currency', model.currency],
-                    ['CHGS / WT/VAL', ''],
+                    ['CHGS / WT/VAL', prepaid ? 'PP' : ''],
                     ['Declared Carriage', carriage],
                     ['Declared Customs', customs],
                   ] as const
@@ -258,9 +247,7 @@ export function HawbDraft2DenseFace({ model }: { model: HawbOfficialModel }) {
           <tr>
             <td
               style={{
-                ...hawbCell,
-                minHeight: H.destination,
-                height: H.destination,
+                ...hawbCell, ...hawbClipBand(H.destination),
                 verticalAlign: 'top',
                 padding: 0,
               }}
@@ -285,9 +272,7 @@ export function HawbDraft2DenseFace({ model }: { model: HawbOfficialModel }) {
             </td>
             <td
               style={{
-                ...hawbCell,
-                minHeight: H.destination,
-                height: H.destination,
+                ...hawbCell, ...hawbClipBand(H.destination),
                 verticalAlign: 'top',
               }}
             >
@@ -298,7 +283,7 @@ export function HawbDraft2DenseFace({ model }: { model: HawbOfficialModel }) {
           <tr>
             <td
               colSpan={2}
-              style={{ ...hawbCell, minHeight: H.handling, height: H.handling, verticalAlign: 'top' }}
+              style={{ ...hawbCell, ...hawbClipBand(H.handling), verticalAlign: 'top' }}
             >
               <p style={hawbLabel}>Handling Information</p>
               <p style={{ ...hawbBody, fontWeight: 700 }}>{model.handling}</p>
@@ -357,21 +342,16 @@ export function HawbDraft2DenseFace({ model }: { model: HawbOfficialModel }) {
                   ...hawbCell,
                   minHeight: H.cargoMin,
                   verticalAlign: 'top',
+                  overflow: 'hidden',
                   fontWeight: 700,
                 }}
               >
                 {i === 7 ? (
-                  <>
-                    <p style={{ ...hawbBody, fontWeight: 700, margin: 0 }}>{cargoRow[i] ?? ''}</p>
-                    {model.handling ? (
-                      <p style={{ ...hawbBody, margin: '6px 0 0' }}>{model.handling}</p>
-                    ) : null}
-                    {packagesLine ? (
-                      <p style={{ ...hawbBody, fontWeight: 700, margin: '6px 0 0' }}>
-                        {packagesLine}
-                      </p>
-                    ) : null}
-                  </>
+                  natureLines.map((line) => (
+                    <p key={line} style={{ ...hawbBody, fontWeight: 700, margin: '0 0 2px' }}>
+                      {line}
+                    </p>
+                  ))
                 ) : (
                   (cargoRow[i] ?? '')
                 )}

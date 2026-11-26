@@ -5,12 +5,18 @@ import { HawbSparseOverlayFace } from '../faces/HawbSparseOverlayFace';
 
 type Props = {
   model: HawbOfficialModel;
-  /** Digital default true; physical preprinted stationery print should pass false. */
+  /**
+   * Digital PDF matches Fresa Original-2: sparse data islands only
+   * (no Draft-2 dense grid). Pass false for physical preprinted stationery.
+   */
   showUnderlay?: boolean;
 };
 
-/** Format-specific document: HAWB Original Pre-Printed Format-2. */
-export function HawbOriginal2Document({ model, showUnderlay = true }: Props) {
+/**
+ * HAWB Original Pre-Printed Format-2 (595×845).
+ * Fresa sample is data-only sparse overlay — never the Draft-2 dense face.
+ */
+export function HawbOriginal2Document({ model, showUnderlay = false }: Props) {
   const layout = HAWB_ORIGINAL2_LAYOUT;
   return (
     <HawbOfficialPage layout={layout}>

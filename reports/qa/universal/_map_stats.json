@@ -1,0 +1,66 @@
+{
+  "formatMapRows": 1016,
+  "formatMapUniqueCodes": 1016,
+  "generatePath": {
+    "json_shell_fallback": 538,
+    "measured_fresa_face": 412,
+    "unmapped": 62,
+    "reference_accurate": 4
+  },
+  "family": {
+    "ops_list": 111,
+    "wms_asn": 7,
+    "wms": 56,
+    "other": 70,
+    "quotation": 18,
+    "accounts": 31,
+    "arrival_notice": 35,
+    "sea_docs": 61,
+    "blank": 62,
+    "finance": 64,
+    "commercial": 179,
+    "my_reports": 6,
+    "delivery_order": 53,
+    "air_docs": 31,
+    "hbl": 115,
+    "invoice": 115,
+    "mawb": 2
+  },
+  "has_reference": {
+    "yes": 420,
+    "no": 596
+  },
+  "measured_face": {
+    "no": 600,
+    "yes": 416
+  },
+  "has_json_layout": {
+    "yes": 928,
+    "no": 88
+  },
+  "statusJsonKeys": 856,
+  "byStatus": {
+    "in_progress": 6,
+    "reference_only": 850
+  },
+  "unmatchedByDirection": {
+    "reference_without_code": 135,
+    "code_without_reference": 545
+  },
+  "layoutGroups": 375,
+  "layoutMultiMemberGroups": 17,
+  "layoutSizeHistogram": {
+    "1": 358,
+    "2": 15,
+    "3": 1,
+    "8": 1
+  },
+  "avgMembersPerLayout": 1.06,
+  "hypotheses956": {
+    "registry852": 852,
+    "formatMapRows": 1016,
+    "statusKeys": 856,
+    "registryPlusMeasuredOrphansApprox": "see measuredNotInRegistry",
+    "note": "Do not treat 956 as verified registry size"
+  }
+}

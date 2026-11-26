@@ -1,0 +1,427 @@
+{
+  "verifiedAt": "2026-11-26T07:44:46.638Z",
+  "claims": {
+    "userClaimedFormats": 956,
+    "verifiedRegisteredCodes": 0,
+    "discrepancyNote": "Investigate unexpected registry length"
+  },
+  "catalogue": {
+    "registrySource": "src/features/reports/data/fresaReportRegistry.generated.ts",
+    "registeredCount": 0,
+    "uniqueCodes": 0,
+    "duplicateCodes": 0,
+    "byBusinessFamily": {},
+    "byTemplateFamily": {},
+    "gapStatus": {},
+    "hawbCodes": []
+  },
+  "measured": {
+    "measuredFaceCount": 421,
+    "brandingSlotCount": 392,
+    "specsJsonCount": 392,
+    "measuredInRegistry": 0,
+    "measuredNotInRegistryCount": 421,
+    "measuredNotInRegistrySample": [
+      "ADVANCE_SHIPPING_NOTE",
+      "ADVANCE_SHIPPING_NOTE_FORMAT_1",
+      "ADVANCE_SHIPPING_NOTE_LOCATION_SUMMARY",
+      "ADVANCE_SHIPPING_NOTE_LOCATION_WISE",
+      "ADVANCE_SHIPPING_NOTE_LOCATION_WISE_1",
+      "ADVANCE_SHIPPING_NOTE_LOCATION_WISE_REF",
+      "ADVANCE_SHIPPING_NOTE_SUMMARY",
+      "AIR_FREIGHT_ATD_CONFIRMATION_REPORT_FORMAT",
+      "AIR_QUOTATION_REPORT_FORMAT",
+      "AIR_QUOTATION_WITH_AIRLINE_REPORT_FORMAT",
+      "AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT",
+      "AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT_1",
+      "AP_AGING_SUMMARY_REPORT_FORMAT",
+      "AP_OUTSTANDING_STATEMENT_REPORT_FORMAT",
+      "AR_AGING_SUMMARY_REPORT_FORMAT",
+      "ARRIVAL_CONFIRMATION",
+      "ARRIVAL_CONFIRMATION_FORMAT1_RPM_REF_732",
+      "ARRIVAL_CONFIRMATION_RPM_REF_152",
+      "ARRIVAL_INFORMATION_RPM_REF_839",
+      "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+      "ARRIVAL_NOTICE_REPORT_FORMAT_10_SEA_ARRIVAL_NOTICE_FCL_VIETNAM",
+      "ARRIVAL_NOTICE_REPORT_FORMAT_2_CARGO_ARRIVAL_NOTICE_JASPER",
+      "ARRIVAL_NOTICE_REPORT_FORMAT_3_ARRIVAL_NOTICE_USA",
+      "ARRIVAL_NOTICE_REPORT_FORMAT_4_ARRIVAL_NOTICE_USA",
+      "ARRIVAL_NOTICE_REPORT_FORMAT_5_CARGO_ARRIVAL_NOTICE_SEA",
+      "ARRIVAL_NOTICE_REPORT_FORMAT_6_CARGO_ARRIVAL_NOTICE_SEA",
+      "ARRIVAL_NOTICE_REPORT_FORMAT_7_CARGO_ARRIVAL_NOTICE_SEA",
+      "ARRIVAL_NOTICE_REPORT_FORMAT_8_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
+      "ARRIVAL_NOTICE_REPORT_FORMAT_9_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
+      "BARCODE_AWB_REPORT_FORMAT",
+      "BOOKING_CONFIRMATION_AIR_REPORT_FORMAT",
+      "BOOKING_CONFIRMATION_REPORT_FORMAT_1",
+      "BOOKING_CONFIRMATION_REPORT_FORMAT_1_BOOKING_CONFIRMATION",
+      "BOOKING_CONFIRMATION_REPORT_FORMAT_2",
+      "BOOKING_CONFIRMATION_REPORT_FORMAT_2_BOOKING_CONFIRMATION",
+      "CARGO_ARRIVAL_NOTICE_AIR_REPORT_FORMAT",
+      "CARGO_ARRIVAL_NOTICE_AIR_RPM_REF_49",
+      "CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_REPORT_FORMAT",
+      "CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_RPM_REF_363",
+      "CARGO_ARRIVAL_NOTICE_SEA_FORMAT_3_RPM_REF_1376"
+    ],
+    "registryWithoutMeasured": 0
+  },
+  "references": {
+    "manifestRows": 450,
+    "manifestHeaders": [
+      "code",
+      "section",
+      "link_text",
+      "source_url",
+      "file_type",
+      "local_path",
+      "sha256",
+      "downloaded_at",
+      "status"
+    ],
+    "layoutsRows": 375,
+    "layoutsHeaders": [
+      "layout_id",
+      "member_codes",
+      "member_files",
+      "delta",
+      "priority"
+    ],
+    "layoutSingletonGroups": 357,
+    "layoutMultiMemberGroups": 18,
+    "layoutMultiSample": [
+      {
+        "id": "L001-68cffa46679aa56a",
+        "memberCount": 8,
+        "members": [
+          "MAWB_DRAFT_REPORT_FORMAT",
+          "HBL_DRAFT_REPORT_FORMAT_68",
+          "FG_HBL_ORIGINAL_FORMAT_87",
+          "HBL_DRAFT_REPORT_FORMAT_118",
+          "HBL_DRAFT_REPORT_FORMAT_127",
+          "HBL_DRAFT_REPORT_FORMAT_130",
+          "HBL_DRAFT_REPORT_FORMAT_132",
+          "FG_HBL_FORMAT10_RPM_REF_472"
+        ]
+      },
+      {
+        "id": "L002-e8716627b6145c30",
+        "memberCount": 4,
+        "members": [
+          "ARRIVAL_CONFIRMATION_RPM_REF_152",
+          "DELIVERY_CONFIRMATION_RPM_REF_153",
+          "DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT",
+          "DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT"
+        ]
+      },
+      {
+        "id": "L003-129e5889eb539e7a",
+        "memberCount": 2,
+        "members": [
+          "HBL_DRAFT_REPORT_FORMAT_JASPER",
+          "HBL_DRAFT_REPORT_FORMAT_6"
+        ]
+      },
+      {
+        "id": "L004-349a4d07e82cd8c1",
+        "memberCount": 2,
+        "members": [
+          "HBL_DRAFT_REPORT_FORMAT_10",
+          "HBL_DRAFT_REPORT_FORMAT_23"
+        ]
+      },
+      {
+        "id": "L005-3a8f2c706815103f",
+        "memberCount": 2,
+        "members": [
+          "HBL_DRAFT_REPORT_FORMAT_16",
+          "FG_HBL_FORMAT_16"
+        ]
+      },
+      {
+        "id": "L006-be9aff7e4dd5b586",
+        "memberCount": 2,
+        "members": [
+          "HAWB_DRAFT_REPORT_FORMAT",
+          "FG_HBL_FORMAT_1"
+        ]
+      },
+      {
+        "id": "L007-defc571e0b2d7607",
+        "memberCount": 2,
+        "members": [
+          "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+          "MAWB_ORIGINAL_PREPRINTED_KC_REPORT_FORMAT"
+        ]
+      },
+      {
+        "id": "L008-44e380bd45cc126d",
+        "memberCount": 2,
+        "members": [
+          "CARGO_MANIFEST_REPORT_FORMAT",
+          "FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT"
+        ]
+      },
+      {
+        "id": "L009-bd9146d7e60da034",
+        "memberCount": 2,
+        "members": [
+          "ADVANCE_SHIPPING_NOTE_LOCATION_WISE",
+          "ADVANCE_SHIPPING_NOTE_LOCATION_WISE"
+        ]
+      },
+      {
+        "id": "L010-b157865289f8e7c7",
+        "memberCount": 2,
+        "members": [
+          "TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY",
+          "TRIAL_BALANCE_REPORT_FORMAT_4_TRIAL_BALANCE_SUMMARY_EXTENDED"
+        ]
+      },
+      {
+        "id": "L011-d732802a0357741b",
+        "memberCount": 2,
+        "members": [
+          "TRIAL_BALANCE_REPORT_FORMAT_3_TRIAL_BALANCE_SUMMARY_BRANCHWISE",
+          "TRIAL_BALANCE_REPORT_FORMAT_6_TRIAL_BALANCE_SUMMARY_EXTENDED_BRANCHWISE"
+        ]
+      },
+      {
+        "id": "L012-b12fec2c4e2117e4",
+        "memberCount": 2,
+        "members": [
+          "CARTING_CONFIRMATION_REPORT_FORMAT",
+          "PICKUP_CONFIRMATION_REPORT_FORMAT"
+        ]
+      },
+      {
+        "id": "L013-ef297e4659fe01d4",
+        "memberCount": 2,
+        "members": [
+          "FG_SIMPLE_INVOICE_RPM_REF_861",
+          "FG_SIMPLE_INVOICE_USA_RPM_REF_1274"
+        ]
+      },
+      {
+        "id": "L014-025da6111e37e630",
+        "memberCount": 2,
+        "members": [
+          "FG_STANDARD_INVOICE_RPM_REF_217",
+          "FG_STANDARD_INVOICE_FORMAT2_RPM_REF_778"
+        ]
+      },
+      {
+        "id": "L015-532c4f4e79cbc67c",
+        "memberCount": 2,
+        "members": [
+          "FG_STANDARD_TAX_INVOICE_FORMAT19_RPM_REF_1344",
+          "FG_STANDARD_TAX_INVOICE_FORMAT3_RPM_REF_687"
+        ]
+      }
+    ],
+    "unmatchedRows": 680,
+    "unmatchedHeaders": [
+      "direction",
+      "code",
+      "source_url",
+      "reason"
+    ],
+    "unmatchedBySide": {
+      "reference_without_code": 135,
+      "code_without_reference": 545
+    },
+    "formatMapRows": 1016,
+    "formatMapHeaders": [
+      "code",
+      "name",
+      "fresa_column",
+      "family",
+      "has_reference",
+      "reference_file",
+      "map_method",
+      "measured_face",
+      "reference_accurate",
+      "has_json_layout",
+      "listed_on_dashboard",
+      "generate_path",
+      "sample_pdf_url"
+    ],
+    "pdfFilesInReferences": 401,
+    "xlsxFilesInReferences": 49,
+    "localPinPdfsInQa": 294,
+    "registryCodesPresentInManifest": 0,
+    "registryCodesMissingFromManifest": 0
+  },
+  "status": {
+    "signoffRows": 6,
+    "signoffHeaders": [
+      "code",
+      "reviewer",
+      "date",
+      "reference_hash"
+    ],
+    "signoffSample": [
+      {
+        "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+        "reviewer": "",
+        "date": "",
+        "reference_hash": ""
+      },
+      {
+        "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+        "reviewer": "",
+        "date": "",
+        "reference_hash": ""
+      },
+      {
+        "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+        "reviewer": "",
+        "date": "",
+        "reference_hash": ""
+      },
+      {
+        "code": "FCL_QUOTATION_REPORT_FORMAT",
+        "reviewer": "",
+        "date": "",
+        "reference_hash": ""
+      },
+      {
+        "code": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+        "reviewer": "",
+        "date": "",
+        "reference_hash": ""
+      },
+      {
+        "code": "ACTIVITY_COMPLETED_JOBS_LIST_REPORT_FORMAT",
+        "reviewer": "",
+        "date": "",
+        "reference_hash": ""
+      }
+    ],
+    "statusBreakdown": {
+      "kind": "flat-map",
+      "n": 856,
+      "by": {
+        "in_progress": 6,
+        "reference_only": 850
+      }
+    }
+  },
+  "rendering": {
+    "generateCatalogUsesMeasured": false,
+    "generateCatalogMentionsAllowsFresa": true,
+    "pdfLibraries": {
+      "@pdf-lib/fontkit": "^1.1.1",
+      "html2canvas": "^1.4.1",
+      "jsbarcode": "^3.12.3",
+      "jspdf": "^4.2.1",
+      "pdf-lib": "^1.17.1",
+      "pdfmake": "^0.3.15",
+      "qrcode": "^1.5.4",
+      "@playwright/test": "^1.61.0",
+      "@types/html2canvas": "^0.5.35",
+      "@types/jsbarcode": "^3.11.4",
+      "@vitest/browser-playwright": "^4.1.11",
+      "mupdf": "^1.28.6",
+      "pdfjs-dist": "^4.10.38",
+      "playwright": "^1.61.0"
+    },
+    "entryPoints": [
+      "src/features/reports/utils/generateCatalogLayoutPdf.ts",
+      "src/features/reports/templates/official/generateOfficialMeasuredPdf.ts",
+      "src/features/reports/templates/hawb/official/generateHawbOfficialPdf.ts",
+      "src/features/reports/templates/hawb/official/generateHawbSparsePdf.ts",
+      "src/features/invoices/utils/generateInvoicePdf.ts",
+      "src/features/quotations/utils/generateQuotationPdf.ts",
+      "src/features/reports/engines/pdf/playwrightHtml/hawbDraft2PrintClient.ts"
+    ],
+    "hawbSparsePathPresent": true
+  },
+  "qa": {
+    "reportTestFileCount": 67,
+    "reportTestFilesSample": [
+      "src/features/reports/components/ReportCatalog/CatalogStripsView.test.tsx",
+      "src/features/reports/constants/hawbFormatCatalog.test.ts",
+      "src/features/reports/contracts/reportBindings.test.ts",
+      "src/features/reports/engine/invoiceV2Applicability.test.ts",
+      "src/features/reports/engine/invoiceV2Gate.test.ts",
+      "src/features/reports/engine/reportsFlowStaging.test.ts",
+      "src/features/reports/engine/reportsRuntimeConfig.test.ts",
+      "src/features/reports/engine/writeClassicInvoices.test.ts",
+      "src/features/reports/engines/pdf/phase1PdfFoundation.test.ts",
+      "src/features/reports/engines/pdf/playwrightHtml/renderPlaywrightHtmlPdf.test.ts",
+      "src/features/reports/engines/pdf/printCssPilot.test.ts",
+      "src/features/reports/engines/pdf/reportRendererAdapter.test.ts",
+      "src/features/reports/engines/preview/renderTemplateV2Pdf.test.ts",
+      "src/features/reports/flow/flowRealClassicRender.test.ts",
+      "src/features/reports/flow/invoiceFlowLines.test.ts",
+      "src/features/reports/flow/invoiceFlowTotals.test.ts",
+      "src/features/reports/flow/loadInvoiceFlowRecord.test.ts",
+      "src/features/reports/flow/renderInvoiceFlowPdf.test.ts",
+      "src/features/reports/htmlPilots/htmlPilots.render.qa.test.ts",
+      "src/features/reports/htmlPilots/htmlPilots.smoke.test.ts",
+      "src/features/reports/qa/fresaOfficialSampleCatalogue.test.ts",
+      "src/features/reports/qa/phase3BrandingSeparation.test.ts",
+      "src/features/reports/qa/phase6Regression.test.ts",
+      "src/features/reports/qa/phase7DocumentFidelity.test.ts",
+      "src/features/reports/qa/phase7FinancialValidation.test.ts",
+      "src/features/reports/qa/sharedShellHonesty.test.ts",
+      "src/features/reports/registry/reportRegistry.schema.test.ts",
+      "src/features/reports/templates/hawb/official/hawbDraft1MeasuredGenerate.test.ts",
+      "src/features/reports/templates/hawb/official/hawbDraft1OverlapFix.test.ts",
+      "src/features/reports/templates/hawb/official/hawbDraftDenseChrome.test.ts",
+      "src/features/reports/templates/hawb/official/hawbMeasuredGenerate.test.ts",
+      "src/features/reports/templates/hawb/official/hawbSparseOriginal.test.ts",
+      "src/features/reports/templates/hawb/official/phase2HawbOfficial.test.ts",
+      "src/features/reports/templates/hawb/official/phase2_3Acceptance.test.ts",
+      "src/features/reports/templates/hawb/official/phase2_4Acceptance.test.ts",
+      "src/features/reports/templates/hawb/official/phase2_5BrandingPreflight.test.ts",
+      "src/features/reports/templates/hbl/jasperPilot/hblJasperPilot.config.test.ts",
+      "src/features/reports/templates/official/brandingChrome.test.ts",
+      "src/features/reports/templates/official/format2Letterhead.test.ts",
+      "src/features/reports/templates/official/format4Letterhead.test.ts",
+      "src/features/reports/templates/official/fresaFooterStrip.test.ts",
+      "src/features/reports/templates/official/hblFormat1Letterhead.test.ts",
+      "src/features/reports/templates/official/hblHkLetterhead.test.ts",
+      "src/features/reports/templates/official/hblQueueLetterhead.test.ts",
+      "src/features/reports/templates/official/logoSlotFit.test.ts",
+      "src/features/reports/templates/official/officialFaces.test.ts",
+      "src/features/reports/templates/official/sprintDPixelQueue.test.ts",
+      "src/features/reports/templates/referenceAccurate/referenceAccurate.layout.test.ts",
+      "src/features/reports/templates/referenceAccurate/referenceAccurate.test.ts",
+      "src/features/reports/utils/catalogFormatStatus.test.ts",
+      "src/features/reports/utils/clientLayoutFallback.test.ts",
+      "src/features/reports/utils/dashboardCategories.test.ts",
+      "src/features/reports/utils/dashboardFilters.test.ts",
+      "src/features/reports/utils/fresaCatalogBand.test.ts",
+      "src/features/reports/utils/fresaPackGenerateParams.test.ts",
+      "src/features/reports/utils/htmlPilotPayload.test.ts",
+      "src/features/reports/utils/invoiceDashboardHref.test.ts",
+      "src/features/reports/utils/jobRelatedReports.test.ts",
+      "src/features/reports/utils/officialFormatGovernance.test.ts",
+      "src/features/reports/utils/partitionCatalogStrips.test.ts"
+    ],
+    "toolsReportsScriptCount": 144,
+    "toolsReportsSample": [
+      "tools/reports/binding-diff.mjs",
+      "tools/reports/build-manifest.mjs",
+      "tools/reports/build-manifest.test.mjs",
+      "tools/reports/build-status.mjs",
+      "tools/reports/compare-a4.mjs",
+      "tools/reports/compare-runs.mjs",
+      "tools/reports/diff-band.mjs",
+      "tools/reports/diff-grid.mjs",
+      "tools/reports/diff-pilot.mjs",
+      "tools/reports/diff-spans.mjs",
+      "tools/reports/diff-where.mjs",
+      "tools/reports/extract.mjs",
+      "tools/reports/flow-real-compare.mjs",
+      "tools/reports/full-run.mjs",
+      "tools/reports/invoice-v2-compare.mjs",
+      "tools/reports/prove-flow-status-path.mjs",
+      "tools/reports/reverify-vietnam.mjs",
+      "tools/reports/row-diff.mjs",
+      "tools/reports/verify-pool.mjs",
+      "tools/reports/verify-worker.mjs"
+    ]
+  }
+}

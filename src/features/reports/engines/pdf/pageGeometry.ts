@@ -156,15 +156,15 @@ export const PAGE_HAWB_NEAR_A4 = resolvePageGeometry({
   orientation: 'portrait',
   widthPt: 595,
   heightPt: 845,
-  // Tighter margins match Fresa Draft/Draft-2 content fill (~4mm vs prior 6mm).
-  marginsMm: { top: 4, right: 4, bottom: 4, left: 4 },
+  // Fresa Draft/Draft-2 fill nearly edge-to-edge (~2.5–3mm).
+  marginsMm: { top: 3, right: 3, bottom: 3, left: 3 },
 });
 
 /** HAWB Draft-1 reference MediaBox = ISO A4 595×842 pt (multi-page copy set). */
 export const PAGE_HAWB_DRAFT1_A4 = resolvePageGeometry({
   paper: 'A4',
   orientation: 'portrait',
-  marginsMm: { top: 5, right: 5, bottom: 5, left: 5 },
+  marginsMm: { top: 4, right: 4, bottom: 4, left: 4 },
 });
 
 /**
@@ -175,7 +175,7 @@ export const PAGE_HAWB_ORIGINAL1_CUSTOM = resolvePageGeometry({
   orientation: 'portrait',
   widthPt: 737,
   heightPt: 923,
-  marginsMm: { top: 8, right: 8, bottom: 8, left: 8 },
+  marginsMm: { top: 5, right: 5, bottom: 5, left: 5 },
 });
 
 /** Map legacy invoice layout paper + orientation fields. */

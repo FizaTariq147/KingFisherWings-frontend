@@ -2,6 +2,7 @@ export * from './hawbOfficial.types';
 export * from './layouts';
 export * from './mapToHawbOfficialModel';
 export * from './generateHawbOfficialPdf';
+export * from './generateHawbSparsePdf';
 export * from './createHawbOfficialEvidencePdf';
 export { HawbDraftDocument } from './documents/HawbDraftDocument';
 export { HawbDraft1Document } from './documents/HawbDraft1Document';

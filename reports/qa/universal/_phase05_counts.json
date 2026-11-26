@@ -1,0 +1,152 @@
+{
+  "verifiedAt": "2026-11-26T07:56:55.252Z",
+  "registry": {
+    "entries": 852,
+    "uniqueCodes": 852,
+    "duplicateCodes": 0
+  },
+  "status": {
+    "keys": 856,
+    "onlyInStatusNotRegistry": [
+      "INVOICE_FLOW_TAX_INVOICE_1",
+      "QUOTATION_FLOW_1",
+      "CREDIT_NOTE_FLOW_1",
+      "DEBIT_NOTE_FLOW_1"
+    ],
+    "registryMissingFromStatus": [],
+    "byValue": {
+      "in_progress": 6,
+      "reference_only": 850
+    }
+  },
+  "codeMap": {
+    "headers": [
+      "code",
+      "reference_file",
+      "confidence",
+      "method",
+      "notes"
+    ],
+    "rows": 853,
+    "methodCol": "method",
+    "byMethod": {
+      "normalized_name": 314,
+      "(empty)": 433,
+      "override": 2,
+      "rpm_ref": 104
+    },
+    "withReferenceFileField": 420,
+    "withoutReferenceFileField": 433
+  },
+  "codeMapSummary": {
+    "catalogueCodes": 852,
+    "mappedToReference": 419,
+    "byMethod": {
+      "override": 1,
+      "rpm_ref": 104,
+      "normalized_name": 314
+    },
+    "proposedCodes": [
+      "ADVANCE_SHIPPING_NOTE_LOCATION_WISE_1"
+    ],
+    "codesWithoutReference": {
+      "total": 545,
+      "name_mismatch": 124,
+      "no_reference": 418,
+      "unknown": 3
+    },
+    "referencesWithoutCode": {
+      "total": 136,
+      "should_register": 28,
+      "ignore": 108
+    }
+  },
+  "layoutCounts": {
+    "pdfs": 402,
+    "strictLayouts": 376,
+    "detailRowNormalizedLayouts": 374,
+    "failed": 0
+  },
+  "summarySnippet": {
+    "keys": [
+      "pageLinks",
+      "pinned",
+      "downloadFailed",
+      "pdf",
+      "xlsx",
+      "scanned",
+      "uniqueLayouts",
+      "multiMemberLayouts",
+      "medianShapes",
+      "catalogueCodes",
+      "referenceWithoutCode",
+      "codeWithoutReference",
+      "missingText",
+      "missingPng"
+    ],
+    "catalogueCodes": 852,
+    "uniqueLayouts": 376
+  },
+  "formatMap": {
+    "rows": 1016,
+    "generatePath": {
+      "json_shell_fallback": 538,
+      "measured_fresa_face": 412,
+      "unmapped": 62,
+      "reference_accurate": 4
+    },
+    "has_reference_yes": 420,
+    "has_reference_no": 596
+  },
+  "layoutsCsv": {
+    "rows": 375,
+    "layoutIds": 375
+  },
+  "unmatched": {
+    "rows": 680,
+    "byDirection": {
+      "reference_without_code": 135,
+      "code_without_reference": 545
+    }
+  },
+  "manifest": {
+    "rows": 450
+  },
+  "hawbRegistryCodes": [
+    "HAWB_DRAFT_REPORT_FORMAT",
+    "HAWB_DRAFT_REPORT_FORMAT_1",
+    "HAWB_DRAFT_REPORT_FORMAT_10",
+    "HAWB_DRAFT_REPORT_FORMAT_11",
+    "HAWB_DRAFT_REPORT_FORMAT_12",
+    "HAWB_DRAFT_REPORT_FORMAT_13",
+    "HAWB_DRAFT_REPORT_FORMAT_14",
+    "HAWB_DRAFT_REPORT_FORMAT_15",
+    "HAWB_DRAFT_REPORT_FORMAT_16",
+    "HAWB_DRAFT_REPORT_FORMAT_17",
+    "HAWB_DRAFT_REPORT_FORMAT_18",
+    "HAWB_DRAFT_REPORT_FORMAT_19",
+    "HAWB_DRAFT_REPORT_FORMAT_2",
+    "HAWB_DRAFT_REPORT_FORMAT_20",
+    "HAWB_DRAFT_REPORT_FORMAT_21",
+    "HAWB_DRAFT_REPORT_FORMAT_22",
+    "HAWB_DRAFT_REPORT_FORMAT_23",
+    "HAWB_DRAFT_REPORT_FORMAT_24",
+    "HAWB_DRAFT_REPORT_FORMAT_25",
+    "HAWB_DRAFT_REPORT_FORMAT_26",
+    "HAWB_DRAFT_REPORT_FORMAT_27",
+    "HAWB_DRAFT_REPORT_FORMAT_3",
+    "HAWB_DRAFT_REPORT_FORMAT_4",
+    "HAWB_DRAFT_REPORT_FORMAT_5",
+    "HAWB_DRAFT_REPORT_FORMAT_6",
+    "HAWB_DRAFT_REPORT_FORMAT_7",
+    "HAWB_DRAFT_REPORT_FORMAT_8",
+    "HAWB_DRAFT_REPORT_FORMAT_9",
+    "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+    "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2"
+  ],
+  "measuredFaces": 421,
+  "arithmetic956": {
+    "registryPlusRpmRef104": 956,
+    "note": "Only meaningful if code-map rpm_ref method count is exactly 104"
+  }
+}

@@ -1,0 +1,718 @@
+{
+  "generatedAt": "2026-11-26T09:22:13.444Z",
+  "selectionRule": "All OFFICIAL_HAWB_FORMAT_CODES (5) + registry INVOICE_/PROFORMA_ codes with measured faces (24). Excludes HAWB Draft-3…27.",
+  "codes": [
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT",
+      "registryEntry": {
+        "code": "HAWB_DRAFT_REPORT_FORMAT",
+        "name": "HAWB Draft Report Format",
+        "family": "air_docs",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateHawbOfficialPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf (via generateHawbOfficialPdf)",
+      "inputDataModel": "InvoiceFormatPdfData / HawbOfficialModel",
+      "pageSizePt": {
+        "widthPt": 595,
+        "heightPt": 845,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports/references/files/hawb-draft-report-format.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/hawb/official/hawbDraftDenseChrome.test.ts",
+        "src/features/reports/templates/hawb/official/hawbMeasuredGenerate.test.ts",
+        "src/features/reports/templates/hawb/official/phase2HawbOfficial.test.ts"
+      ],
+      "formatMapStaleWarning": "Production format-map may still say json_shell_fallback — verified path is measured/sparse"
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_1",
+      "registryEntry": {
+        "code": "HAWB_DRAFT_REPORT_FORMAT_1",
+        "name": "HAWB Draft Report Format-1",
+        "family": "air_docs",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateHawbOfficialPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf (via generateHawbOfficialPdf)",
+      "inputDataModel": "InvoiceFormatPdfData / HawbOfficialModel",
+      "pageSizePt": {
+        "widthPt": 595,
+        "heightPt": 842,
+        "pageCount": 9,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports/references/files/hawb-draft-report-format-1.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/hawb/official/hawbDraftDenseChrome.test.ts",
+        "src/features/reports/templates/hawb/official/hawbMeasuredGenerate.test.ts",
+        "src/features/reports/templates/hawb/official/phase2HawbOfficial.test.ts",
+        "src/features/reports/templates/hawb/official/hawbDraft1MeasuredGenerate.test.ts",
+        "src/features/reports/templates/hawb/official/hawbDraft1OverlapFix.test.ts"
+      ],
+      "formatMapStaleWarning": "Production format-map may still say json_shell_fallback — verified path is measured/sparse"
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_2",
+      "registryEntry": {
+        "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+        "name": "HAWB Draft Report Format-2",
+        "family": "air_docs",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateHawbOfficialPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf (via generateHawbOfficialPdf)",
+      "inputDataModel": "InvoiceFormatPdfData / HawbOfficialModel",
+      "pageSizePt": {
+        "widthPt": 595,
+        "heightPt": 845,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports/references/files/hawb-draft-report-format-2.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/hawb/official/hawbDraftDenseChrome.test.ts",
+        "src/features/reports/templates/hawb/official/hawbMeasuredGenerate.test.ts",
+        "src/features/reports/templates/hawb/official/phase2HawbOfficial.test.ts"
+      ],
+      "formatMapStaleWarning": "Production format-map may still say json_shell_fallback — verified path is measured/sparse"
+    },
+    {
+      "reportId": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+      "registryEntry": {
+        "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+        "name": "HAWB Original Pre Printed Report Format-1",
+        "family": "air_docs",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateHawbOfficialPdf",
+      "rendererFunction": "generateHawbSparsePdf (via generateHawbOfficialPdf)",
+      "inputDataModel": "InvoiceFormatPdfData / HawbOfficialModel",
+      "pageSizePt": {
+        "widthPt": 737,
+        "heightPt": 923,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports/references/files/hawb-original-pre-printed-report-format-1.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/hawb/official/hawbDraftDenseChrome.test.ts",
+        "src/features/reports/templates/hawb/official/hawbMeasuredGenerate.test.ts",
+        "src/features/reports/templates/hawb/official/phase2HawbOfficial.test.ts",
+        "src/features/reports/templates/hawb/official/hawbSparseOriginal.test.ts"
+      ],
+      "formatMapStaleWarning": "Production format-map may still say json_shell_fallback — verified path is measured/sparse"
+    },
+    {
+      "reportId": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+      "registryEntry": {
+        "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+        "name": "HAWB Original Pre Printed Report Format-2",
+        "family": "air_docs",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateHawbOfficialPdf",
+      "rendererFunction": "generateHawbSparsePdf (via generateHawbOfficialPdf)",
+      "inputDataModel": "InvoiceFormatPdfData / HawbOfficialModel",
+      "pageSizePt": {
+        "widthPt": 595,
+        "heightPt": 845,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports/references/files/hawb-original-pre-printed-report-format-2.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/hawb/official/hawbDraftDenseChrome.test.ts",
+        "src/features/reports/templates/hawb/official/hawbMeasuredGenerate.test.ts",
+        "src/features/reports/templates/hawb/official/phase2HawbOfficial.test.ts",
+        "src/features/reports/templates/hawb/official/hawbSparseOriginal.test.ts"
+      ],
+      "formatMapStaleWarning": "Production format-map may still say json_shell_fallback — verified path is measured/sparse"
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+        "name": "Invoice Report Format-1 Tax Invoice India",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 594,
+        "heightPt": 841.9,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-1-tax-invoice-india.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+        "name": "Invoice Report Format-2 Tax Invoice India",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 595,
+        "heightPt": 842,
+        "pageCount": 1,
+        "rotateDeg": 90
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-2-tax-invoice-india.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts",
+        "src/features/reports/templates/official/format2Letterhead.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
+        "name": "Invoice Report Format-3 Summary Invoice",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 594,
+        "heightPt": 841.9,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-3-summary-invoice.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
+        "name": "Invoice Report Format-4 Standard Tax Invoice",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 595,
+        "heightPt": 842,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-4-standard-tax-invoice.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts",
+        "src/features/reports/templates/official/format4Letterhead.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA",
+        "name": "Invoice Report Format-5 Tax Invoice India",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 594,
+        "heightPt": 841.9,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-5-tax-invoice-india.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA",
+        "name": "Invoice Report Format-6 Simple Invoice (India)",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 594,
+        "heightPt": 841.9,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-6-simple-invoice-(india).pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE",
+        "name": "Invoice Report Format-7 Simple Invoice",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 594,
+        "heightPt": 841.9,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-7-simple-invoice.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
+        "name": "Invoice Report Format-8 Standard Invoice Arabic",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 595,
+        "heightPt": 842,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-8-standard-invoice-arabic.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA",
+        "name": "Invoice Report Format-9 Standard Invoice USA",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 595,
+        "heightPt": 842,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-9-standard-invoice-usa.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE",
+        "name": "Invoice Report Format-10 Standard Invoice",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 595,
+        "heightPt": 842,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-10-standard-invoice.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND",
+        "name": "Invoice Report Format-11 Standard Invoice Land",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 594,
+        "heightPt": 841.9,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-11-standard-invoice-land.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED",
+        "name": "Invoice Report Format-12 Standard Invoice Preprinted",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 615,
+        "heightPt": 793,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-12-standard-invoice-preprinted.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA",
+        "name": "Invoice Report Format-13 Standard Invoice USA",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 594,
+        "heightPt": 841.9,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-13-standard-invoice-usa.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_14_INVOICE",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_14_INVOICE",
+        "name": "Invoice Report Format-14 Invoice",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 595,
+        "heightPt": 842,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-14-invoice.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_15_INVOICE_FCY",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_15_INVOICE_FCY",
+        "name": "Invoice Report Format-15 Invoice FCY",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 595,
+        "heightPt": 842,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-15-invoice-fcy.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_16_STANDARD_TAX_INVOICE_PREPRINTED",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_16_STANDARD_TAX_INVOICE_PREPRINTED",
+        "name": "Invoice Report Format-16 Standard Tax Invoice Preprinted",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 595,
+        "heightPt": 842,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-16-standard-tax-invoice-preprinted.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_17_INVOICE_JASPER",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_17_INVOICE_JASPER",
+        "name": "Invoice Report Format-17 Invoice Jasper",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 595,
+        "heightPt": 842,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-17-invoice-jasper.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE",
+        "name": "Invoice Report Format-18 Land Freight Transportation Invoice",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 594,
+        "heightPt": 841.9,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-18-land-freight-transportation-invoice.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_19_DEBIT_NOTE_VIETNAM",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_19_DEBIT_NOTE_VIETNAM",
+        "name": "Invoice Report Format-19 Debit Note Vietnam",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 594,
+        "heightPt": 841.9,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-19-debit-note-vietnam.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_20_TAX_INVOICE_INDIA",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_20_TAX_INVOICE_INDIA",
+        "name": "Invoice Report Format-20 Tax Invoice India",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 594,
+        "heightPt": 841.9,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-20-tax-invoice-india.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE",
+      "registryEntry": {
+        "code": "INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE",
+        "name": "Invoice Report Format-21 Warehouse Invoice",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 594,
+        "heightPt": 841.9,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\invoice-report-format-21-warehouse-invoice.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT",
+      "registryEntry": {
+        "code": "PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT",
+        "name": "Proforma Invoice All Charges Report Format",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 594,
+        "heightPt": 841.9,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\proforma-invoice-all-charges-report-format.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "PROFORMA_INVOICE_REPORT_FORMAT_1_PROFORMA_INVOICE_ALL_CHARGES",
+      "registryEntry": {
+        "code": "PROFORMA_INVOICE_REPORT_FORMAT_1_PROFORMA_INVOICE_ALL_CHARGES",
+        "name": "Proforma Invoice Report Format-1 Proforma Invoice All Charges",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 594,
+        "heightPt": 841.9,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\proforma-invoice-report-format-1-proforma-invoice-all-charges.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    },
+    {
+      "reportId": "PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES",
+      "registryEntry": {
+        "code": "PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES",
+        "name": "Proforma Invoice Report Format-2 Proforma Invoice All Charges",
+        "family": "commercial",
+        "gapStatus": "covered_document_pdf"
+      },
+      "generationEntryPoint": "generateOfficialMeasuredPdf",
+      "rendererFunction": "generateOfficialMeasuredPdf",
+      "inputDataModel": "OfficialFaceData",
+      "pageSizePt": {
+        "widthPt": 594,
+        "heightPt": 841.9,
+        "pageCount": 1,
+        "rotateDeg": 0
+      },
+      "referencePdf": "reports\\references\\files\\proforma-invoice-report-format-2-proforma-invoice-all-charges.pdf",
+      "referenceAvailable": true,
+      "existingTests": [
+        "src/features/reports/templates/official/sprintDPixelQueue.test.ts"
+      ],
+      "formatMapStaleWarning": null
+    }
+  ]
+}

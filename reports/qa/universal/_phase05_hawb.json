@@ -1,0 +1,272 @@
+{
+  "formatMapHawb": {
+    "HAWB_DRAFT_REPORT_FORMAT": {
+      "generate_path": "json_shell_fallback",
+      "measured_face": "no",
+      "has_reference": "yes",
+      "has_json_layout": "yes",
+      "reference_file": "reports/references/files/hawb-draft-report-format.pdf",
+      "listed_on_dashboard": "yes"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_1": {
+      "generate_path": "json_shell_fallback",
+      "measured_face": "no",
+      "has_reference": "yes",
+      "has_json_layout": "yes",
+      "reference_file": "reports/references/files/hawb-draft-report-format-1.pdf",
+      "listed_on_dashboard": "yes"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_10": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_11": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_12": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_13": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_14": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_15": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_16": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_17": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_18": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_19": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_2": {
+      "generate_path": "json_shell_fallback",
+      "measured_face": "no",
+      "has_reference": "yes",
+      "has_json_layout": "yes",
+      "reference_file": "reports/references/files/hawb-draft-report-format-2.pdf",
+      "listed_on_dashboard": "yes"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_20": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_21": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_22": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_23": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_24": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_25": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_26": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_27": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_3": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_4": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_5": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_6": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_7": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_8": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_DRAFT_REPORT_FORMAT_9": {
+      "generate_path": "unmapped",
+      "measured_face": "no",
+      "has_reference": "no",
+      "has_json_layout": "no",
+      "reference_file": "",
+      "listed_on_dashboard": "no"
+    },
+    "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1": {
+      "generate_path": "json_shell_fallback",
+      "measured_face": "no",
+      "has_reference": "yes",
+      "has_json_layout": "yes",
+      "reference_file": "reports/references/files/hawb-original-pre-printed-report-format-1.pdf",
+      "listed_on_dashboard": "yes"
+    },
+    "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2": {
+      "generate_path": "json_shell_fallback",
+      "measured_face": "no",
+      "has_reference": "yes",
+      "has_json_layout": "yes",
+      "reference_file": "reports/references/files/hawb-original-pre-printed-report-format-2.pdf",
+      "listed_on_dashboard": "yes"
+    }
+  },
+  "measuredHawbCodes": [
+    "HAWB_DRAFT_REPORT_FORMAT",
+    "HAWB_DRAFT_REPORT_FORMAT_1",
+    "HAWB_DRAFT_REPORT_FORMAT_2",
+    "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+    "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2"
+  ],
+  "officialFive": [
+    "HAWB_DRAFT_REPORT_FORMAT",
+    "HAWB_DRAFT_REPORT_FORMAT_1",
+    "HAWB_DRAFT_REPORT_FORMAT_2",
+    "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+    "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2"
+  ],
+  "hawbLockMentions": [
+    {
+      "path": "src/features/reports/templates/official/officialFaceRegistry.ts",
+      "count": 0
+    },
+    {
+      "path": "docs/reports/PROGRESS.md",
+      "count": 2
+    },
+    {
+      "path": "docs/reports/MASTER_PROMPT.md",
+      "count": 0
+    }
+  ]
+}

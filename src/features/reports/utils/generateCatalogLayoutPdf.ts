@@ -251,10 +251,14 @@ export async function generateCatalogLayoutPdf(
     }
   }
 
-  // Measured Fresa faces first: exact header/footer slots (logo left, company right).
-  // Always prefer measured redraw over the generic JSON/html2canvas shell — that
-  // shell is what produced missing logos and Shipper/company overlaps vs Fresa.
-  if (isOfficialMeasuredNativeCode(code) && !isHblJasperPilotCode(code)) {
+  // Measured Fresa faces first (invoices/HBL/etc.).
+  // Official HAWB stays on dense React faces — measured stamp slots still collide
+  // with pin labels (routing/currency/destination overlap). See PROGRESS.md.
+  if (
+    isOfficialMeasuredNativeCode(code) &&
+    !isHblJasperPilotCode(code) &&
+    !isHawbOfficialNativeCode(code)
+  ) {
     const isBlOrAwb =
       /^(HBL_|FG_HBL_|HAWB_|MAWB_|LEFTOVER_HBL)/i.test(code) ||
       /\bHBL\b|\bHAWB\b|\bMAWB\b/i.test(code);
@@ -376,6 +380,7 @@ export async function generateCatalogLayoutPdf(
     const printed = await fetchHawbDraft2PlaywrightPdf({
       ...data,
       logoUrl: options.logoUrl || data.logoUrl,
+      // Print service merges catalogue fixture when !entityBound.
     });
     if (printed) return { blob: printed, preview: hawbPreviewMeta(code) };
   }

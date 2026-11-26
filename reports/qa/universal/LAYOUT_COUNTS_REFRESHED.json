@@ -1,0 +1,62 @@
+{
+  "generatedAt": "2026-11-26T08:04:59.079Z",
+  "method": "fingerprintPdf from tools/reports/build-manifest.mjs over reports/references/files/*.pdf",
+  "sourceFiles": {
+    "pinDirectory": "reports/references/files",
+    "fingerprintImplementation": "tools/reports/build-manifest.mjs#fingerprintPdf",
+    "generatorScript": "tools/reports/pilot/refresh-universal-metadata.mjs",
+    "staleProductionArtifactNotModified": "reports/references/layout-counts.json",
+    "layoutsCsvNotModified": "reports/references/layouts.csv",
+    "formatMapNotModified": "reports/references/fresa-system-format-map.csv"
+  },
+  "live": {
+    "pdfs": 401,
+    "strictLayouts": 375,
+    "detailNormalizedLayouts": 373,
+    "multiMemberStrictClusters": 18,
+    "fingerprintFailures": []
+  },
+  "layoutsCsvRowCount": 375,
+  "staleLayoutCountsJson": {
+    "pdfs": 402,
+    "strictLayouts": 376,
+    "detailRowNormalizedLayouts": 374,
+    "failed": 0
+  },
+  "reconciliation": {
+    "liveMatchesLayoutsCsv": true,
+    "staleJsonDrift": true,
+    "note": "Authoritative live counts are under reports/qa/universal/LAYOUT_COUNTS_REFRESHED.json. Production layout-counts.json left unchanged (stale 402/376)."
+  },
+  "officialHawbRuntimePaths": {
+    "note": "Verified runtime — format-map may still say json_shell_fallback (stale).",
+    "codes": {
+      "HAWB_DRAFT_REPORT_FORMAT": {
+        "entry": "generateHawbOfficialPdf",
+        "renderer": "generateOfficialMeasuredPdf",
+        "verified": true
+      },
+      "HAWB_DRAFT_REPORT_FORMAT_1": {
+        "entry": "generateHawbOfficialPdf",
+        "renderer": "generateOfficialMeasuredPdf",
+        "verified": true
+      },
+      "HAWB_DRAFT_REPORT_FORMAT_2": {
+        "entry": "generateHawbOfficialPdf → optional Playwright then generateOfficialMeasuredPdf",
+        "renderer": "generateOfficialMeasuredPdf",
+        "verified": true
+      },
+      "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1": {
+        "entry": "generateHawbOfficialPdf",
+        "renderer": "generateHawbSparsePdf",
+        "verified": true
+      },
+      "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2": {
+        "entry": "generateHawbOfficialPdf",
+        "renderer": "generateHawbSparsePdf",
+        "verified": true
+      }
+    },
+    "staleFormatMapClaim": "json_shell_fallback / measured_face=no for all five — do not trust for routing"
+  }
+}

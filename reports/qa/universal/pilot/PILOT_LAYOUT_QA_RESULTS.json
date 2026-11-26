@@ -1,0 +1,3048 @@
+{
+  "generatedAt": "2026-11-26T09:22:45.722Z",
+  "caveat": "Text extraction cannot detect all visual overlaps (underlays, images, same-color strokes). visualInspectionRequired=true means REVIEW, not a false PASS.",
+  "results": [
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 845,
+          "textItemCount": 109
+        }
+      ],
+      "issues": [
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "fixtureId": "long_party",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 845,
+          "textItemCount": 110
+        }
+      ],
+      "issues": [
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_1",
+      "fixtureId": "base",
+      "pageCount": 9,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 97
+        },
+        {
+          "page": 2,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 97
+        },
+        {
+          "page": 3,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 97
+        },
+        {
+          "page": 4,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 97
+        },
+        {
+          "page": 5,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 97
+        },
+        {
+          "page": 6,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 97
+        },
+        {
+          "page": 7,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 97
+        },
+        {
+          "page": 8,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 97
+        },
+        {
+          "page": 9,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 97
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"EMIRATES\" vs \"AUABP\"",
+          "page": 1,
+          "detail": {
+            "area": 16.95999999999998,
+            "a": "EMIRATES",
+            "b": "AUABP"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"EMIRATES\" vs \"AUABP\"",
+          "page": 2,
+          "detail": {
+            "area": 16.95999999999998,
+            "a": "EMIRATES",
+            "b": "AUABP"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"EMIRATES\" vs \"AUABP\"",
+          "page": 3,
+          "detail": {
+            "area": 16.95999999999998,
+            "a": "EMIRATES",
+            "b": "AUABP"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"EMIRATES\" vs \"AUABP\"",
+          "page": 4,
+          "detail": {
+            "area": 16.95999999999998,
+            "a": "EMIRATES",
+            "b": "AUABP"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"EMIRATES\" vs \"AUABP\"",
+          "page": 5,
+          "detail": {
+            "area": 16.95999999999998,
+            "a": "EMIRATES",
+            "b": "AUABP"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"EMIRATES\" vs \"AUABP\"",
+          "page": 6,
+          "detail": {
+            "area": 16.95999999999998,
+            "a": "EMIRATES",
+            "b": "AUABP"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"EMIRATES\" vs \"AUABP\"",
+          "page": 7,
+          "detail": {
+            "area": 16.95999999999998,
+            "a": "EMIRATES",
+            "b": "AUABP"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"EMIRATES\" vs \"AUABP\"",
+          "page": 8,
+          "detail": {
+            "area": 16.95999999999998,
+            "a": "EMIRATES",
+            "b": "AUABP"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"EMIRATES\" vs \"AUABP\"",
+          "page": 9,
+          "detail": {
+            "area": 16.95999999999998,
+            "a": "EMIRATES",
+            "b": "AUABP"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_1",
+      "fixtureId": "long_party",
+      "pageCount": 9,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 99
+        },
+        {
+          "page": 2,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 99
+        },
+        {
+          "page": 3,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 99
+        },
+        {
+          "page": 4,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 99
+        },
+        {
+          "page": 5,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 99
+        },
+        {
+          "page": 6,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 99
+        },
+        {
+          "page": 7,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 99
+        },
+        {
+          "page": 8,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 99
+        },
+        {
+          "page": 9,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 99
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"General merchandise STC: mixed consumer \"",
+          "page": 1,
+          "detail": {
+            "x": 353,
+            "y": 399.5,
+            "w": 246.07799999999983,
+            "h": 9,
+            "str": "General merchandise STC: mixed consumer goods CTN 1-48",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"General merchandise STC: mixed consumer \"",
+          "page": 2,
+          "detail": {
+            "x": 353,
+            "y": 399.5,
+            "w": 246.07799999999983,
+            "h": 9,
+            "str": "General merchandise STC: mixed consumer goods CTN 1-48",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"General merchandise STC: mixed consumer \"",
+          "page": 3,
+          "detail": {
+            "x": 353,
+            "y": 399.5,
+            "w": 246.07799999999983,
+            "h": 9,
+            "str": "General merchandise STC: mixed consumer goods CTN 1-48",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"General merchandise STC: mixed consumer \"",
+          "page": 4,
+          "detail": {
+            "x": 353,
+            "y": 399.5,
+            "w": 246.07799999999983,
+            "h": 9,
+            "str": "General merchandise STC: mixed consumer goods CTN 1-48",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"General merchandise STC: mixed consumer \"",
+          "page": 5,
+          "detail": {
+            "x": 353,
+            "y": 399.5,
+            "w": 246.07799999999983,
+            "h": 9,
+            "str": "General merchandise STC: mixed consumer goods CTN 1-48",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"General merchandise STC: mixed consumer \"",
+          "page": 6,
+          "detail": {
+            "x": 353,
+            "y": 399.5,
+            "w": 246.07799999999983,
+            "h": 9,
+            "str": "General merchandise STC: mixed consumer goods CTN 1-48",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"General merchandise STC: mixed consumer \"",
+          "page": 7,
+          "detail": {
+            "x": 353,
+            "y": 399.5,
+            "w": 246.07799999999983,
+            "h": 9,
+            "str": "General merchandise STC: mixed consumer goods CTN 1-48",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"General merchandise STC: mixed consumer \"",
+          "page": 8,
+          "detail": {
+            "x": 353,
+            "y": 399.5,
+            "w": 246.07799999999983,
+            "h": 9,
+            "str": "General merchandise STC: mixed consumer goods CTN 1-48",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"General merchandise STC: mixed consumer \"",
+          "page": 9,
+          "detail": {
+            "x": 353,
+            "y": 399.5,
+            "w": 246.07799999999983,
+            "h": 9,
+            "str": "General merchandise STC: mixed consumer goods CTN 1-48",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 845,
+          "textItemCount": 114
+        }
+      ],
+      "issues": [
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+      "fixtureId": "long_party",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 845,
+          "textItemCount": 115
+        }
+      ],
+      "issues": [
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 737,
+          "heightPt": 923,
+          "textItemCount": 35
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 295.7pt near slot shipper",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "shipper",
+              "x": 33,
+              "y": 872.7,
+              "size": 10
+            },
+            "text": "house no p33, street 06, Peoples colony no 2, faisalabad, Pa"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 295.7pt near slot shipper",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "shipper",
+              "x": 33,
+              "y": 861.4,
+              "size": 10
+            },
+            "text": "house no p33, street 06, Peoples colony no 2, faisalabad, Pa"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 295.7pt near slot shipper",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "shipper",
+              "x": 33,
+              "y": 850,
+              "size": 10
+            },
+            "text": "house no p33, street 06, Peoples colony no 2, faisalabad, Pa"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+      "fixtureId": "long_party",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 737,
+          "heightPt": 923,
+          "textItemCount": 38
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 317.9pt near slot shipper",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "shipper",
+              "x": 33,
+              "y": 872.7,
+              "size": 10
+            },
+            "text": "International Consolidated Freight Forwarding And Supply Cha"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 316.3pt near slot shipper",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "shipper",
+              "x": 33,
+              "y": 872.7,
+              "size": 10
+            },
+            "text": "Building 17, Floor 9, Unit 904-B, Industrial Area Phase 2 Ex"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 317.9pt near slot shipper",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "shipper",
+              "x": 33,
+              "y": 861.4,
+              "size": 10
+            },
+            "text": "International Consolidated Freight Forwarding And Supply Cha"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 316.3pt near slot shipper",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "shipper",
+              "x": 33,
+              "y": 861.4,
+              "size": 10
+            },
+            "text": "Building 17, Floor 9, Unit 904-B, Industrial Area Phase 2 Ex"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 316.3pt near slot shipper",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "shipper",
+              "x": 33,
+              "y": 850,
+              "size": 10
+            },
+            "text": "Building 17, Floor 9, Unit 904-B, Industrial Area Phase 2 Ex"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 317.9pt near slot consignee",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "consignee",
+              "x": 33,
+              "y": 789.7,
+              "size": 10
+            },
+            "text": "International Consolidated Freight Forwarding And Supply Cha"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 316.3pt near slot consignee",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "consignee",
+              "x": 33,
+              "y": 789.7,
+              "size": 10
+            },
+            "text": "Building 17, Floor 9, Unit 904-B, Industrial Area Phase 2 Ex"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 317.9pt near slot consignee",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "consignee",
+              "x": 33,
+              "y": 778.4,
+              "size": 10
+            },
+            "text": "International Consolidated Freight Forwarding And Supply Cha"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 316.3pt near slot consignee",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "consignee",
+              "x": 33,
+              "y": 778.4,
+              "size": 10
+            },
+            "text": "Building 17, Floor 9, Unit 904-B, Industrial Area Phase 2 Ex"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 316.3pt near slot consignee",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "consignee",
+              "x": 33,
+              "y": 767,
+              "size": 10
+            },
+            "text": "Building 17, Floor 9, Unit 904-B, Industrial Area Phase 2 Ex"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 845,
+          "textItemCount": 29
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"AUABP\" vs \"EMIRATES\"",
+          "page": 1,
+          "detail": {
+            "area": 37.456424999999804,
+            "a": "AUABP",
+            "b": "EMIRATES"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+      "fixtureId": "long_party",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 845,
+          "textItemCount": 31
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"International Consolidat\" vs \"PHONE: +971541266616\"",
+          "page": 1,
+          "detail": {
+            "area": 26.347600000000366,
+            "a": "International Consolidated Freight Forwa",
+            "b": "PHONE: +971541266616"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"PKKHI\" vs \"EMIRATES\"",
+          "page": 1,
+          "detail": {
+            "area": 12.041864999999902,
+            "a": "PKKHI",
+            "b": "EMIRATES"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 284.6pt near slot shipper",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "shipper",
+              "x": 20,
+              "y": 770.5,
+              "size": 8
+            },
+            "text": "International Consolidated Freight Forwarding And Supply Cha"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 281.5pt near slot shipper",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "shipper",
+              "x": 20,
+              "y": 770.5,
+              "size": 8
+            },
+            "text": "Building 17, Floor 9, Unit 904-B, Industrial Area Phase 2 Ex"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 284.6pt near slot consignee",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "consignee",
+              "x": 20,
+              "y": 700.5,
+              "size": 8
+            },
+            "text": "International Consolidated Freight Forwarding And Supply Cha"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 281.5pt near slot consignee",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "consignee",
+              "x": 20,
+              "y": 700.5,
+              "size": 8
+            },
+            "text": "Building 17, Floor 9, Unit 904-B, Industrial Area Phase 2 Ex"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "region_overflow_heuristic",
+          "message": "Party-like text width 281.5pt near slot consignee",
+          "page": 1,
+          "detail": {
+            "slot": {
+              "key": "consignee",
+              "x": 20,
+              "y": 689.7,
+              "size": 8
+            },
+            "text": "Building 17, Floor 9, Unit 904-B, Industrial Area Phase 2 Ex"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 594,
+          "heightPt": 841.9,
+          "textItemCount": 165
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "x": 523.6879,
+            "y": 782.3,
+            "w": 72.4509,
+            "h": 7.9,
+            "str": "https://zoyan-pilot.ex",
+            "widthPt": 594,
+            "heightPt": 841.9
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"MBLC9878909999 / 21-JAN-\" vs \"MAWB-PILOT-1\"",
+          "page": 1,
+          "detail": {
+            "area": 106.3474299999993,
+            "a": "MBLC9878909999 / 21-JAN-19",
+            "b": "MAWB-PILOT-1"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"+971541266616\" vs \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "area": 439.2343799999973,
+            "a": "+971541266616",
+            "b": "https://zoyan-pilot.ex"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"HBL-PILOT-1\" vs \"HAWB-PILOT-1\"",
+          "page": 1,
+          "detail": {
+            "area": 161.03991999999963,
+            "a": "HBL-PILOT-1",
+            "b": "HAWB-PILOT-1"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "fixtureId": "long_party",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 594,
+          "heightPt": 841.9,
+          "textItemCount": 162
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "x": 523.6879,
+            "y": 782.3,
+            "w": 72.4509,
+            "h": 7.9,
+            "str": "https://zoyan-pilot.ex",
+            "widthPt": 594,
+            "heightPt": 841.9
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"International Consolidated Freight Forwa\"",
+          "page": 1,
+          "detail": {
+            "x": 8,
+            "y": 811.7,
+            "w": 589.0871999999999,
+            "h": 15.8,
+            "str": "International Consolidated Freight Forwarding And Supply Chain Partners Lim",
+            "widthPt": 594,
+            "heightPt": 841.9
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"International Consolidated Freight Forwa\"",
+          "page": 1,
+          "detail": {
+            "x": 408.5,
+            "y": 685.7,
+            "w": 188.3675999999999,
+            "h": 7.9,
+            "str": "International Consolidated Freight Forwarding And Su",
+            "widthPt": 594,
+            "heightPt": 841.9
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"International Consolidated Freight Forwa\"",
+          "page": 1,
+          "detail": {
+            "x": 8,
+            "y": 811.7,
+            "w": 589.0871999999999,
+            "h": 15.8,
+            "str": "International Consolidated Freight Forwarding And Supply Chain Partners Lim",
+            "widthPt": 594,
+            "heightPt": 841.9
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"TAX INVOICE\" vs \"International Consolidat\"",
+          "page": 1,
+          "detail": {
+            "area": 388.5120000000012,
+            "a": "TAX INVOICE",
+            "b": "International Consolidated Freight Forwa"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"TAX INVOICE\" vs \"International Consolidat\"",
+          "page": 1,
+          "detail": {
+            "area": 388.5120000000012,
+            "a": "TAX INVOICE",
+            "b": "International Consolidated Freight Forwa"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Invoice No./Date\" vs \"International Consolidat\"",
+          "page": 1,
+          "detail": {
+            "area": 196.75897999999953,
+            "a": "Invoice No./Date",
+            "b": "International Consolidated Freight Forwa"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Job No.\" vs \"International Consolidat\"",
+          "page": 1,
+          "detail": {
+            "area": 196.75897999999953,
+            "a": "Job No.",
+            "b": "International Consolidated Freight Forwa"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"+971541266616\" vs \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "area": 439.2343799999973,
+            "a": "+971541266616",
+            "b": "https://zoyan-pilot.ex"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 123
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"1. Payment to be made by cash. The compa\"",
+          "page": 1,
+          "detail": {
+            "x": 390.7,
+            "y": 22,
+            "w": 406.8559999999996,
+            "h": 8,
+            "str": "1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"2. Any discrepancy should be notified to\"",
+          "page": 1,
+          "detail": {
+            "x": 399.8,
+            "y": 22,
+            "w": 420.6159999999997,
+            "h": 8,
+            "str": "2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be acc",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"Printed By :\"",
+          "page": 1,
+          "detail": {
+            "x": 571.9,
+            "y": 22,
+            "w": 41.352000000000004,
+            "h": 8,
+            "str": "Printed By :",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"Printed Date :\"",
+          "page": 1,
+          "detail": {
+            "x": 571.9,
+            "y": 448.2,
+            "w": 48.91199999999998,
+            "h": 8,
+            "str": "Printed Date :",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"This is a computer generated document an\"",
+          "page": 1,
+          "detail": {
+            "x": 559.3,
+            "y": 291.8,
+            "w": 258.35200000000003,
+            "h": 8,
+            "str": "This is a computer generated document and does not require a signature",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"Created By : RAM\"",
+          "page": 1,
+          "detail": {
+            "x": 571.9,
+            "y": 236,
+            "w": 64.46399999999997,
+            "h": 8,
+            "str": "Created By : RAM",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"ops@zoyan-pilot.example\"",
+          "page": 1,
+          "detail": {
+            "x": 571.9,
+            "y": 63,
+            "w": 80.63300000000001,
+            "h": 7,
+            "str": "ops@zoyan-pilot.example",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"26-NOV-26 02:22PM\"",
+          "page": 1,
+          "detail": {
+            "x": 571.9,
+            "y": 494,
+            "w": 65.35900000000004,
+            "h": 7,
+            "str": "26-NOV-26 02:22PM",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"Page 1 of 1\"",
+          "page": 1,
+          "detail": {
+            "x": 571.9,
+            "y": 745.8,
+            "w": 35.804999999999964,
+            "h": 7,
+            "str": "Page 1 of 1",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Invoice No.\" vs \"Shipment No.\"",
+          "page": 1,
+          "detail": {
+            "area": 144.1279999999997,
+            "a": "Invoice No.",
+            "b": "Shipment No."
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Invoice No.\" vs \"Job No.\"",
+          "page": 1,
+          "detail": {
+            "area": 220.54399999999998,
+            "a": "Invoice No.",
+            "b": "Job No."
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Invoice No.\" vs \"MBL / MAWB No.\"",
+          "page": 1,
+          "detail": {
+            "area": 56.1279999999997,
+            "a": "Invoice No.",
+            "b": "MBL / MAWB No."
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Shipment No.\" vs \"Job No.\"",
+          "page": 1,
+          "detail": {
+            "area": 132.54399999999987,
+            "a": "Shipment No.",
+            "b": "Job No."
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Shipment No.\" vs \"MBL / MAWB No.\"",
+          "page": 1,
+          "detail": {
+            "area": 299.712,
+            "a": "Shipment No.",
+            "b": "MBL / MAWB No."
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Shipment No.\" vs \"HBL / HAWB No.\"",
+          "page": 1,
+          "detail": {
+            "area": 211.712,
+            "a": "Shipment No.",
+            "b": "HBL / HAWB No."
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"B/EXP/19/0251 / 22-JAN-1\" vs \"MBLC9878909999 / 21-JAN-\"",
+          "page": 1,
+          "detail": {
+            "area": 708.864,
+            "a": "B/EXP/19/0251 / 22-JAN-19",
+            "b": "MBLC9878909999 / 21-JAN-19"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"B/EXP/19/0251 / 22-JAN-1\" vs \"CEXP190148 / 28-JAN-19\"",
+          "page": 1,
+          "detail": {
+            "area": 659.0079999999998,
+            "a": "B/EXP/19/0251 / 22-JAN-19",
+            "b": "CEXP190148 / 28-JAN-19"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"B/EXP/19/0251 / 22-JAN-1\" vs \"MAAINV1900717 / 28-JAN-1\"",
+          "page": 1,
+          "detail": {
+            "area": 796.864,
+            "a": "B/EXP/19/0251 / 22-JAN-19",
+            "b": "MAAINV1900717 / 28-JAN-19 (CREATED)"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"B/EXP/19/0251 / 22-JAN-1\" vs \"TAX INVOICE\"",
+          "page": 1,
+          "detail": {
+            "area": 62.436000000000085,
+            "a": "B/EXP/19/0251 / 22-JAN-19",
+            "b": "TAX INVOICE"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Consignee\" vs \"Shipper\"",
+          "page": 1,
+          "detail": {
+            "area": 132.54399999999998,
+            "a": "Consignee",
+            "b": "Shipper"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"MBLC9878909999 / 21-JAN-\" vs \"CEXP190148 / 28-JAN-19\"",
+          "page": 1,
+          "detail": {
+            "area": 571.0079999999998,
+            "a": "MBLC9878909999 / 21-JAN-19",
+            "b": "CEXP190148 / 28-JAN-19"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"MBLC9878909999 / 21-JAN-\" vs \"MAAINV1900717 / 28-JAN-1\"",
+          "page": 1,
+          "detail": {
+            "area": 892.864,
+            "a": "MBLC9878909999 / 21-JAN-19",
+            "b": "MAAINV1900717 / 28-JAN-19 (CREATED)"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"MBLC9878909999 / 21-JAN-\" vs \"TAX INVOICE\"",
+          "page": 1,
+          "detail": {
+            "area": 15.135999999999962,
+            "a": "MBLC9878909999 / 21-JAN-19",
+            "b": "TAX INVOICE"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"CEXP190148 / 28-JAN-19\" vs \"MAAINV1900717 / 28-JAN-1\"",
+          "page": 1,
+          "detail": {
+            "area": 747.0079999999999,
+            "a": "CEXP190148 / 28-JAN-19",
+            "b": "MAAINV1900717 / 28-JAN-19 (CREATED)"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"CEXP190148 / 28-JAN-19\" vs \"TAX INVOICE\"",
+          "page": 1,
+          "detail": {
+            "area": 109.73600000000027,
+            "a": "CEXP190148 / 28-JAN-19",
+            "b": "TAX INVOICE"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"MAAINV1900717 / 28-JAN-1\" vs \"TAX INVOICE\"",
+          "page": 1,
+          "detail": {
+            "area": 157.0360000000004,
+            "a": "MAAINV1900717 / 28-JAN-19 (CREATED)",
+            "b": "TAX INVOICE"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Job No.\" vs \"MBL / MAWB No.\"",
+          "page": 1,
+          "detail": {
+            "area": 44.54399999999987,
+            "a": "Job No.",
+            "b": "MBL / MAWB No."
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"MBL / MAWB No.\" vs \"HBL / HAWB No.\"",
+          "page": 1,
+          "detail": {
+            "area": 413.4399999999996,
+            "a": "MBL / MAWB No.",
+            "b": "HBL / HAWB No."
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"10, DBS CENTRE, NUNGAMBA\" vs \"NUNGAMBAKKAM, CHENNAI, T\"",
+          "page": 1,
+          "detail": {
+            "area": 1424.256,
+            "a": "10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD,",
+            "b": "NUNGAMBAKKAM, CHENNAI, TAMILNADU, INDIA,"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"10, DBS CENTRE, NUNGAMBA\" vs \"Phone : N/A\"",
+          "page": 1,
+          "detail": {
+            "area": 345.0880000000002,
+            "a": "10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD,",
+            "b": "Phone : N/A"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"10, DBS CENTRE, NUNGAMBA\" vs \"GSTIN No. : GSTNO9876666\"",
+          "page": 1,
+          "detail": {
+            "area": 949.7600000000004,
+            "a": "10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD,",
+            "b": "GSTIN No. : GSTNO9876666554"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"10, DBS CENTRE, NUNGAMBA\" vs \"Credit Term : CASH\"",
+          "page": 1,
+          "detail": {
+            "area": 568.96,
+            "a": "10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD,",
+            "b": "Credit Term : CASH"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"NUNGAMBAKKAM, CHENNAI, T\" vs \"Phone : N/A\"",
+          "page": 1,
+          "detail": {
+            "area": 345.0880000000002,
+            "a": "NUNGAMBAKKAM, CHENNAI, TAMILNADU, INDIA,",
+            "b": "Phone : N/A"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"NUNGAMBAKKAM, CHENNAI, T\" vs \"GSTIN No. : GSTNO9876666\"",
+          "page": 1,
+          "detail": {
+            "area": 949.7600000000004,
+            "a": "NUNGAMBAKKAM, CHENNAI, TAMILNADU, INDIA,",
+            "b": "GSTIN No. : GSTNO9876666554"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "text_bbox_collision_capped",
+          "message": "117 possible text bbox collisions on page 1 (reported first 25) — visual review required",
+          "page": 1
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+      "fixtureId": "long_party",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 123
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"1. Payment to be made by cash. The compa\"",
+          "page": 1,
+          "detail": {
+            "x": 390.7,
+            "y": 22,
+            "w": 406.8559999999996,
+            "h": 8,
+            "str": "1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"2. Any discrepancy should be notified to\"",
+          "page": 1,
+          "detail": {
+            "x": 399.8,
+            "y": 22,
+            "w": 420.6159999999997,
+            "h": 8,
+            "str": "2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be acc",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"Printed By :\"",
+          "page": 1,
+          "detail": {
+            "x": 571.9,
+            "y": 22,
+            "w": 41.352000000000004,
+            "h": 8,
+            "str": "Printed By :",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"Printed Date :\"",
+          "page": 1,
+          "detail": {
+            "x": 571.9,
+            "y": 448.2,
+            "w": 48.91199999999998,
+            "h": 8,
+            "str": "Printed Date :",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"This is a computer generated document an\"",
+          "page": 1,
+          "detail": {
+            "x": 559.3,
+            "y": 291.8,
+            "w": 258.35200000000003,
+            "h": 8,
+            "str": "This is a computer generated document and does not require a signature",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"Created By : RAM\"",
+          "page": 1,
+          "detail": {
+            "x": 571.9,
+            "y": 236,
+            "w": 64.46399999999997,
+            "h": 8,
+            "str": "Created By : RAM",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"International Consolidated Freight Forwa\"",
+          "page": 1,
+          "detail": {
+            "x": 36,
+            "y": 200.134,
+            "w": 616.7259999999998,
+            "h": 11,
+            "str": "International Consolidated Freight Forwarding And Supply Chain Partners Limited Liability Company Trading Division",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"ops@zoyan-pilot.example\"",
+          "page": 1,
+          "detail": {
+            "x": 571.9,
+            "y": 63,
+            "w": 80.63300000000001,
+            "h": 7,
+            "str": "ops@zoyan-pilot.example",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"26-NOV-26 02:22PM\"",
+          "page": 1,
+          "detail": {
+            "x": 571.9,
+            "y": 494,
+            "w": 65.35900000000004,
+            "h": 7,
+            "str": "26-NOV-26 02:22PM",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"Page 1 of 1\"",
+          "page": 1,
+          "detail": {
+            "x": 571.9,
+            "y": 745.8,
+            "w": 35.804999999999964,
+            "h": 7,
+            "str": "Page 1 of 1",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"International Consolidated Freight Forwa\"",
+          "page": 1,
+          "detail": {
+            "x": 36,
+            "y": 200.134,
+            "w": 616.7259999999998,
+            "h": 11,
+            "str": "International Consolidated Freight Forwarding And Supply Chain Partners Limited Liability Company Trading Division",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Invoice No.\" vs \"Shipment No.\"",
+          "page": 1,
+          "detail": {
+            "area": 144.1279999999997,
+            "a": "Invoice No.",
+            "b": "Shipment No."
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Invoice No.\" vs \"Job No.\"",
+          "page": 1,
+          "detail": {
+            "area": 220.54399999999998,
+            "a": "Invoice No.",
+            "b": "Job No."
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Invoice No.\" vs \"MBL / MAWB No.\"",
+          "page": 1,
+          "detail": {
+            "area": 56.1279999999997,
+            "a": "Invoice No.",
+            "b": "MBL / MAWB No."
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Shipment No.\" vs \"Job No.\"",
+          "page": 1,
+          "detail": {
+            "area": 132.54399999999987,
+            "a": "Shipment No.",
+            "b": "Job No."
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Shipment No.\" vs \"MBL / MAWB No.\"",
+          "page": 1,
+          "detail": {
+            "area": 299.712,
+            "a": "Shipment No.",
+            "b": "MBL / MAWB No."
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Shipment No.\" vs \"HBL / HAWB No.\"",
+          "page": 1,
+          "detail": {
+            "area": 211.712,
+            "a": "Shipment No.",
+            "b": "HBL / HAWB No."
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"B/EXP/19/0251 / 22-JAN-1\" vs \"MBLC9878909999 / 21-JAN-\"",
+          "page": 1,
+          "detail": {
+            "area": 708.864,
+            "a": "B/EXP/19/0251 / 22-JAN-19",
+            "b": "MBLC9878909999 / 21-JAN-19"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"B/EXP/19/0251 / 22-JAN-1\" vs \"CEXP190148 / 28-JAN-19\"",
+          "page": 1,
+          "detail": {
+            "area": 659.0079999999998,
+            "a": "B/EXP/19/0251 / 22-JAN-19",
+            "b": "CEXP190148 / 28-JAN-19"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"B/EXP/19/0251 / 22-JAN-1\" vs \"MAAINV1900717 / 28-JAN-1\"",
+          "page": 1,
+          "detail": {
+            "area": 796.864,
+            "a": "B/EXP/19/0251 / 22-JAN-19",
+            "b": "MAAINV1900717 / 28-JAN-19 (CREATED)"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"B/EXP/19/0251 / 22-JAN-1\" vs \"TAX INVOICE\"",
+          "page": 1,
+          "detail": {
+            "area": 62.436000000000085,
+            "a": "B/EXP/19/0251 / 22-JAN-19",
+            "b": "TAX INVOICE"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Consignee\" vs \"Shipper\"",
+          "page": 1,
+          "detail": {
+            "area": 132.54399999999998,
+            "a": "Consignee",
+            "b": "Shipper"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"MBLC9878909999 / 21-JAN-\" vs \"CEXP190148 / 28-JAN-19\"",
+          "page": 1,
+          "detail": {
+            "area": 571.0079999999998,
+            "a": "MBLC9878909999 / 21-JAN-19",
+            "b": "CEXP190148 / 28-JAN-19"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"MBLC9878909999 / 21-JAN-\" vs \"MAAINV1900717 / 28-JAN-1\"",
+          "page": 1,
+          "detail": {
+            "area": 892.864,
+            "a": "MBLC9878909999 / 21-JAN-19",
+            "b": "MAAINV1900717 / 28-JAN-19 (CREATED)"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"MBLC9878909999 / 21-JAN-\" vs \"TAX INVOICE\"",
+          "page": 1,
+          "detail": {
+            "area": 15.135999999999962,
+            "a": "MBLC9878909999 / 21-JAN-19",
+            "b": "TAX INVOICE"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"CEXP190148 / 28-JAN-19\" vs \"MAAINV1900717 / 28-JAN-1\"",
+          "page": 1,
+          "detail": {
+            "area": 747.0079999999999,
+            "a": "CEXP190148 / 28-JAN-19",
+            "b": "MAAINV1900717 / 28-JAN-19 (CREATED)"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"CEXP190148 / 28-JAN-19\" vs \"TAX INVOICE\"",
+          "page": 1,
+          "detail": {
+            "area": 109.73600000000027,
+            "a": "CEXP190148 / 28-JAN-19",
+            "b": "TAX INVOICE"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"MAAINV1900717 / 28-JAN-1\" vs \"TAX INVOICE\"",
+          "page": 1,
+          "detail": {
+            "area": 157.0360000000004,
+            "a": "MAAINV1900717 / 28-JAN-19 (CREATED)",
+            "b": "TAX INVOICE"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Job No.\" vs \"MBL / MAWB No.\"",
+          "page": 1,
+          "detail": {
+            "area": 44.54399999999987,
+            "a": "Job No.",
+            "b": "MBL / MAWB No."
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"MBL / MAWB No.\" vs \"HBL / HAWB No.\"",
+          "page": 1,
+          "detail": {
+            "area": 413.4399999999996,
+            "a": "MBL / MAWB No.",
+            "b": "HBL / HAWB No."
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"10, DBS CENTRE, NUNGAMBA\" vs \"NUNGAMBAKKAM, CHENNAI, T\"",
+          "page": 1,
+          "detail": {
+            "area": 1424.256,
+            "a": "10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD,",
+            "b": "NUNGAMBAKKAM, CHENNAI, TAMILNADU, INDIA,"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"10, DBS CENTRE, NUNGAMBA\" vs \"Phone : N/A\"",
+          "page": 1,
+          "detail": {
+            "area": 345.0880000000002,
+            "a": "10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD,",
+            "b": "Phone : N/A"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"10, DBS CENTRE, NUNGAMBA\" vs \"GSTIN No. : GSTNO9876666\"",
+          "page": 1,
+          "detail": {
+            "area": 949.7600000000004,
+            "a": "10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD,",
+            "b": "GSTIN No. : GSTNO9876666554"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"10, DBS CENTRE, NUNGAMBA\" vs \"Credit Term : CASH\"",
+          "page": 1,
+          "detail": {
+            "area": 568.96,
+            "a": "10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD,",
+            "b": "Credit Term : CASH"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"NUNGAMBAKKAM, CHENNAI, T\" vs \"Phone : N/A\"",
+          "page": 1,
+          "detail": {
+            "area": 345.0880000000002,
+            "a": "NUNGAMBAKKAM, CHENNAI, TAMILNADU, INDIA,",
+            "b": "Phone : N/A"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"NUNGAMBAKKAM, CHENNAI, T\" vs \"GSTIN No. : GSTNO9876666\"",
+          "page": 1,
+          "detail": {
+            "area": 949.7600000000004,
+            "a": "NUNGAMBAKKAM, CHENNAI, TAMILNADU, INDIA,",
+            "b": "GSTIN No. : GSTNO9876666554"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "text_bbox_collision_capped",
+          "message": "115 possible text bbox collisions on page 1 (reported first 25) — visual review required",
+          "page": 1
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 594,
+          "heightPt": 841.9,
+          "textItemCount": 89
+        }
+      ],
+      "issues": [
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 116
+        }
+      ],
+      "issues": [
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
+      "fixtureId": "long_party",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 115
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"International Consolidated Freight Forwa\"",
+          "page": 1,
+          "detail": {
+            "x": 8,
+            "y": 804,
+            "w": 590.7720000000003,
+            "h": 12,
+            "str": "International Consolidated Freight Forwarding And Supply Chain Partners Limited Liability Company Tr",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"International Consolidated Freight Forwa\"",
+          "page": 1,
+          "detail": {
+            "x": 8,
+            "y": 804,
+            "w": 590.7720000000003,
+            "h": 12,
+            "str": "International Consolidated Freight Forwarding And Supply Chain Partners Limited Liability Company Tr",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 594,
+          "heightPt": 841.9,
+          "textItemCount": 158
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "x": 524.7879,
+            "y": 783.5,
+            "w": 72.4509,
+            "h": 7.9,
+            "str": "https://zoyan-pilot.ex",
+            "widthPt": 594,
+            "heightPt": 841.9
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"MBLC9878909999 / 21-JAN-\" vs \"MAWB-PILOT-1\"",
+          "page": 1,
+          "detail": {
+            "area": 111.0874299999997,
+            "a": "MBLC9878909999 / 21-JAN-19",
+            "b": "MAWB-PILOT-1"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"+971541266616\" vs \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "area": 444.86558999999863,
+            "a": "+971541266616",
+            "b": "https://zoyan-pilot.ex"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"HBL-PILOT-1\" vs \"HAWB-PILOT-1\"",
+          "page": 1,
+          "detail": {
+            "area": 152.3499199999997,
+            "a": "HBL-PILOT-1",
+            "b": "HAWB-PILOT-1"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 594,
+          "heightPt": 841.9,
+          "textItemCount": 137
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "x": 523.6879,
+            "y": 782.3,
+            "w": 72.4509,
+            "h": 7.9,
+            "str": "https://zoyan-pilot.ex",
+            "widthPt": 594,
+            "heightPt": 841.9
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"+971541266616\" vs \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "area": 439.2343799999973,
+            "a": "+971541266616",
+            "b": "https://zoyan-pilot.ex"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 594,
+          "heightPt": 841.9,
+          "textItemCount": 98
+        }
+      ],
+      "issues": [
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 157
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"LIVE SHIPPER CO, Chennai\" vs \"INV-PILOT-1001\"",
+          "page": 1,
+          "detail": {
+            "area": 476.60799999999995,
+            "a": "LIVE SHIPPER CO, Chennai, India",
+            "b": "INV-PILOT-1001"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
+      "fixtureId": "long_party",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 157
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"International Consolidated Freight Forwa\"",
+          "page": 1,
+          "detail": {
+            "x": 8,
+            "y": 804,
+            "w": 590.7720000000003,
+            "h": 12,
+            "str": "International Consolidated Freight Forwarding And Supply Chain Partners Limited Liability Company Tr",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"International Consolidated Freight Forwa\"",
+          "page": 1,
+          "detail": {
+            "x": 8,
+            "y": 804,
+            "w": 590.7720000000003,
+            "h": 12,
+            "str": "International Consolidated Freight Forwarding And Supply Chain Partners Limited Liability Company Tr",
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"International Consolidat\" vs \"INV-PILOT-LONG-001\"",
+          "page": 1,
+          "detail": {
+            "area": 643.7120000000002,
+            "a": "International Consolidated Freight Forwa",
+            "b": "INV-PILOT-LONG-001"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 130
+        }
+      ],
+      "issues": [
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 105
+        }
+      ],
+      "issues": [
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 594,
+          "heightPt": 841.9,
+          "textItemCount": 153
+        }
+      ],
+      "issues": [
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 615,
+          "heightPt": 793,
+          "textItemCount": 109
+        }
+      ],
+      "issues": [
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 594,
+          "heightPt": 841.9,
+          "textItemCount": 55
+        }
+      ],
+      "issues": [
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_14_INVOICE",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 127
+        }
+      ],
+      "issues": [
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_15_INVOICE_FCY",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 86
+        }
+      ],
+      "issues": [
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_16_STANDARD_TAX_INVOICE_PREPRINTED",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 124
+        }
+      ],
+      "issues": [
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_17_INVOICE_JASPER",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 595,
+          "heightPt": 842,
+          "textItemCount": 101
+        }
+      ],
+      "issues": [
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 594,
+          "heightPt": 841.9,
+          "textItemCount": 105
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "x": 523.6879,
+            "y": 782.3,
+            "w": 72.4509,
+            "h": 7.9,
+            "str": "https://zoyan-pilot.ex",
+            "widthPt": 594,
+            "heightPt": 841.9
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"LAND_FREIGHT__TRANSPORTA\" vs \"Zoyan Logistics\"",
+          "page": 1,
+          "detail": {
+            "area": 79.5826400000008,
+            "a": "LAND_FREIGHT__TRANSPORTATION_INVOICE_MAA",
+            "b": "Zoyan Logistics"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"LAND_FREIGHT__TRANSPORTA\" vs \"Zoyan Logistics\"",
+          "page": 1,
+          "detail": {
+            "area": 79.5826400000008,
+            "a": "LAND_FREIGHT__TRANSPORTATION_INVOICE_MAA",
+            "b": "Zoyan Logistics"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"+971541266616\" vs \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "area": 439.2343799999973,
+            "a": "+971541266616",
+            "b": "https://zoyan-pilot.ex"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_19_DEBIT_NOTE_VIETNAM",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 594,
+          "heightPt": 841.9,
+          "textItemCount": 76
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "x": 523.6879,
+            "y": 782.3,
+            "w": 72.4509,
+            "h": 7.9,
+            "str": "https://zoyan-pilot.ex",
+            "widthPt": 594,
+            "heightPt": 841.9
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"+971541266616\" vs \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "area": 439.2343799999973,
+            "a": "+971541266616",
+            "b": "https://zoyan-pilot.ex"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_20_TAX_INVOICE_INDIA",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 594,
+          "heightPt": 841.9,
+          "textItemCount": 162
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "x": 523.6879,
+            "y": 782.3,
+            "w": 72.4509,
+            "h": 7.9,
+            "str": "https://zoyan-pilot.ex",
+            "widthPt": 594,
+            "heightPt": 841.9
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"MBLC9878909999 / 21-JAN-\" vs \"MAWB-PILOT-1\"",
+          "page": 1,
+          "detail": {
+            "area": 115.03742999999992,
+            "a": "MBLC9878909999 / 21-JAN-19",
+            "b": "MAWB-PILOT-1"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"+971541266616\" vs \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "area": 439.2343799999973,
+            "a": "+971541266616",
+            "b": "https://zoyan-pilot.ex"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"HBL-PILOT-1\" vs \"HAWB-PILOT-1\"",
+          "page": 1,
+          "detail": {
+            "area": 151.55991999999952,
+            "a": "HBL-PILOT-1",
+            "b": "HAWB-PILOT-1"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 594,
+          "heightPt": 841.9,
+          "textItemCount": 77
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Job No :\" vs \"LIVE CONSIGNEE LLC, Shar\"",
+          "page": 1,
+          "detail": {
+            "area": 232.41483999999946,
+            "a": "Job No :",
+            "b": "LIVE CONSIGNEE LLC, Sharjah, UAE"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"LIVE CONSIGNEE LLC, Shar\" vs \"JOB-PILOT-42\"",
+          "page": 1,
+          "detail": {
+            "area": 412.7173299999989,
+            "a": "LIVE CONSIGNEE LLC, Sharjah, UAE",
+            "b": "JOB-PILOT-42"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 594,
+          "heightPt": 841.9,
+          "textItemCount": 175
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "x": 523.6879,
+            "y": 782.3,
+            "w": 72.4509,
+            "h": 7.9,
+            "str": "https://zoyan-pilot.ex",
+            "widthPt": 594,
+            "heightPt": 841.9
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"CAE190028 / 20-FEB-19\" vs \"JOB-PILOT-42\"",
+          "page": 1,
+          "detail": {
+            "area": 389.3270099999992,
+            "a": "CAE190028 / 20-FEB-19",
+            "b": "JOB-PILOT-42"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"17623456882 / 18-FEB-19\" vs \"MAWB-PILOT-1\"",
+          "page": 1,
+          "detail": {
+            "area": 450.7874299999987,
+            "a": "17623456882 / 18-FEB-19",
+            "b": "MAWB-PILOT-1"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"MAA/DXB/1900014 / 18-FEB\" vs \"HAWB-PILOT-1\"",
+          "page": 1,
+          "detail": {
+            "area": 443.8599199999987,
+            "a": "MAA/DXB/1900014 / 18-FEB-19",
+            "b": "HAWB-PILOT-1"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"MAA/DXB/1900014 / 18-FEB\" vs \"HBL-PILOT-1\"",
+          "page": 1,
+          "detail": {
+            "area": 378.01736999999895,
+            "a": "MAA/DXB/1900014 / 18-FEB-19",
+            "b": "HBL-PILOT-1"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"+971541266616\" vs \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "area": 439.2343799999973,
+            "a": "+971541266616",
+            "b": "https://zoyan-pilot.ex"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"HAWB-PILOT-1\" vs \"HBL-PILOT-1\"",
+          "page": 1,
+          "detail": {
+            "area": 378.01736999999895,
+            "a": "HAWB-PILOT-1",
+            "b": "HBL-PILOT-1"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "PROFORMA_INVOICE_REPORT_FORMAT_1_PROFORMA_INVOICE_ALL_CHARGES",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 594,
+          "heightPt": 841.9,
+          "textItemCount": 151
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "x": 523.6879,
+            "y": 782.3,
+            "w": 72.4509,
+            "h": 7.9,
+            "str": "https://zoyan-pilot.ex",
+            "widthPt": 594,
+            "heightPt": 841.9
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"4G LOGISTICS INDIA PVT L\" vs \"LIVE CONSIGNEE LLC\"",
+          "page": 1,
+          "detail": {
+            "area": 658.9871899999981,
+            "a": "4G LOGISTICS INDIA PVT LTD",
+            "b": "LIVE CONSIGNEE LLC"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"CSI190007 / 10-FEB-19\" vs \"JOB-PILOT-42\"",
+          "page": 1,
+          "detail": {
+            "area": 365.0495199999991,
+            "a": "CSI190007 / 10-FEB-19",
+            "b": "JOB-PILOT-42"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"MAEU9812678888 / 05-FEB-\" vs \"MAWB-PILOT-1\"",
+          "page": 1,
+          "detail": {
+            "area": 450.7874299999987,
+            "a": "MAEU9812678888 / 05-FEB-19",
+            "b": "MAWB-PILOT-1"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"DMMMAA20190202 / 01-FEB-\" vs \"HAWB-PILOT-1\"",
+          "page": 1,
+          "detail": {
+            "area": 443.8599199999987,
+            "a": "DMMMAA20190202 / 01-FEB-19",
+            "b": "HAWB-PILOT-1"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"DMMMAA20190202 / 01-FEB-\" vs \"HBL-PILOT-1\"",
+          "page": 1,
+          "detail": {
+            "area": 378.01736999999895,
+            "a": "DMMMAA20190202 / 01-FEB-19",
+            "b": "HBL-PILOT-1"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"+971541266616\" vs \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "area": 439.2343799999973,
+            "a": "+971541266616",
+            "b": "https://zoyan-pilot.ex"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"HAWB-PILOT-1\" vs \"HBL-PILOT-1\"",
+          "page": 1,
+          "detail": {
+            "area": 378.01736999999895,
+            "a": "HAWB-PILOT-1",
+            "b": "HBL-PILOT-1"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    },
+    {
+      "code": "PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES",
+      "fixtureId": "base",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "widthPt": 594,
+          "heightPt": 841.9,
+          "textItemCount": 90
+        }
+      ],
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "text_outside_page",
+          "message": "Text may leave page: \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "x": 523.6879,
+            "y": 782.3,
+            "w": 72.4509,
+            "h": 7.9,
+            "str": "https://zoyan-pilot.ex",
+            "widthPt": 594,
+            "heightPt": 841.9
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"CSI190007 / 10-FEB-19\" vs \"JOB-PILOT-42\"",
+          "page": 1,
+          "detail": {
+            "area": 412.7173299999989,
+            "a": "CSI190007 / 10-FEB-19",
+            "b": "JOB-PILOT-42"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"+971541266616\" vs \"https://zoyan-pilot.ex\"",
+          "page": 1,
+          "detail": {
+            "area": 439.2343799999973,
+            "a": "+971541266616",
+            "b": "https://zoyan-pilot.ex"
+          }
+        },
+        {
+          "severity": "review",
+          "code": "image_barcode_not_proven_by_text",
+          "message": "Missing images/barcodes cannot be confirmed via text extraction alone — classify REVIEW when slots expected"
+        }
+      ],
+      "visualInspectionRequired": true,
+      "requiredTextMissing": [],
+      "fresaIdentityHits": []
+    }
+  ]
+}
