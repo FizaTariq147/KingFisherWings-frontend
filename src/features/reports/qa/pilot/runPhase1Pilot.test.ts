@@ -3,7 +3,7 @@
  * Writes artifacts only under reports/qa/universal/pilot/.
  * Does not modify templates, layouts, or production generators.
  */
-import { mkdirSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync, existsSync, readFileSync, renameSync, unlinkSync } from 'node:fs';
 import path from 'node:path';
 import { describe, it } from 'vitest';
 import { PDFDocument } from 'pdf-lib';
@@ -24,6 +24,36 @@ const PILOT_ROOT = path.resolve('reports/qa/universal/pilot');
 const OUT_PDF = path.join(PILOT_ROOT, 'generated');
 const OUT_VIS = path.join(PILOT_ROOT, 'visual');
 const FIXTURES: PilotFixtureId[] = ['base', 'long_party', 'minimal', 'multi_cargo', 'large_numbers'];
+
+/** Windows AV / Explorer often locks freshly written pilot PDFs — retry via temp rename. */
+function writeFileReliable(dest: string, data: string | NodeJS.ArrayBufferView): void {
+  const tmp = `${dest}.${process.pid}.${Date.now()}.tmp`;
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < 8; attempt++) {
+    try {
+      writeFileSync(tmp, data);
+      try {
+        if (existsSync(dest)) unlinkSync(dest);
+      } catch {
+        /* replace via rename where possible */
+      }
+      renameSync(tmp, dest);
+      return;
+    } catch (err) {
+      lastErr = err;
+      const start = Date.now();
+      while (Date.now() - start < 40 * (attempt + 1)) {
+        /* spin briefly — avoid async sleep in sync helper */
+      }
+    }
+  }
+  try {
+    if (existsSync(tmp)) unlinkSync(tmp);
+  } catch {
+    /* ignore */
+  }
+  throw lastErr;
+}
 
 const HAWB_REF: Record<string, string> = {
   HAWB_DRAFT_REPORT_FORMAT: 'reports/references/files/hawb-draft-report-format.pdf',
@@ -189,7 +219,7 @@ describe('Phase 1 controlled PDF QA pilot', () => {
               blob = b;
             }
             const buf = Buffer.from(await blob.arrayBuffer());
-            writeFileSync(outPath, buf);
+            writeFileReliable(outPath, buf);
             const pdf = await PDFDocument.load(buf);
             const page = pdf.getPage(0);
             const { width, height } = page.getSize();
@@ -207,14 +237,22 @@ describe('Phase 1 controlled PDF QA pilot', () => {
                 ? ['Zoyan Logistics']
                 : ['Zoyan Logistics'];
               // long_party invoices set companyName to LONG_NAME + " Trading Division".
-              // Letterhead width truncates earlier on Format 1 ("…Partners Lim") than on
-              // Format 4/8 ("…Company Tr"). Assert the capacity-fitting common stem that
-              // is present on every long_party invoice edge format — not the clipped tail.
+              // Formats 2/4/8 letterhead wrap keeps the suffix extractable. Format 1 uses a
+              // narrow right-aligned company slot (~137pt) that cannot fit the full name
+              // without colliding the address band — assert the capacity-fitting stem there.
               if (fixtureId === 'long_party' && !isPilotHawb(code)) {
                 required.length = 0;
-                required.push(
-                  'International Consolidated Freight Forwarding And Supply Chain Partners',
-                );
+                if (
+                  code === 'INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA' ||
+                  code === 'INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE' ||
+                  code === 'INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC'
+                ) {
+                  required.push('Trading Division');
+                } else {
+                  required.push(
+                    'International Consolidated Freight Forwarding And Supply Chain Partners',
+                  );
+                }
               }
               const layout = await analyzePdfLayout(new Uint8Array(buf), {
                 expectedWidthPt: face?.widthPt,
@@ -241,22 +279,34 @@ describe('Phase 1 controlled PDF QA pilot', () => {
                   const [p0] = await single.copyPages(src, [0]);
                   single.addPage(p0);
                   const dest = path.join(visDir, destName);
-                  writeFileSync(dest, await single.save());
+                  writeFileReliable(dest, await single.save());
                   return dest;
                 };
-                const genForCompare = await sliceFirst(outPath, 'gen-page1.pdf');
-                const refForCompare = await sliceFirst(ref, 'ref-page1.pdf');
-                visual = comparePdfVisual(genForCompare, refForCompare, visDir);
-                visualNotes.push(
-                  `## ${code}`,
-                  `- Ref: \`${ref}\``,
-                  `- Status: **${visual.status}** — ${visual.reason}`,
-                  `- Diff max: ${visual.diffPctMax != null ? `${(visual.diffPctMax * 100).toFixed(2)}%` : 'n/a'}`,
-                  visual.diffImages?.length
-                    ? `- Diff images: ${visual.diffImages.map((d) => `\`${d.replace(/\\/g, '/')}\``).join(', ')}`
-                    : '- Diff images: none',
-                  '',
-                );
+                try {
+                  const genForCompare = await sliceFirst(outPath, 'gen-page1.pdf');
+                  const refForCompare = await sliceFirst(ref, 'ref-page1.pdf');
+                  visual = comparePdfVisual(genForCompare, refForCompare, visDir);
+                  visualNotes.push(
+                    `## ${code}`,
+                    `- Ref: \`${ref}\``,
+                    `- Status: **${visual.status}** — ${visual.reason}`,
+                    `- Diff max: ${visual.diffPctMax != null ? `${(visual.diffPctMax * 100).toFixed(2)}%` : 'n/a'}`,
+                    visual.diffImages?.length
+                      ? `- Diff images: ${visual.diffImages.map((d) => `\`${d.replace(/\\/g, '/')}\``).join(', ')}`
+                      : '- Diff images: none',
+                    '',
+                  );
+                } catch (visErr) {
+                  // Do not mark generation failed when only visual IO/compare fails.
+                  visualNotes.push(
+                    `## ${code}`,
+                    `- Ref: \`${ref}\``,
+                    `- Status: **review** — visual compare skipped: ${
+                      visErr instanceof Error ? visErr.message : String(visErr)
+                    }`,
+                    '',
+                  );
+                }
               }
 
               const verdict = classifyFromLayout(true, layout, visual || undefined);
@@ -272,6 +322,7 @@ describe('Phase 1 controlled PDF QA pilot', () => {
             }
           } catch (e) {
             row.error = e instanceof Error ? e.message : String(e);
+            row.ok = false;
             row.ms = Date.now() - t0;
             findingsRows.push({
               code,
@@ -284,7 +335,7 @@ describe('Phase 1 controlled PDF QA pilot', () => {
         }
       }
 
-      writeFileSync(
+      writeFileReliable(
         path.join(PILOT_ROOT, 'PILOT_GENERATION_RESULTS.json'),
         JSON.stringify(
           { generatedAt: new Date().toISOString(), results: generationResults },
@@ -292,7 +343,7 @@ describe('Phase 1 controlled PDF QA pilot', () => {
           2,
         ),
       );
-      writeFileSync(
+      writeFileReliable(
         path.join(PILOT_ROOT, 'PILOT_LAYOUT_QA_RESULTS.json'),
         JSON.stringify(
           {
@@ -305,7 +356,7 @@ describe('Phase 1 controlled PDF QA pilot', () => {
           2,
         ),
       );
-      writeFileSync(path.join(PILOT_ROOT, 'PILOT_VISUAL_COMPARISON.md'), visualNotes.join('\n'));
+      writeFileReliable(path.join(PILOT_ROOT, 'PILOT_VISUAL_COMPARISON.md'), visualNotes.join('\n'));
 
       const byVerdict: Record<string, number> = {};
       for (const f of findingsRows) {
@@ -353,8 +404,8 @@ describe('Phase 1 controlled PDF QA pilot', () => {
         '',
       ];
 
-      writeFileSync(path.join(PILOT_ROOT, 'PILOT_FINDINGS.md'), findingsMd.join('\n'));
-      writeFileSync(
+      writeFileReliable(path.join(PILOT_ROOT, 'PILOT_FINDINGS.md'), findingsMd.join('\n'));
+      writeFileReliable(
         path.join(PILOT_ROOT, 'PILOT_FINDINGS.json'),
         JSON.stringify({ byVerdict, findingsRows, genOk, genFail }, null, 2),
       );

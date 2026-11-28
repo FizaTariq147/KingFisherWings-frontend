@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-26T09:22:45.721Z",
+  "generatedAt": "2026-11-27T04:56:09.281Z",
   "results": [
     {
       "code": "HAWB_DRAFT_REPORT_FORMAT",
@@ -7,11 +7,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/HAWB_DRAFT_REPORT_FORMAT__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 6280,
+      "bytes": 6279,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 845,
-      "ms": 202
+      "ms": 182
     },
     {
       "code": "HAWB_DRAFT_REPORT_FORMAT",
@@ -23,7 +23,7 @@
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 845,
-      "ms": 23
+      "ms": 484
     },
     {
       "code": "HAWB_DRAFT_REPORT_FORMAT",
@@ -31,11 +31,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/HAWB_DRAFT_REPORT_FORMAT__minimal.pdf",
       "ok": true,
       "error": null,
-      "bytes": 5324,
+      "bytes": 5323,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 845,
-      "ms": 10
+      "ms": 27
     },
     {
       "code": "HAWB_DRAFT_REPORT_FORMAT",
@@ -43,11 +43,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/HAWB_DRAFT_REPORT_FORMAT__multi_cargo.pdf",
       "ok": true,
       "error": null,
-      "bytes": 6189,
+      "bytes": 6188,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 845,
-      "ms": 12
+      "ms": 76
     },
     {
       "code": "HAWB_DRAFT_REPORT_FORMAT",
@@ -55,11 +55,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/HAWB_DRAFT_REPORT_FORMAT__large_numbers.pdf",
       "ok": true,
       "error": null,
-      "bytes": 6216,
+      "bytes": 6215,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 845,
-      "ms": 10
+      "ms": 15
     },
     {
       "code": "HAWB_DRAFT_REPORT_FORMAT_1",
@@ -71,7 +71,7 @@
       "pageCount": 9,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 79
+      "ms": 186
     },
     {
       "code": "HAWB_DRAFT_REPORT_FORMAT_1",
@@ -83,7 +83,7 @@
       "pageCount": 9,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 54
+      "ms": 240
     },
     {
       "code": "HAWB_DRAFT_REPORT_FORMAT_1",
@@ -95,7 +95,7 @@
       "pageCount": 9,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 47
+      "ms": 51
     },
     {
       "code": "HAWB_DRAFT_REPORT_FORMAT_1",
@@ -103,11 +103,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/HAWB_DRAFT_REPORT_FORMAT_1__multi_cargo.pdf",
       "ok": true,
       "error": null,
-      "bytes": 48712,
+      "bytes": 48713,
       "pageCount": 9,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 56
+      "ms": 328
     },
     {
       "code": "HAWB_DRAFT_REPORT_FORMAT_1",
@@ -115,11 +115,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/HAWB_DRAFT_REPORT_FORMAT_1__large_numbers.pdf",
       "ok": true,
       "error": null,
-      "bytes": 48811,
+      "bytes": 48812,
       "pageCount": 9,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 49
+      "ms": 100
     },
     {
       "code": "HAWB_DRAFT_REPORT_FORMAT_2",
@@ -131,7 +131,7 @@
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 845,
-      "ms": 8
+      "ms": 44
     },
     {
       "code": "HAWB_DRAFT_REPORT_FORMAT_2",
@@ -143,7 +143,7 @@
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 845,
-      "ms": 8
+      "ms": 265
     },
     {
       "code": "HAWB_DRAFT_REPORT_FORMAT_2",
@@ -155,7 +155,7 @@
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 845,
-      "ms": 6
+      "ms": 129
     },
     {
       "code": "HAWB_DRAFT_REPORT_FORMAT_2",
@@ -167,7 +167,7 @@
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 845,
-      "ms": 8
+      "ms": 207
     },
     {
       "code": "HAWB_DRAFT_REPORT_FORMAT_2",
@@ -179,7 +179,7 @@
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 845,
-      "ms": 8
+      "ms": 230
     },
     {
       "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
@@ -187,11 +187,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 2140,
+      "bytes": 2141,
       "pageCount": 1,
       "widthPt": 737,
       "heightPt": 923,
-      "ms": 4
+      "ms": 183
     },
     {
       "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
@@ -199,11 +199,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1__long_party.pdf",
       "ok": true,
       "error": null,
-      "bytes": 2350,
+      "bytes": 2351,
       "pageCount": 1,
       "widthPt": 737,
       "heightPt": 923,
-      "ms": 10
+      "ms": 11
     },
     {
       "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
@@ -215,7 +215,7 @@
       "pageCount": 1,
       "widthPt": 737,
       "heightPt": 923,
-      "ms": 4
+      "ms": 74
     },
     {
       "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
@@ -223,11 +223,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1__multi_cargo.pdf",
       "ok": true,
       "error": null,
-      "bytes": 2119,
+      "bytes": 2120,
       "pageCount": 1,
       "widthPt": 737,
       "heightPt": 923,
-      "ms": 5
+      "ms": 62
     },
     {
       "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
@@ -235,11 +235,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1__large_numbers.pdf",
       "ok": true,
       "error": null,
-      "bytes": 2063,
+      "bytes": 2064,
       "pageCount": 1,
       "widthPt": 737,
       "heightPt": 923,
-      "ms": 4
+      "ms": 77
     },
     {
       "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
@@ -247,11 +247,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 1971,
+      "bytes": 1974,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 845,
-      "ms": 5
+      "ms": 47
     },
     {
       "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
@@ -259,11 +259,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2__long_party.pdf",
       "ok": true,
       "error": null,
-      "bytes": 2117,
+      "bytes": 2120,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 845,
-      "ms": 8
+      "ms": 19
     },
     {
       "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
@@ -275,7 +275,7 @@
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 845,
-      "ms": 3
+      "ms": 7
     },
     {
       "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
@@ -283,11 +283,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2__multi_cargo.pdf",
       "ok": true,
       "error": null,
-      "bytes": 1891,
+      "bytes": 1893,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 845,
-      "ms": 2
+      "ms": 12
     },
     {
       "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
@@ -295,11 +295,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2__large_numbers.pdf",
       "ok": true,
       "error": null,
-      "bytes": 1880,
+      "bytes": 1882,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 845,
-      "ms": 3
+      "ms": 19
     },
     {
       "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
@@ -307,11 +307,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 9346,
+      "bytes": 9351,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 20
+      "ms": 49
     },
     {
       "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
@@ -319,11 +319,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA__long_party.pdf",
       "ok": true,
       "error": null,
-      "bytes": 9258,
+      "bytes": 9315,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 13
+      "ms": 40
     },
     {
       "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
@@ -331,11 +331,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA__minimal.pdf",
       "ok": true,
       "error": null,
-      "bytes": 9029,
+      "bytes": 9036,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 12
+      "ms": 41
     },
     {
       "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
@@ -343,11 +343,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA__multi_cargo.pdf",
       "ok": true,
       "error": null,
-      "bytes": 9188,
+      "bytes": 9195,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 12
+      "ms": 31
     },
     {
       "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
@@ -355,11 +355,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA__large_numbers.pdf",
       "ok": true,
       "error": null,
-      "bytes": 9183,
+      "bytes": 9187,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 16
+      "ms": 25
     },
     {
       "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
@@ -367,11 +367,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 6927,
+      "bytes": 6928,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 14
+      "ms": 24
     },
     {
       "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
@@ -379,11 +379,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA__long_party.pdf",
       "ok": true,
       "error": null,
-      "bytes": 7019,
+      "bytes": 7021,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 11
+      "ms": 16
     },
     {
       "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
@@ -407,7 +407,7 @@
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 12
+      "ms": 19
     },
     {
       "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
@@ -419,7 +419,7 @@
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 11
+      "ms": 34
     },
     {
       "code": "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
@@ -427,11 +427,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 6049,
+      "bytes": 6055,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 9
+      "ms": 70
     },
     {
       "code": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
@@ -439,11 +439,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 6068,
+      "bytes": 6074,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 11
+      "ms": 93
     },
     {
       "code": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
@@ -451,11 +451,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE__long_party.pdf",
       "ok": true,
       "error": null,
-      "bytes": 6052,
+      "bytes": 6111,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 9
+      "ms": 16
     },
     {
       "code": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
@@ -463,11 +463,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE__minimal.pdf",
       "ok": true,
       "error": null,
-      "bytes": 5844,
+      "bytes": 5849,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 9
+      "ms": 13
     },
     {
       "code": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
@@ -475,11 +475,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE__multi_cargo.pdf",
       "ok": true,
       "error": null,
-      "bytes": 5998,
+      "bytes": 6005,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 8
+      "ms": 12
     },
     {
       "code": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
@@ -487,11 +487,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE__large_numbers.pdf",
       "ok": true,
       "error": null,
-      "bytes": 5989,
+      "bytes": 5995,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 8
+      "ms": 16
     },
     {
       "code": "INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA",
@@ -499,11 +499,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 8749,
+      "bytes": 8757,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 13
+      "ms": 32
     },
     {
       "code": "INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA",
@@ -511,11 +511,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 8137,
+      "bytes": 8144,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 12
+      "ms": 25
     },
     {
       "code": "INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE",
@@ -523,11 +523,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 6161,
+      "bytes": 6169,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 10
+      "ms": 12
     },
     {
       "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
@@ -535,11 +535,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 7603,
+      "bytes": 7607,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 11
+      "ms": 13
     },
     {
       "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
@@ -547,11 +547,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC__long_party.pdf",
       "ok": true,
       "error": null,
-      "bytes": 7634,
+      "bytes": 7688,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 11
+      "ms": 14
     },
     {
       "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
@@ -559,11 +559,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC__minimal.pdf",
       "ok": true,
       "error": null,
-      "bytes": 7482,
+      "bytes": 7486,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 10
+      "ms": 12
     },
     {
       "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
@@ -571,11 +571,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC__multi_cargo.pdf",
       "ok": true,
       "error": null,
-      "bytes": 7571,
+      "bytes": 7575,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 10
+      "ms": 12
     },
     {
       "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
@@ -583,11 +583,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC__large_numbers.pdf",
       "ok": true,
       "error": null,
-      "bytes": 7564,
+      "bytes": 7568,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 10
+      "ms": 16
     },
     {
       "code": "INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA",
@@ -595,11 +595,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 6238,
+      "bytes": 6235,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 7
+      "ms": 10
     },
     {
       "code": "INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE",
@@ -607,11 +607,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 5646,
+      "bytes": 5650,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 9
+      "ms": 13
     },
     {
       "code": "INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND",
@@ -619,11 +619,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 8798,
+      "bytes": 8811,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 12
+      "ms": 13
     },
     {
       "code": "INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED",
@@ -631,11 +631,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 4911,
+      "bytes": 4918,
       "pageCount": 1,
       "widthPt": 615,
       "heightPt": 793,
-      "ms": 8
+      "ms": 9
     },
     {
       "code": "INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA",
@@ -643,11 +643,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 4239,
+      "bytes": 4246,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 61
+      "ms": 12
     },
     {
       "code": "INVOICE_REPORT_FORMAT_14_INVOICE",
@@ -655,11 +655,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_14_INVOICE__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 8148,
+      "bytes": 8158,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 17
+      "ms": 18
     },
     {
       "code": "INVOICE_REPORT_FORMAT_15_INVOICE_FCY",
@@ -667,11 +667,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_15_INVOICE_FCY__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 6228,
+      "bytes": 6238,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 8
+      "ms": 31
     },
     {
       "code": "INVOICE_REPORT_FORMAT_16_STANDARD_TAX_INVOICE_PREPRINTED",
@@ -679,11 +679,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_16_STANDARD_TAX_INVOICE_PREPRINTED__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 6241,
+      "bytes": 6253,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 10
+      "ms": 17
     },
     {
       "code": "INVOICE_REPORT_FORMAT_17_INVOICE_JASPER",
@@ -691,11 +691,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_17_INVOICE_JASPER__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 6740,
+      "bytes": 6750,
       "pageCount": 1,
       "widthPt": 595,
       "heightPt": 842,
-      "ms": 7
+      "ms": 19
     },
     {
       "code": "INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE",
@@ -703,11 +703,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 6413,
+      "bytes": 6421,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 8
+      "ms": 31
     },
     {
       "code": "INVOICE_REPORT_FORMAT_19_DEBIT_NOTE_VIETNAM",
@@ -715,11 +715,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_19_DEBIT_NOTE_VIETNAM__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 5430,
+      "bytes": 5438,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 7
+      "ms": 16
     },
     {
       "code": "INVOICE_REPORT_FORMAT_20_TAX_INVOICE_INDIA",
@@ -727,11 +727,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_20_TAX_INVOICE_INDIA__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 9565,
+      "bytes": 9570,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 26
+      "ms": 39
     },
     {
       "code": "INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE",
@@ -739,11 +739,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 6008,
+      "bytes": 6016,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 7
+      "ms": 19
     },
     {
       "code": "PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT",
@@ -751,11 +751,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 9436,
+      "bytes": 9444,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 13
+      "ms": 24
     },
     {
       "code": "PROFORMA_INVOICE_REPORT_FORMAT_1_PROFORMA_INVOICE_ALL_CHARGES",
@@ -763,11 +763,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/PROFORMA_INVOICE_REPORT_FORMAT_1_PROFORMA_INVOICE_ALL_CHARGES__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 8508,
+      "bytes": 8512,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 10
+      "ms": 18
     },
     {
       "code": "PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES",
@@ -775,11 +775,11 @@
       "outPath": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES__base.pdf",
       "ok": true,
       "error": null,
-      "bytes": 5827,
+      "bytes": 5836,
       "pageCount": 1,
       "widthPt": 594,
       "heightPt": 841.9,
-      "ms": 7
+      "ms": 17
     }
   ]
 }

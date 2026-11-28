@@ -1,0 +1,33 @@
+{
+  "reportCode": "INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE",
+  "fixture": "base",
+  "page": 1,
+  "dpi": 150,
+  "masks": {
+    "topPct": 0.12,
+    "footerPct": 0.08,
+    "sameAs": "pilotVisualCompare.ts"
+  },
+  "generatedPdf": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE__base.pdf",
+  "referencePdf": "reports/references/files/invoice-report-format-21-warehouse-invoice.pdf",
+  "referenceVerified": true,
+  "issue": "Expansion blocker: masked residual ~16.2% + LIVE CONSIGNEE vs Job No / JOB-PILOT IoU warning. Inspect mid-form party/job band.",
+  "maskedDiffPct": 0.16202568603865064,
+  "differenceConcentration": {
+    "top": 310393,
+    "middle": 35774,
+    "bottom": 5664,
+    "left": 180870,
+    "right": 170961,
+    "total": 351831,
+    "dominantRegion": "top/left"
+  },
+  "outputs": [
+    "FORMAT21_ANNOTATED_GEN.png",
+    "FORMAT21_COMPARISON.png",
+    "FORMAT21_DIFF.png",
+    "FORMAT21_GEN_MASKED.png",
+    "FORMAT21_OVERLAY.png",
+    "FORMAT21_REF_MASKED.png"
+  ]
+}

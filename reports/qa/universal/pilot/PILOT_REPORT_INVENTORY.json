@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-26T09:22:13.444Z",
+  "generatedAt": "2026-11-27T04:55:15.380Z",
   "selectionRule": "All OFFICIAL_HAWB_FORMAT_CODES (5) + registry INVOICE_/PROFORMA_ codes with measured faces (24). Excludes HAWB Draft-3…27.",
   "codes": [
     {

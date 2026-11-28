@@ -85,6 +85,7 @@ export function JobAirWaybillsPanel({ jobId }: JobAirWaybillsPanelProps) {
       )}
       <BlDraftFromBookingPanel
         jobId={jobId}
+        kind="hawb"
         onGenerated={() => {
           void refetch();
         }}

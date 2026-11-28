@@ -93,6 +93,46 @@ function pickFont(fonts: FaceFonts, text: string, bold: boolean): PDFFont {
   return bold ? fonts.latinBold : fonts.latin;
 }
 
+/**
+ * Word-wrap for letterhead company names. Keeps each drawn run short enough that
+ * pdfjs text extraction (≈100 glyph cap per item) still sees the overflow suffix
+ * (e.g. "Trading Division") on a second line without a global engine change.
+ */
+function wrapTextToWidth(
+  font: PDFFont,
+  text: string,
+  size: number,
+  maxWidth: number,
+  maxLines: number,
+): string[] {
+  const cleaned = winAnsiLabel(text) || plainLabel(text);
+  if (!cleaned) return [];
+  if (maxLines < 2 || font.widthOfTextAtSize(cleaned, size) <= maxWidth) {
+    return [cleaned];
+  }
+  const words = cleaned.split(/\s+/).filter(Boolean);
+  const lines: string[] = [];
+  let current = '';
+  let i = 0;
+  while (i < words.length) {
+    const word = words[i]!;
+    const next = current ? `${current} ${word}` : word;
+    if (current && font.widthOfTextAtSize(next, size) > maxWidth) {
+      lines.push(current);
+      current = '';
+      if (lines.length >= maxLines - 1) {
+        lines.push(words.slice(i).join(' '));
+        return lines.slice(0, maxLines);
+      }
+      continue;
+    }
+    current = next;
+    i += 1;
+  }
+  if (current) lines.push(current);
+  return lines.slice(0, maxLines);
+}
+
 function drawSafeText(
   page: PDFPage,
   fonts: FaceFonts,
@@ -521,6 +561,20 @@ function footerInk(colorHex?: string | null) {
   return rgb(0.05, 0.05, 0.08);
 }
 
+/** True when footer slot ink is white — text sits on coloured blue/amber/red chips. */
+function isLightOnDarkFooter(
+  footer: ReportBrandingSlots['footer'] | null | undefined,
+): boolean {
+  if (!footer) return false;
+  const hint =
+    footer.printedByLabel?.color ||
+    footer.printedByValue?.color ||
+    footer.printedDateLabel?.color ||
+    footer.printedDateValue?.color ||
+    '';
+  return /^#fff/i.test(String(hint).trim());
+}
+
 /** True when face bold flag or Fresa-style emphasis (titles / company headers). */
 function isEmphasizedRun(text: string, boldFlag: unknown, size: number): boolean {
   if (Boolean(boldFlag)) return true;
@@ -719,39 +773,44 @@ function applyBrandingSlots(
     wipeTextSlot(page, line, textRotateDeg, 1, clamp);
   }
   wipeTextSlot(page, slots.company, textRotateDeg, 1, clamp);
-  // Only wipe Powered By when the slot sits on the footer strip (never body cells).
-  if (
-    slots.footer.poweredByWipe &&
-    isFooterStripWipe(slots.footer.poweredByWipe, textRotateDeg, pageWidth, pageHeight)
-  ) {
-    if (textRotateDeg === 90) {
-      wipeTextSlot(page, slots.footer.poweredByWipe, 90, 1);
-    } else {
-      wipeBox(page, slots.footer.poweredByWipe, 2);
+  // Coloured chip footers (Format-1/3): sample footer glyphs are already skipped in
+  // drawFacePage. Never white-wipe — that punches holes through blue/amber/red bars.
+  const lightOnDarkFooter = isLightOnDarkFooter(slots.footer);
+  if (!lightOnDarkFooter) {
+    // Only wipe Powered By when the slot sits on the footer strip (never body cells).
+    if (
+      slots.footer.poweredByWipe &&
+      isFooterStripWipe(slots.footer.poweredByWipe, textRotateDeg, pageWidth, pageHeight)
+    ) {
+      if (textRotateDeg === 90) {
+        wipeTextSlot(page, slots.footer.poweredByWipe, 90, 1);
+      } else {
+        wipeBox(page, slots.footer.poweredByWipe, 2);
+      }
+    } else if (textRotateDeg === 90 && slots.footer.pageLabel && slots.footer.printedDateLabel) {
+      // Synthesize a Powered By wipe between Printed Date and Page on the footer strip.
+      const dateLabel = slots.footer.printedDateLabel;
+      const pageLab = slots.footer.pageLabel;
+      const wipeY = (dateLabel.y || 0) + (dateLabel.width || 40) + 50;
+      const wipeH = Math.max(40, (pageLab.y || 0) - wipeY - 8);
+      if (wipeH > 20) {
+        wipeTextSlot(
+          page,
+          {
+            x: pageLab.x,
+            y: wipeY,
+            width: wipeH,
+            height: Math.max(pageLab.height || 8, 10),
+            size: 8,
+          },
+          90,
+          1,
+        );
+      }
     }
-  } else if (textRotateDeg === 90 && slots.footer.pageLabel && slots.footer.printedDateLabel) {
-    // Synthesize a Powered By wipe between Printed Date and Page on the footer strip.
-    const dateLabel = slots.footer.printedDateLabel;
-    const pageLab = slots.footer.pageLabel;
-    const wipeY = (dateLabel.y || 0) + (dateLabel.width || 40) + 50;
-    const wipeH = Math.max(40, (pageLab.y || 0) - wipeY - 8);
-    if (wipeH > 20) {
-      wipeTextSlot(
-        page,
-        {
-          x: pageLab.x,
-          y: wipeY,
-          width: wipeH,
-          height: Math.max(pageLab.height || 8, 10),
-          size: 8,
-        },
-        90,
-        1,
-      );
-    }
+    wipeTextSlot(page, slots.footer.printedByValue, textRotateDeg, 1);
+    wipeTextSlot(page, slots.footer.printedDateValue, textRotateDeg, 1);
   }
-  wipeTextSlot(page, slots.footer.printedByValue, textRotateDeg, 1);
-  wipeTextSlot(page, slots.footer.printedDateValue, textRotateDeg, 1);
 
   if (pageIndex !== 0) return;
 
@@ -777,7 +836,14 @@ function applyBrandingSlots(
           ),
         }
       : slots.company;
-  if (isHblFace && companySlot && companySlot.x < pageWidth * 0.4) {
+  // Ocean HBL (HKG): left column is Shipper — never stamp org name there.
+  // FG_HBL_FORMAT_1: org belongs in Issuing Carrier Agent (left mid, ~y 580–610).
+  if (
+    isHblFace &&
+    companySlot &&
+    companySlot.x < pageWidth * 0.4 &&
+    (Boolean(slots.issuerCompany) || companySlot.y > pageHeight * 0.85)
+  ) {
     companySlot = null;
   }
   const addressSlots = (slots.addressLines || []).filter((box) => {
@@ -904,41 +970,70 @@ function applyBrandingSlots(
   }
 
   // Draw company last so address wipes cannot clip the letterhead name.
+  // Long org names wrap to a second letterhead line (Formats 4/8 long_party) so
+  // the overflow suffix stays extractable — single-run drawText overflows the
+  // page and pdfjs only surfaces the first ≈100 glyphs of one item.
   if (companySlot) {
     const size = companySlot.size || companySlot.height || 11;
     const maxAdvance =
       textRotateDeg === 90
         ? Math.min(companySlot.width || 420, Math.max(120, pageHeight - companySlot.y - 24))
-        : 280;
-    const advance = Math.min(
-      Math.max(companySlot.width || 0, company.length * size * 0.55) + 8,
-      maxAdvance,
+        : Math.min(
+            280,
+            Math.max(120, (companySlot.width || 0) > 40 ? companySlot.width! : 280),
+            pageWidth - companySlot.x - 8,
+          );
+    const font = pickFont(fonts, company, true);
+    const companyLines =
+      textRotateDeg === 90
+        ? [company]
+        : wrapTextToWidth(font, company, size, Math.max(80, maxAdvance - 4), 2);
+    const lineGap = size + 2;
+    const wipeH = companyLines.length > 1 ? size + lineGap + 2 : size + 2;
+    const wipeY =
+      companyLines.length > 1
+        ? companySlot.y - (companyLines.length - 1) * lineGap
+        : companySlot.y;
+    const widest = Math.max(
+      ...companyLines.map((line) => font.widthOfTextAtSize(line, size)),
+      40,
     );
+    const advance = Math.min(Math.max(companySlot.width || 0, widest) + 8, maxAdvance);
     wipeTextSlot(
       page,
       {
         ...companySlot,
+        y: wipeY,
         width: advance,
-        height: size + 2,
+        height: wipeH,
         size,
       },
       textRotateDeg,
       1,
       clamp,
     );
-    drawSafeText(
-      page,
-      fonts,
-      company,
-      companySlot.x,
-      companySlot.y,
-      size,
-      true,
-      colorFromHex(companySlot.color, rgb(0, 0, 0)),
-      companyAlign,
-      advance,
-      textRotateDeg,
-    );
+    companyLines.forEach((line, index) => {
+      const drawY = textRotateDeg === 90
+        ? companySlot.y
+        : companySlot.y - index * lineGap;
+      const drawX =
+        textRotateDeg === 90
+          ? companySlot.x + index * lineGap
+          : companySlot.x;
+      drawSafeText(
+        page,
+        fonts,
+        line,
+        drawX,
+        drawY,
+        size,
+        true,
+        colorFromHex(companySlot.color, rgb(0, 0, 0)),
+        companyAlign,
+        advance,
+        textRotateDeg,
+      );
+    });
   }
 
   // Ocean HBL issuer block under the agent logo (Fresa FRESA DEMO INDIA band).
@@ -1190,16 +1285,11 @@ function paintFresaFooterStrip(
     footer.printedByValue?.size ||
     footer.printedDateLabel?.size ||
     7;
-  const colorHint =
-    footer.printedByLabel?.color ||
-    footer.printedByValue?.color ||
-    footer.printedDateLabel?.color ||
-    '';
-  const lightOnDark = /^#fff/i.test(String(colorHint).trim());
-  // White slot colour often means text on a coloured footer chip (Format-1). Prefer
+  const lightOnDark = isLightOnDarkFooter(footer);
+  // White slot colour often means text on a coloured footer chip (Format-1/3). Prefer
   // black ink on a wiped strip unless we know the chip must stay (lightOnDark).
   const ink = lightOnDark ? rgb(1, 1, 1) : rgb(0.05, 0.05, 0.08);
-  // Format-1 maps sample "User :" mid-chip; Fresa pin starts "Printed By :" at the left.
+  // Format-1/3 maps sample "User :" mid-chip; Fresa pin starts "Printed By :" at the left.
   let byLabelX = footer.printedByLabel?.x ?? 22;
   let byValueX =
     footer.printedByValue?.x ?? byLabelX + (footer.printedByLabel?.width || 48) + 4;
@@ -1207,15 +1297,20 @@ function paintFresaFooterStrip(
     byLabelX = 16;
     byValueX = 70;
   }
-  const dateLabelX =
+  // Coloured chips: keep "Printed Date :" inside the amber bar (not spilling onto blue).
+  let dateLabelX =
     footer.printedDateLabel?.x ??
     (footer.printedDateValue ? Math.max(200, footer.printedDateValue.x - 70) : 245);
-  const dateValueX =
+  let dateValueX =
     footer.printedDateValue?.x ?? dateLabelX + (footer.printedDateLabel?.width || 55) + 2;
+  if (lightOnDark && !footer.printedDateLabel && footer.printedDateValue) {
+    dateLabelX = Math.max(220, footer.printedDateValue.x - 40);
+    dateValueX = dateLabelX + 72;
+  }
   const pageX = footer.pageLabel?.x ?? Math.max(500, pageWidth - 90);
 
   // Clear sample User:/emails/Powered By. Skip full wipe on coloured chip footers
-  // so Format-1 blue/amber/red bars are not erased.
+  // so Format-1/3 blue/amber/red bars are not erased.
   if (!textRotateDeg && !lightOnDark) {
     wipeBox(
       page,
@@ -1229,14 +1324,16 @@ function paintFresaFooterStrip(
     x: number,
     bold = false,
     maxW = 160,
+    atY = y,
+    atSize = size,
   ) => {
     drawSafeText(
       page,
       fonts,
       text,
       x,
-      y,
-      size,
+      atY,
+      atSize,
       bold,
       ink,
       'left',
@@ -1255,9 +1352,33 @@ function paintFresaFooterStrip(
   // Fresa pin: `Printed Date :28-JAN-19 01:54PM` (value follows label slot).
   if (printedDate) stamp(printedDate.slice(0, 28), dateValueX, false, 130);
 
-  const pageLabel =
-    data.pageLabel || `Page ${pageIndex + 1} of ${pageCount}`;
-  stamp(pageLabel, pageX, false, 80);
+  // Chip footers without a pageLabel slot keep the compact "n/m" under the strip
+  // (Format-1/3). Do not stamp "Page n of m" onto the red Powered-by chip.
+  if (footer.pageLabel) {
+    const pageLabel =
+      data.pageLabel || `Page ${pageIndex + 1} of ${pageCount}`;
+    stamp(pageLabel, pageX, false, 80);
+  } else if (lightOnDark) {
+    // Under-strip marker sits on white paper (not on a coloured chip).
+    const marker = data.pageLabel || `${pageIndex + 1}/${pageCount}`;
+    drawSafeText(
+      page,
+      fonts,
+      marker,
+      Math.max(500, pageWidth - 40),
+      Math.max(8, y - 17),
+      8,
+      false,
+      rgb(0.05, 0.05, 0.08),
+      'left',
+      40,
+      textRotateDeg,
+    );
+  } else {
+    const pageLabel =
+      data.pageLabel || `Page ${pageIndex + 1} of ${pageCount}`;
+    stamp(pageLabel, pageX, false, 80);
+  }
 }
 
 const DOC_TITLE =
@@ -1394,6 +1515,9 @@ function drawFacePage(
   // misses same-column Consignee blocks and rotated Format 2 value glyphs.
   const invoiceDemoLeftover =
     /BABU|AL NASER|FRESA\s*DEMO|YOUR COMPANY NAME|4G\s*LOGISTICS|GLOBAL EXPORT|GULF IMPORT/i;
+  // FG_HBL_FORMAT_1 (and siblings): pin parties / cargo / issuer that band skip can miss.
+  const hblDemoLeftover =
+    /BABU|AL NASER|FRESA\s*DEMO|4G\s*LOGISTICS|GLOBAL EXPORT|GULF IMPORT|MAKTHOOM|NUNGAMBAKKAM|DBS CENTRE|CHENNAI FREIGHT FORWARDING|SHANMUGAM|MBL\|INMAA|MBL-COPY|COPY87667888|TAMILNADU\s*600084|CHENNAI\s*\(EX MADRAS\)|JEBEL ALI|EVERGREEN MARINE|CMA CGM|STC:\s*VALVE|VALVE MATERIALS|ALL DESTINATION CHARGES|AS ARRANGED|^N\.V\.D\.?$|^AS PER INV$|^NIL$|^INR$|^NIL MARKS$|TOTAL\s*:\s*\(\s*125\s*\)|PACKAGES ONLY|^125$|^18,?000\.00$|^24\.00$/i;
   // When the job/invoice is bound, drop Fresa demo party glyphs so live stamps
   // do not stack on top of 4G / AL NASER sample lines (wipe alone is unreliable).
   const skipHblPartySamples = isHblFacePage && Boolean(data.entityBound);
@@ -1411,6 +1535,7 @@ function drawFacePage(
     // HAWB measured faces: never leave pin demo cargo glyphs under live stamps.
     if (isHawbFacePage && hawbDemoLeftover.test(text)) continue;
     if (isInvoiceFacePage && data.entityBound && invoiceDemoLeftover.test(text)) continue;
+    if (isHblFacePage && data.entityBound && hblDemoLeftover.test(text)) continue;
     if (
       skipHblPartySamples &&
       isInsideHblPartyBand(x, y, text, face.widthPt, hblPartyBands)
@@ -1607,6 +1732,8 @@ function drawFacePage(
         textRotateDeg,
       );
     }
+    // FG_HBL_FORMAT_1: sparse fieldSlots — stamp routing / cargo at pin anchors.
+    stampFgHblFormat1BoundChrome(page, fonts, facePage, face, data, values, frame);
   }
 
   // Invoice portrait: stamp Bill To / Shipper / Consignee / Invoice No at sample
@@ -1676,12 +1803,14 @@ function drawFacePage(
 
   for (const field of face.fieldSlots) {
     // HBL parties / hblNo handled above via sample anchors when entity-bound.
+    // Format-1 hawbNo slot sits on the title band — stamped in format-1 chrome.
     if (
       isHblFace &&
       (field.key === 'shipper' ||
         field.key === 'consignee' ||
         field.key === 'notify' ||
-        field.key === 'hblNo')
+        field.key === 'hblNo' ||
+        (/^FG_HBL_FORMAT_1$/i.test(face.code) && field.key === 'hawbNo'))
     ) {
       continue;
     }
@@ -1731,8 +1860,27 @@ function drawFacePage(
     }
     // Misclassified "cargo" slot lands in the kg column on Draft-1 — nature already stamped.
     if (isHawbFace && field.key === 'cargo') continue;
+    // Draft / Draft-2: NIL MARKS / CTN handling slot sits under pieces — dense chrome owns marks.
+    if (
+      isHawbFace &&
+      field.key === 'handling' &&
+      field.y < 390 &&
+      field.x < 40
+    ) {
+      continue;
+    }
+    // toCode + destination both get airport codes and collide in the routing band.
+    if (isHawbFace && field.key === 'toCode' && values.destination) continue;
     // Draft-1 footer HAWB NO is drawn in stampHawbDraft1Chrome at pin size 11.
     if (/HAWB_DRAFT_REPORT_FORMAT_1$/i.test(face.code) && field.key === 'hawbNo') continue;
+    // Job numbers belong in jobNumber slots only — never as HAWB/MAWB face text.
+    if (
+      isHawbFace &&
+      (field.key === 'hawbNo' || field.key === 'mawbNo') &&
+      /^JB/i.test(String(values[field.key] || '').trim())
+    ) {
+      continue;
+    }
     const value = values[field.key];
     if (!value || isFresaIdentityText(value)) continue;
     const size = field.size || 8;
@@ -1891,9 +2039,22 @@ function stampHawbDraft1Chrome(
   }
 }
 
+/** True when value looks like an IATA AWB serial (not a job number like JB…). */
+function isHawbAwbSerial(value: string): boolean {
+  const trimmed = String(value || '').trim();
+  if (!trimmed) return false;
+  if (/^JB/i.test(trimmed) || /\bJOB\b/i.test(trimmed)) return false;
+  if (/^HAWB\s*NO/i.test(trimmed) || /^MAWB\s*NO/i.test(trimmed)) {
+    return isHawbAwbSerial(trimmed.replace(/^(HAWB|MAWB)\s*NO\.?\s*/i, ''));
+  }
+  const digits = trimmed.replace(/\D/g, '');
+  return digits.length >= 8;
+}
+
 /**
  * Draft / Draft-2 chrome the promote pass left thin: top AWB strip, Issued-by
  * carrier, agent name, kg/rate-class marks, CTN under pieces, charge zeros.
+ * Always wipe pin sample ink before stamping so live values never stack.
  */
 function stampHawbDraftDenseChrome(
   page: PDFPage,
@@ -1904,39 +2065,125 @@ function stampHawbDraftDenseChrome(
   frame: PageFrame | null,
 ): void {
   const isDraft2 = /FORMAT_2$/i.test(face.code);
-  const mawb = String(data.mawbNo || '').trim();
-  const hawb = String(data.hawbNo || '').trim();
+  const mawbRaw = String(data.mawbNo || '')
+    .replace(/^MAWB\s*NO\.?\s*/i, '')
+    .trim();
+  const hawbRaw = String(data.hawbNo || '')
+    .replace(/^HAWB\s*NO\.?\s*/i, '')
+    .trim();
   const company = officialCompanyName(data.companyName);
   const carrier = String(data.carrier || '').trim();
+  const wipe = (x: number, y: number, width: number, height: number, size = 8) => {
+    wipeTextSlot(page, { x, y, width, height, size }, textRotateDeg, 1, frame);
+  };
 
-  // Top AWB strip (Draft pin: left pipe form + right dashed). Skip Draft-2 badges.
-  if (!isDraft2 && (mawb || hawb)) {
-    const digits = (mawb || hawb).replace(/\D/g, '');
-    const left =
-      digits.length >= 11
-        ? `${digits.slice(0, 3)}|${(data.toCode || 'MAA').slice(0, 5)}|${digits.slice(3)}`
-        : (mawb || hawb).replace(/-/g, '|');
-    const right = mawb || hawb;
-    drawSafeText(page, fonts, left, 13, 828.1, 11, true, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
-    drawSafeText(page, fonts, right, 513.1, 828.1, 11, true, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+  // Top AWB strip (Draft pin: left pipe form + right copy). Never use job numbers.
+  if (!isDraft2) {
+    wipe(12, 826, 220, 14, 11);
+    wipe(500, 826, 90, 14, 11);
+    const awbSource = isHawbAwbSerial(mawbRaw)
+      ? mawbRaw
+      : isHawbAwbSerial(hawbRaw)
+        ? hawbRaw
+        : '';
+    if (awbSource) {
+      const digits = awbSource.replace(/\D/g, '');
+      const airport = String(data.toCode || data.departure || 'XXX')
+        .replace(/[^A-Za-z0-9]/g, '')
+        .slice(0, 5)
+        .toUpperCase() || 'XXX';
+      const left =
+        digits.length >= 11
+          ? `${digits.slice(0, 3)}|${airport}|${digits.slice(3)}`
+          : awbSource.replace(/-/g, '|');
+      const right = digits.length >= 11 ? `${digits.slice(0, 3)}-${digits.slice(3)}` : awbSource;
+      drawSafeText(
+        page,
+        fonts,
+        left,
+        13,
+        828.1,
+        11,
+        true,
+        rgb(0.05, 0.05, 0.08),
+        'left',
+        210,
+        textRotateDeg,
+      );
+      drawSafeText(
+        page,
+        fonts,
+        right,
+        513.1,
+        828.1,
+        11,
+        true,
+        rgb(0.05, 0.05, 0.08),
+        'left',
+        80,
+        textRotateDeg,
+      );
+    }
   }
 
   // Issued by — Draft carrier @ 345,786.3; Draft-2 title company @ 353.9,772.2
-  if (!isDraft2 && carrier) {
-    drawSafeText(page, fonts, carrier, 345, 786.3, 10, true, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+  if (!isDraft2) {
+    wipe(340, 784, 160, 14, 10);
+    if (carrier) {
+      drawSafeText(
+        page,
+        fonts,
+        carrier.slice(0, 28),
+        345,
+        786.3,
+        10,
+        true,
+        rgb(0.05, 0.05, 0.08),
+        'left',
+        150,
+        textRotateDeg,
+      );
+    }
   }
   if (isDraft2 && company && !isFresaIdentityText(company)) {
-    drawSafeText(page, fonts, company, 353.9, 772.2, 12, true, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+    wipe(350, 768, 200, 16, 12);
+    drawSafeText(
+      page,
+      fonts,
+      company.slice(0, 36),
+      353.9,
+      772.2,
+      12,
+      true,
+      rgb(0.05, 0.05, 0.08),
+      'left',
+      190,
+      textRotateDeg,
+    );
   }
 
   // Agent name under "Issuing Carrier's Agent" (both Draft + Draft-2 pin @ 13,617.5)
-  if (company && !isFresaIdentityText(company)) {
-    drawSafeText(page, fonts, company, 13, 617.5, 8, false, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+  wipe(12, 608, 220, 22, 8);
+  if (company && !isFresaIdentityText(company) && company !== 'Company') {
+    drawSafeText(
+      page,
+      fonts,
+      company.slice(0, 40),
+      13,
+      617.5,
+      8,
+      false,
+      rgb(0.05, 0.05, 0.08),
+      'left',
+      210,
+      textRotateDeg,
+    );
   }
 
   // Cargo marks: K + rate class S (Draft S@138; Draft-2 S@140) + charge zeros
   if (data.pieces || data.grossWeight) {
-    drawSafeText(page, fonts, 'K', 124, 403.4, 8, false, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+    wipe(120, 401, 30, 12, 8);
+    drawSafeText(page, fonts, 'K', 124, 403.4, 8, false, rgb(0.05, 0.05, 0.08), 'left', 12, textRotateDeg);
     if (data.nature) {
       drawSafeText(
         page,
@@ -1948,26 +2195,27 @@ function stampHawbDraftDenseChrome(
         false,
         rgb(0.05, 0.05, 0.08),
         'left',
-        undefined,
+        12,
         textRotateDeg,
       );
     }
     const zero = data.total?.trim() || '0.00';
-    drawSafeText(page, fonts, zero, 64.9, 215.9, 7, false, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
-    drawSafeText(page, fonts, zero, 64.9, 76.9, 7, false, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
+    wipe(62, 213, 50, 12, 7);
+    wipe(62, 74, 50, 12, 7);
+    drawSafeText(page, fonts, zero, 64.9, 215.9, 7, false, rgb(0.05, 0.05, 0.08), 'left', 40, textRotateDeg);
+    drawSafeText(page, fonts, zero, 64.9, 76.9, 7, false, rgb(0.05, 0.05, 0.08), 'left', 40, textRotateDeg);
   }
 
   // Draft-2 HAWB ref beside "HAWB NO." (pin @ 458,829.9 / 458,37.9)
-  if (isDraft2 && hawb) {
-    const ref = hawb.replace(/^HAWB NO\.\s*/i, '').trim();
-    if (ref) {
-      drawSafeText(page, fonts, ref, 458, 829.9, 9, true, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
-      drawSafeText(page, fonts, ref, 458, 37.9, 9, true, rgb(0.05, 0.05, 0.08), 'left', undefined, textRotateDeg);
-    }
+  if (isDraft2 && hawbRaw && !/^JB/i.test(hawbRaw)) {
+    const ref = hawbRaw.slice(0, 28);
+    wipe(456, 827, 120, 12, 9);
+    wipe(456, 35, 120, 12, 9);
+    drawSafeText(page, fonts, ref, 458, 829.9, 9, true, rgb(0.05, 0.05, 0.08), 'left', 110, textRotateDeg);
+    drawSafeText(page, fonts, ref, 458, 37.9, 9, true, rgb(0.05, 0.05, 0.08), 'left', 110, textRotateDeg);
   }
 
   void face;
-  void frame;
 }
 
 /** Stamp successive HAWB party/nature lines onto measured fieldSlots (top→bottom). */
@@ -1990,8 +2238,13 @@ function stampHawbMultiLine(
   // to paint over city on the last shipper/consignee slot).
   const capped = rows.slice(0, slots.length);
   // Left party column must not spill into JOB/AGENT (≈ x 280).
+  // Nature stays inside the goods column (pin x≈363 → right edge ≈560).
   const maxWidth =
-    key === 'shipper' || key === 'consignee' || key === 'notify' ? 250 : 280;
+    key === 'shipper' || key === 'consignee' || key === 'notify'
+      ? 250
+      : key === 'nature'
+        ? 190
+        : 280;
   capped.forEach((line, index) => {
     const slot = slots[index];
     if (!slot || isFresaIdentityText(line)) return;
@@ -2128,35 +2381,269 @@ function stampHblPartyBlock(
   const x = top?.[1] ?? slot?.x ?? (label?.[1] ?? 20) + 1;
   const y0 = top?.[2] ?? slot?.y ?? labelY - 14;
   const size = top?.[3] || slot?.size || 8;
+  const maxW = Math.min(face.widthPt * 0.42, 210);
+  const lineStep = size + 2;
+  // Stay inside the party band so Shipper lines never collide with Consignee.
+  const bandFloor = Math.max(labelY - 92, y0 - lineStep * 5);
+  const maxLines = Math.max(1, Math.min(5, Math.floor((y0 - bandFloor) / lineStep) + 1));
+  const wrapped: string[] = [];
+  for (const line of live) {
+    if (wrapped.length >= maxLines) break;
+    wrapped.push(
+      ...wrapTextToWidth(fonts.latin, line, size, maxW, maxLines - wrapped.length),
+    );
+  }
+  const drawn = wrapped.slice(0, maxLines);
   // Clear residual ink across the party cell before redrawing live lines.
   wipeTextSlot(
     page,
     {
       x: Math.max(14, x - 1),
-      y: y0 - 42,
-      width: face.widthPt * 0.42,
-      height: 56,
+      y: Math.max(bandFloor - 2, y0 - lineStep * drawn.length - 2),
+      width: maxW + 4,
+      height: lineStep * drawn.length + 6,
       size,
     },
     0,
     1,
     frame,
   );
-  live.slice(0, 4).forEach((line, index) => {
+  drawn.forEach((line, index) => {
     drawSafeText(
       page,
       fonts,
-      line.slice(0, 70),
+      line.slice(0, 80),
       x,
-      y0 - index * (size + 3),
+      y0 - index * lineStep,
       size,
       false,
       rgb(0.05, 0.05, 0.08),
       'left',
-      face.widthPt * 0.42,
+      maxW,
       0,
     );
   });
+}
+
+/**
+ * FG_HBL_FORMAT_1 has only shipper/consignee/hawbNo fieldSlots. When a job is
+ * bound, replace pin routing + cargo sample values with live job fields and
+ * wipe leftover AS ARRANGED / demo freight tokens so nothing overlaps.
+ */
+function stampFgHblFormat1BoundChrome(
+  page: PDFPage,
+  fonts: FaceFonts,
+  facePage: OfficialMeasuredFace['pages'][number],
+  face: OfficialMeasuredFace,
+  data: OfficialFaceData,
+  values: Record<string, string>,
+  frame?: PageFrame | null,
+): void {
+  if (!/^FG_HBL_FORMAT_1$/i.test(face.code) || !data.entityBound) return;
+
+  const replaceAt = (
+    sampleRe: RegExp,
+    live: string | undefined,
+    opts?: {
+      width?: number;
+      lines?: string[];
+      wipeH?: number;
+      yMin?: number;
+      yMax?: number;
+      xMax?: number;
+    },
+  ) => {
+    const run = facePage.texts.find((t) => {
+      if (!sampleRe.test(String(t[0] || ''))) return false;
+      const y = t[2] || 0;
+      const x = t[1] || 0;
+      if (opts?.yMin != null && y < opts.yMin) return false;
+      if (opts?.yMax != null && y > opts.yMax) return false;
+      if (opts?.xMax != null && x > opts.xMax) return false;
+      return true;
+    });
+    if (!run) return;
+    const x = run[1] || 0;
+    const y = run[2] || 0;
+    const size = run[3] || 8;
+    const lines = (opts?.lines || [live || ''])
+      .map((l) => String(l || '').trim())
+      .filter(Boolean);
+    const width = opts?.width ?? Math.max(60, String(run[0] || '').length * size * 0.55 + 12);
+    const wipeH = opts?.wipeH ?? size + 2 + Math.max(0, lines.length - 1) * (size + 2);
+    wipeTextSlot(
+      page,
+      { x: Math.max(0, x - 1), y: y - Math.max(0, wipeH - size - 1), width, height: wipeH, size },
+      0,
+      1,
+      frame,
+    );
+    lines.slice(0, 4).forEach((line, index) => {
+      drawSafeText(
+        page,
+        fonts,
+        line.slice(0, 90),
+        x,
+        y - index * (size + 2),
+        size,
+        false,
+        rgb(0.05, 0.05, 0.08),
+        'left',
+        width,
+        0,
+      );
+    });
+  };
+
+  const wipeSample = (sampleRe: RegExp, padW = 8, padH = 2) => {
+    for (const run of facePage.texts) {
+      if (!sampleRe.test(String(run[0] || ''))) continue;
+      const size = run[3] || 8;
+      const width = Math.max(40, String(run[0] || '').length * size * 0.55 + padW);
+      wipeTextSlot(
+        page,
+        {
+          x: Math.max(0, (run[1] || 0) - 1),
+          y: (run[2] || 0) - 1,
+          width,
+          height: size + padH,
+          size,
+        },
+        0,
+        1,
+        frame,
+      );
+    }
+  };
+
+  // Always clear pin demo cargo / charge tokens (live values optional).
+  wipeSample(/AS ARRANGED/i, 10, 3);
+  wipeSample(/^N\.V\.D\.?$/i);
+  wipeSample(/^AS PER INV$/i);
+  wipeSample(/^NIL$/i);
+  wipeSample(/^INR$/i);
+  wipeSample(/^NIL MARKS$/i);
+  wipeSample(/ALL DESTINATION CHARGES/i, 12, 3);
+  wipeSample(/^FREIGHT PREPAID$/i, 10, 3);
+  wipeSample(/STC:\s*VALVE|VALVE MATERIALS/i, 12, 3);
+  wipeSample(/CHENNAI\s*\(EX MADRAS\)/i, 12, 3);
+  wipeSample(/JEBEL ALI/i, 12, 3);
+  wipeSample(/EVERGREEN MARINE/i, 12, 3);
+  wipeSample(/^CMA CGM$/i, 10, 3);
+  wipeSample(/TOTAL\s*:\s*\(\s*125\s*\)/i, 12, 3);
+  wipeSample(/^125$/i);
+  wipeSample(/^18,?000\.00$/i);
+  wipeSample(/^24\.00$/i);
+  wipeSample(/MBL\|INMAA|MBL-COPY|COPY87667888/i, 10, 3);
+
+  const docNo = values.hblNo || values.hawbNo || values.jobNumber || '';
+  if (docNo) {
+    replaceAt(/MBL-COPY|COPY87667888/i, docNo.slice(0, 28), {
+      width: 160,
+      yMin: 800,
+    });
+    replaceAt(/MBL\|INMAA/i, docNo.slice(0, 28), { width: 180, yMin: 800 });
+  }
+  if (values.departure) {
+    replaceAt(/CHENNAI\s*\(EX MADRAS\)/i, values.departure, {
+      width: 220,
+      yMin: 520,
+      yMax: 560,
+    });
+  }
+  if (values.destination) {
+    replaceAt(/JEBEL ALI/i, values.destination, { width: 220, yMin: 480, yMax: 520 });
+  }
+  if (values.byCarrier || values.carrier) {
+    replaceAt(/^CMA CGM$/i, (values.byCarrier || values.carrier).slice(0, 24), {
+      width: 120,
+      yMin: 500,
+      yMax: 540,
+      xMax: 120,
+    });
+  }
+  if (values.flightDate) {
+    replaceAt(/EVERGREEN MARINE/i, values.flightDate.slice(0, 32), {
+      width: 160,
+      yMin: 480,
+      yMax: 520,
+    });
+  }
+  if (values.pieces) {
+    replaceAt(/^125$/i, values.pieces, { width: 40, yMin: 390, yMax: 420, xMax: 60 });
+  }
+  if (values.grossWeight) {
+    replaceAt(/^18,?000\.00$/i, values.grossWeight, {
+      width: 70,
+      yMin: 390,
+      yMax: 420,
+    });
+  }
+  if (values.chargeableWeight) {
+    replaceAt(/^24\.00$/i, values.chargeableWeight, {
+      width: 50,
+      yMin: 390,
+      yMax: 420,
+    });
+  }
+  if (values.packagesLine || values.pieces) {
+    replaceAt(
+      /TOTAL\s*:\s*\(\s*125\s*\)/i,
+      values.packagesLine || `TOTAL : (${values.pieces}) PACKAGES ONLY`,
+      { width: 200, yMin: 430, yMax: 470 },
+    );
+  }
+  if (values.currency) {
+    replaceAt(/^INR$/i, values.currency.slice(0, 6), {
+      width: 36,
+      yMin: 500,
+      yMax: 540,
+    });
+  }
+  if (values.declaredCarriage) {
+    replaceAt(/^N\.V\.D\.?$/i, values.declaredCarriage.slice(0, 16), { width: 50 });
+  }
+  if (values.declaredCustoms) {
+    replaceAt(/^AS PER INV$/i, values.declaredCustoms.slice(0, 16), { width: 60 });
+  }
+  if (values.insurance) {
+    replaceAt(/^NIL$/i, values.insurance.slice(0, 12), {
+      width: 40,
+      yMin: 480,
+      yMax: 520,
+    });
+  }
+  if (values.prepaidMark) {
+    replaceAt(/^FREIGHT PREPAID$/i, values.prepaidMark.slice(0, 24), {
+      width: 120,
+      yMin: 530,
+      yMax: 570,
+    });
+  }
+  if (values.nature) {
+    const natureLines = wrapTextToWidth(
+      fonts.latin,
+      values.nature.replace(/\s+/g, ' ').trim(),
+      7,
+      200,
+      3,
+    );
+    replaceAt(/STC:\s*VALVE|VALVE MATERIALS|ALL DESTINATION CHARGES/i, natureLines[0], {
+      lines: natureLines,
+      width: 210,
+      wipeH: 7 + 2 + Math.max(0, natureLines.length - 1) * 9 + 4,
+      yMin: 360,
+      yMax: 430,
+    });
+  }
+  const issuer = officialCompanyName(data.companyName);
+  if (issuer) {
+    replaceAt(/CHENNAI FREIGHT FORWARDING/i, issuer.slice(0, 40), {
+      width: 200,
+      yMin: 100,
+      yMax: 140,
+    });
+  }
 }
 
 /**

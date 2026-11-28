@@ -50,6 +50,41 @@ describe('HAWB Draft dense chrome (no leftover Fresa AWB strip)', () => {
       expect(text).toMatch(/EMIRATES/);
       expect(text).toMatch(/\bK\b/);
       expect(text.toLowerCase()).not.toContain('fresa');
+      // Job number must not be painted twice on the top AWB strip.
+      const jobHits = (text.match(/JBJOBAE112600024/g) || []).length;
+      expect(jobHits).toBeLessThanOrEqual(1);
+      await doc.destroy();
+    },
+  );
+
+  it(
+    'does not paint a job number onto the top AWB strip when MAWB is missing',
+    { timeout: 45000 },
+    async () => {
+      const { blob } = await generateHawbOfficialPdf(
+        'HAWB_DRAFT_REPORT_FORMAT',
+        {
+          entityBound: true,
+          companyName: 'Zoyan Logistics',
+          hawbNo: 'JBJOBAE112600024',
+          jobNumber: 'JBJOBAE112600024',
+          shipperLines: ['LIVE SHIPPER'],
+          consigneeLines: ['LIVE CONSIGNEE'],
+          pieces: '2',
+          grossWeight: '10',
+          commodity: 'General merchandise',
+        },
+        { appendCustomerTerms: false },
+      );
+      const doc = await getDocument({ data: new Uint8Array(await blob.arrayBuffer()) }).promise;
+      const page = await doc.getPage(1);
+      const content = await page.getTextContent();
+      const items = content.items
+        .filter((i): i is { str: string; transform: number[] } => 'str' in i && 'transform' in i)
+        .map((i) => ({ str: i.str, y: i.transform[5] ?? 0 }));
+      const topStrip = items.filter((i) => i.y > 820 && /JBJOBAE112600024/i.test(i.str));
+      expect(topStrip.length).toBe(0);
+      expect(items.some((i) => /Zoyan Logistics/i.test(i.str))).toBe(true);
       await doc.destroy();
     },
   );

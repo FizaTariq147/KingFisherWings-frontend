@@ -14,8 +14,17 @@ import {
   type BlDraftClassicModel,
 } from './BlDraftClassicDocument';
 
-/** Fresa sample `fg_hbl_hkg_rpm_ref_245.pdf` format code. */
-export const BL_DRAFT_FORMAT_CODE = 'FG_HBL_HKG';
+/**
+ * From-job HBL draft (Bill of Lading → Generate HBL draft).
+ * Measured face `FG_HBL_FORMAT_1` — catalogue name "HBL Draft Jasper 1".
+ * Classic FG_HBL_HKG React capture remains available via generateBlDraftPdf for
+ * Documents → HBL / Express Release.
+ */
+export const BL_DRAFT_FORMAT_CODE = 'FG_HBL_FORMAT_1';
+/** From-job airway bill / HAWB draft (Air jobs → Generate HAWB). */
+export const HAWB_DRAFT_FORMAT_CODE = 'HAWB_DRAFT_REPORT_FORMAT';
+/** Legacy classic ocean HBL shell (Documents panel HBL / Express Release). */
+export const BL_DRAFT_CLASSIC_FORMAT_CODE = 'FG_HBL_HKG';
 
 function linesFromParty(raw: unknown): string[] {
   const rec = asRecord(raw);
@@ -372,10 +381,10 @@ async function renderClassicBlDraftPdf(model: BlDraftClassicModel): Promise<Blob
     pdf.addImage(canvas.toDataURL('image/jpeg', 0.94), 'JPEG', x, margin, drawW, drawH);
     const layoutBlob = pdf.output('blob');
 
-    if (!shouldAppendCustomerTermsPage(BL_DRAFT_FORMAT_CODE)) return layoutBlob;
+    if (!shouldAppendCustomerTermsPage(BL_DRAFT_CLASSIC_FORMAT_CODE)) return layoutBlob;
     return appendOfficialCustomerTermsPdf(layoutBlob, {
       kind: 'bl',
-      formatCode: BL_DRAFT_FORMAT_CODE,
+      formatCode: BL_DRAFT_CLASSIC_FORMAT_CODE,
     });
   } finally {
     try {

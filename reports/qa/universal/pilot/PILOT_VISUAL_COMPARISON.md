@@ -3,9 +3,9 @@
 DPI: 150 (pdftoppm). Dynamic masks: top 12% + footer 8% (letterhead/footer).
 Raster never auto-PASS: residual party/cargo differences expected → REVIEW_REQUIRED unless diff > 25% (FAIL).
 
-## Phase 1.1 classification note
+## Phase 1.1 note
 
-All base visual diffs remain **review** (none ≥25% FAIL). Formats 14/15/17 moved from FAIL (Fresa text leak) to layout REVIEW with cleared `fresaIdentityHits`. Residual raster deltas are treated as **unverified visual / approved branding + dynamic content** — not auto-PASS. Highest invoice residual: Format 3 (~20.38%), Format 21 (~16.20%).
+All base visual diffs remain **review** (none ≥25% FAIL). Invoice Formats 14/15/17 no longer FAIL on Fresa text; residual raster vs sample stays REVIEW. Letterhead wrap on Formats 4/8 does not auto-PASS visual.
 
 ## HAWB_DRAFT_REPORT_FORMAT
 - Ref: `reports/references/files/hawb-draft-report-format.pdf`

@@ -279,6 +279,10 @@ export async function generateCatalogLayoutPdf(
         : !isBlOrAwb && billToLines.length
           ? billToLines
           : undefined;
+    const nature =
+      data.commodity ||
+      [data.tableRows?.[0]?.[2], data.tableRows?.[0]?.[1]].filter(Boolean).join(' ') ||
+      undefined;
     const { blob } = await generateOfficialMeasuredPdf(code, {
       companyName: data.companyName,
       companyAddress: data.companyAddress,
@@ -296,9 +300,27 @@ export async function generateCatalogLayoutPdf(
       jobNumber: data.jobNumber,
       referenceNo: data.referenceNo,
       invoiceNumber: data.invoiceNumber,
-      hawbNo: data.hawbNo,
+      hawbNo: data.hawbNo || (isBlOrAwb ? data.hblNo : undefined),
       hblNo: data.hblNo,
       mawbNo: data.mawbNo,
+      pieces: data.pieces,
+      grossWeight: data.grossWeight,
+      chargeableWeight: data.measurement,
+      nature,
+      packagesLine: data.pieces
+        ? `TOTAL : (${data.pieces}) PACKAGES ONLY`
+        : undefined,
+      departure: data.pol,
+      destination: data.pod,
+      flightDate: data.vesselFlight,
+      carrier: data.carrier || data.vesselFlight,
+      byCarrier: data.carrier || data.vesselFlight,
+      currency: data.currencyCode,
+      prepaidMark: data.incoterm,
+      executedAt: data.executedAt,
+      declaredCarriage: data.declaredCarriage,
+      declaredCustoms: data.declaredCustoms,
+      insurance: data.insurance,
     });
     return { blob, preview: enrichmentPreviewMeta(code) };
   }

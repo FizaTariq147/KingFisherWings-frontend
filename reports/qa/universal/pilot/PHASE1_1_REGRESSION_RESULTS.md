@@ -1,84 +1,57 @@
 # Phase 1.1 — Regression Results
 
 Command: `npm run report:pilot-phase1`  
-Timestamp: 2026-11-26T09:22:45.723Z (from regenerated `PILOT_FINDINGS.md`)
+Plus: `npx vitest run src/features/reports/qa/pilot/phase1_1DefectRemediation.test.ts` (3/3 pass)  
+Generated findings: `PILOT_FINDINGS.md` @ 2026-11-27 (post-remediation run).
 
-## Headline comparison
+## Baseline vs after
 
-| Metric | Phase 1 baseline | Phase 1.1 after fixes |
+| Metric | Phase 1 baseline | Phase 1.1 after |
 |---|---:|---:|
-| Codes | 29 | 29 |
-| Generations | 65 | 65 |
-| Generation OK | 65 | 65 |
-| GENERATION_FAILED | 0 | 0 |
+| Generations | 65 | **65** |
+| Generation OK | 65 | **65** |
+| GENERATION_FAILED | 0 | **0** |
 | FAIL | 7 | **0** |
 | WARNING | 18 | **22** |
 | REVIEW_REQUIRED | 13 | **16** |
+| `fresaIdentityHits` (layout QA) | 7 FAIL leaks | **0** |
+| `Trading Division` (Formats 4/8 long_party) | missing | **present** |
 
-WARNING/REVIEW counts rose because former FAILs (Formats 2/14/15/17 and long_party 4/8) now land in WARNING or REVIEW after leak/assertion fixes — not because new defects were introduced as FAIL.
+WARNING/REVIEW rose because former FAILs now land in WARNING/REVIEW after leak/wrap fixes — not new FAIL defects.
 
-## Verification checklist
+## Checklist
 
 | Check | Result |
 |---|---|
-| All 65 generations succeed | **Pass** |
-| Format 2/14/15/17 Fresa identity leaks resolved | **Pass** (`fresaIdentityHits: []` on regenerated PDFs) |
-| Long-party Formats 4 & 8 behave correctly | **Pass** (capacity-fitting stem present; no FAIL) |
-| No previously passing report regresses to FAIL | **Pass** (FAIL empty) |
-| Business data mappings intact (Zoyan / LIVE parties / long stem) | **Pass** |
-| Generation entry points unchanged | **Pass** (`generateHawbOfficialPdf` / `generateOfficialMeasuredPdf`) |
+| All 65 generations succeed | Pass |
+| Formats 2/14/15/17 AL NASER cleared | Pass |
+| Formats 4/8 Trading Division extractable | Pass |
+| Official HAWB five no AL NASER | Pass |
+| Short/normal party names still positioned | Pass (Zoyan / LIVE parties on base) |
+| No FAIL regression vs prior PASS set | Pass |
+| Business mappings intact | Pass |
+| Generation paths unchanged (except targeted measured letterhead/invoice sample skip) | Pass |
 
-## Remaining FAIL
+## Remaining (not auto-PASS)
 
-**None.**
+| Verdict | Count | Notes |
+|---|---:|---|
+| FAIL | **0** | |
+| WARNING | **22** | collision / outside-page / region-overflow heuristics |
+| REVIEW_REQUIRED | **16** | masked visual residual; image/barcode not text-proven |
+| GENERATION_FAILED | **0** | |
 
-## Remaining WARNING (22)
+## Unresolved (wait for approval)
 
-| Code | Fixture | Dominant codes |
-|---|---|---|
-| HAWB_DRAFT_REPORT_FORMAT_1 | base | text_bbox_collision |
-| HAWB_DRAFT_REPORT_FORMAT_1 | long_party | text_outside_page |
-| HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1 | base / long_party | region_overflow_heuristic |
-| HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2 | base / long_party | text_bbox_collision, region_overflow_heuristic |
-| INVOICE_REPORT_FORMAT_1 | base / long_party | text_outside_page, text_bbox_collision |
-| INVOICE_REPORT_FORMAT_2 | base / long_party | text_outside_page, text_bbox_collision |
-| INVOICE_REPORT_FORMAT_4 | long_party | text_outside_page |
-| INVOICE_REPORT_FORMAT_5 | base | text_outside_page, text_bbox_collision |
-| INVOICE_REPORT_FORMAT_6 | base | text_outside_page, text_bbox_collision |
-| INVOICE_REPORT_FORMAT_8 | base / long_party | text_bbox_collision (± text_outside_page) |
-| INVOICE_REPORT_FORMAT_18 | base | text_outside_page, text_bbox_collision |
-| INVOICE_REPORT_FORMAT_19 | base | text_outside_page, text_bbox_collision |
-| INVOICE_REPORT_FORMAT_20 | base | text_outside_page, text_bbox_collision |
-| INVOICE_REPORT_FORMAT_21 | base | text_bbox_collision |
-| PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT | base | text_outside_page, text_bbox_collision |
-| PROFORMA_INVOICE_REPORT_FORMAT_1_… | base | text_outside_page, text_bbox_collision |
-| PROFORMA_INVOICE_REPORT_FORMAT_2_… | base | text_outside_page, text_bbox_collision |
+1. **`INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA` long_party** — narrow right letterhead (~137pt) cannot fit full `… Trading Division` without address-band collision. Stem asserted; suffix not claimed.
+2. WARNING/REVIEW items above — need human visual sign-off; not converted to PASS.
+3. Do **not** expand beyond official HAWB five + measured invoices until approved.
 
-Classification: collision/overflow heuristics and long chrome — **not** auto-PASS.
+## Artifacts
 
-## Remaining REVIEW_REQUIRED (16)
-
-| Code | Fixture | Driver |
-|---|---|---|
-| HAWB_DRAFT_REPORT_FORMAT | base / long_party | masked raster residual / visualInspectionRequired |
-| HAWB_DRAFT_REPORT_FORMAT_2 | base / long_party | masked raster residual |
-| INVOICE_REPORT_FORMAT_3 | base | visual review (diff ~20%) |
-| INVOICE_REPORT_FORMAT_4 | base | visual review |
-| INVOICE_REPORT_FORMAT_7 | base | visual review |
-| INVOICE_REPORT_FORMAT_9 … 13 | base | visual review |
-| INVOICE_REPORT_FORMAT_14 | base | visual review (post-leak fix) |
-| INVOICE_REPORT_FORMAT_15 | base | visual review (post-leak fix) |
-| INVOICE_REPORT_FORMAT_16 | base | visual review |
-| INVOICE_REPORT_FORMAT_17 | base | visual review (post-leak fix) |
-
-## Artifacts refreshed
-
-- `PILOT_FINDINGS.md` / `PILOT_FINDINGS.json`
+- `PILOT_FINDINGS.md` / `.json`
 - `PILOT_LAYOUT_QA_RESULTS.json`
 - `PILOT_VISUAL_COMPARISON.md`
 - `PILOT_GENERATION_RESULTS.json`
 - `generated/*.pdf`
-
-## Stop
-
-Phase 1.1 complete. Do not expand pilot families without approval.
+- `PHASE1_1_DEFECT_TRIAGE.md` / `PHASE1_1_FIX_EVIDENCE.md` / this file

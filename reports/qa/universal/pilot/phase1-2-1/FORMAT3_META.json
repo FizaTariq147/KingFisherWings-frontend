@@ -1,0 +1,33 @@
+{
+  "reportCode": "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
+  "fixture": "base",
+  "page": 1,
+  "dpi": 150,
+  "masks": {
+    "topPct": 0.12,
+    "footerPct": 0.08,
+    "sameAs": "pilotVisualCompare.ts"
+  },
+  "generatedPdf": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE__base.pdf",
+  "referencePdf": "reports/references/files/invoice-report-format-3-summary-invoice.pdf",
+  "referenceVerified": true,
+  "issue": "Expansion blocker: masked raster residual ~20.4%. Inspect whether difference is localized (parties/charges) or page-wide.",
+  "maskedDiffPct": 0.20379819586157097,
+  "differenceConcentration": {
+    "top": 347042,
+    "middle": 85270,
+    "bottom": 10226,
+    "left": 220496,
+    "right": 222042,
+    "total": 442538,
+    "dominantRegion": "top/right"
+  },
+  "outputs": [
+    "FORMAT3_ANNOTATED_GEN.png",
+    "FORMAT3_COMPARISON.png",
+    "FORMAT3_DIFF.png",
+    "FORMAT3_GEN_MASKED.png",
+    "FORMAT3_OVERLAY.png",
+    "FORMAT3_REF_MASKED.png"
+  ]
+}
