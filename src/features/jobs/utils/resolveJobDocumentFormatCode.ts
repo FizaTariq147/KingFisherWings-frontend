@@ -1,16 +1,19 @@
 /**
  * Default FRESA / catalog template codes for job document layout PDF + format-payload.
  * Codes must exist in *FormatUiLayouts.json (or classic BL path for FG_HBL_HKG).
+ * HBL draft from job Bill of Lading → FG_HBL_FORMAT_1 (HBL Draft Jasper 1).
+ * Airway bill / HAWB draft from air jobs → HAWB_DRAFT_REPORT_FORMAT.
  */
 const FORMAT_CODE_BY_KEY: Record<string, string> = {
-  hawb: 'HAWB_DRAFT_REPORT_FORMAT_1',
+  hawb: 'HAWB_DRAFT_REPORT_FORMAT',
+  'hawb-draft': 'HAWB_DRAFT_REPORT_FORMAT',
   mawb: 'MAWB_DRAFT_REPORT_FORMAT_1',
-  'hawb-draft-gated': 'HAWB_DRAFT_REPORT_FORMAT_1',
+  'hawb-draft-gated': 'HAWB_DRAFT_REPORT_FORMAT',
   'hawb-final-gated': 'HAWB_DRAFT_REPORT_FORMAT_1',
   hbl: 'FG_HBL_HKG',
   'hbl-er': 'FG_HBL_HKG',
-  'hbl-draft': 'FG_HBL_HKG',
-  'bl-draft': 'FG_HBL_HKG',
+  'hbl-draft': 'FG_HBL_FORMAT_1',
+  'bl-draft': 'FG_HBL_FORMAT_1',
   'hbl-original': 'FG_HBL_ORIGINAL_FORMAT_87',
   mbl: 'MBL_DRAFT_REPORT_FORMAT_1',
   can: 'CARGO_ARRIVAL_NOTICE_REPORT_FORMAT_1',
@@ -30,12 +33,10 @@ const FORMAT_CODE_BY_KEY: Record<string, string> = {
   'job-pnl': 'JOB_PNL_REPORT_FORMAT_1',
 };
 
-/** Document keys that prefer the classic FG HBL HKG React form over JSON layout. */
+/** Document keys that prefer the classic FG HBL HKG React form over measured Format-1. */
 export const CLASSIC_BL_DRAFT_DOCUMENT_KEYS = new Set([
   'hbl',
   'hbl-er',
-  'hbl-draft',
-  'bl-draft',
 ]);
 
 /** Critical job docs that should try catalog/classic layout PDF before BE chrome stamp. */

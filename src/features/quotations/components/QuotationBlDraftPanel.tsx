@@ -75,8 +75,8 @@ export function QuotationBlDraftPanel({ quotation }: QuotationBlDraftPanelProps)
             )
           </>
         ) : null}
-        . Generate builds the classic HBL form (Fresa FG HBL HKG layout) with
-        the KingFisher logo from booking-form parties, cargo, and containers.
+        . Generate builds HBL Draft Jasper 1 (FG HBL Format-1) with the
+        KingFisher logo from booking-form parties, cargo, and containers.
       </p>
       <BlDraftFromBookingPanel
         jobId={jobId}

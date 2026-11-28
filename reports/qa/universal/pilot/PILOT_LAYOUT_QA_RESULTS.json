@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-26T09:22:45.722Z",
+  "generatedAt": "2026-11-27T04:56:09.283Z",
   "caveat": "Text extraction cannot detect all visual overlaps (underlays, images, same-color strokes). visualInspectionRequired=true means REVIEW, not a false PASS.",
   "results": [
     {
@@ -945,7 +945,7 @@
           "page": 1,
           "widthPt": 594,
           "heightPt": 841.9,
-          "textItemCount": 162
+          "textItemCount": 163
         }
       ],
       "issues": [
@@ -960,21 +960,6 @@
             "w": 72.4509,
             "h": 7.9,
             "str": "https://zoyan-pilot.ex",
-            "widthPt": 594,
-            "heightPt": 841.9
-          }
-        },
-        {
-          "severity": "warning",
-          "code": "text_outside_page",
-          "message": "Text may leave page: \"International Consolidated Freight Forwa\"",
-          "page": 1,
-          "detail": {
-            "x": 8,
-            "y": 811.7,
-            "w": 589.0871999999999,
-            "h": 15.8,
-            "str": "International Consolidated Freight Forwarding And Supply Chain Partners Lim",
             "widthPt": 594,
             "heightPt": 841.9
           }
@@ -1023,17 +1008,6 @@
         {
           "severity": "warning",
           "code": "text_bbox_collision",
-          "message": "Possible overlap: \"TAX INVOICE\" vs \"International Consolidat\"",
-          "page": 1,
-          "detail": {
-            "area": 388.5120000000012,
-            "a": "TAX INVOICE",
-            "b": "International Consolidated Freight Forwa"
-          }
-        },
-        {
-          "severity": "warning",
-          "code": "text_bbox_collision",
           "message": "Possible overlap: \"Invoice No./Date\" vs \"International Consolidat\"",
           "page": 1,
           "detail": {
@@ -1056,12 +1030,34 @@
         {
           "severity": "warning",
           "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Suite 1204, Business Bay\" vs \"Consolidated Freight For\"",
+          "page": 1,
+          "detail": {
+            "area": 863.0544599999773,
+            "a": "Suite 1204, Business Bay Tower, Dubai, U",
+            "b": "Consolidated Freight Forwarding And Supp"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
           "message": "Possible overlap: \"+971541266616\" vs \"https://zoyan-pilot.ex\"",
           "page": 1,
           "detail": {
             "area": 439.2343799999973,
             "a": "+971541266616",
             "b": "https://zoyan-pilot.ex"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"International\" vs \"International Consolidat\"",
+          "page": 1,
+          "detail": {
+            "area": 1498.089639999996,
+            "a": "International",
+            "b": "International Consolidated Freight Forwa"
           }
         },
         {
@@ -1195,14 +1191,14 @@
         {
           "severity": "warning",
           "code": "text_outside_page",
-          "message": "Text may leave page: \"26-NOV-26 02:22PM\"",
+          "message": "Text may leave page: \"27-NOV-26 09:55AM\"",
           "page": 1,
           "detail": {
             "x": 571.9,
             "y": 494,
             "w": 65.35900000000004,
             "h": 7,
-            "str": "26-NOV-26 02:22PM",
+            "str": "27-NOV-26 09:55AM",
             "widthPt": 595,
             "heightPt": 842
           }
@@ -1649,14 +1645,14 @@
         {
           "severity": "warning",
           "code": "text_outside_page",
-          "message": "Text may leave page: \"26-NOV-26 02:22PM\"",
+          "message": "Text may leave page: \"27-NOV-26 09:55AM\"",
           "page": 1,
           "detail": {
             "x": 571.9,
             "y": 494,
             "w": 65.35900000000004,
             "h": 7,
-            "str": "26-NOV-26 02:22PM",
+            "str": "27-NOV-26 09:55AM",
             "widthPt": 595,
             "heightPt": 842
           }
@@ -2037,7 +2033,7 @@
           "page": 1,
           "widthPt": 595,
           "heightPt": 842,
-          "textItemCount": 115
+          "textItemCount": 116
         }
       ],
       "issues": [
@@ -2058,17 +2054,24 @@
         },
         {
           "severity": "warning",
-          "code": "text_outside_page",
-          "message": "Text may leave page: \"International Consolidated Freight Forwa\"",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Suite 1204, Business Bay\" vs \"Forwarding And Supply Ch\"",
           "page": 1,
           "detail": {
-            "x": 8,
-            "y": 804,
-            "w": 590.7720000000003,
-            "h": 12,
-            "str": "International Consolidated Freight Forwarding And Supply Chain Partners Limited Liability Company Tr",
-            "widthPt": 595,
-            "heightPt": 842
+            "area": 991.3190000000009,
+            "a": "Suite 1204, Business Bay Tower, Dubai, U",
+            "b": "Forwarding And Supply Chain Partners Lim"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"International Consolidat\" vs \"International Consolidat\"",
+          "page": 1,
+          "detail": {
+            "area": 2344.32,
+            "a": "International Consolidated Freight",
+            "b": "International Consolidated Freight Forwa"
           }
         },
         {
@@ -2267,7 +2270,7 @@
           "page": 1,
           "widthPt": 595,
           "heightPt": 842,
-          "textItemCount": 157
+          "textItemCount": 158
         }
       ],
       "issues": [
@@ -2288,17 +2291,24 @@
         },
         {
           "severity": "warning",
-          "code": "text_outside_page",
-          "message": "Text may leave page: \"International Consolidated Freight Forwa\"",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"Suite 1204, Business Bay\" vs \"Forwarding And Supply Ch\"",
           "page": 1,
           "detail": {
-            "x": 8,
-            "y": 804,
-            "w": 590.7720000000003,
-            "h": 12,
-            "str": "International Consolidated Freight Forwarding And Supply Chain Partners Limited Liability Company Tr",
-            "widthPt": 595,
-            "heightPt": 842
+            "area": 991.3190000000009,
+            "a": "Suite 1204, Business Bay Tower, Dubai, U",
+            "b": "Forwarding And Supply Chain Partners Lim"
+          }
+        },
+        {
+          "severity": "warning",
+          "code": "text_bbox_collision",
+          "message": "Possible overlap: \"International Consolidat\" vs \"International Consolidat\"",
+          "page": 1,
+          "detail": {
+            "area": 2344.32,
+            "a": "International Consolidated Freight",
+            "b": "International Consolidated Freight Forwa"
           }
         },
         {
@@ -2563,7 +2573,7 @@
           "message": "Possible overlap: \"LAND_FREIGHT__TRANSPORTA\" vs \"Zoyan Logistics\"",
           "page": 1,
           "detail": {
-            "area": 79.5826400000008,
+            "area": 140.38264000000098,
             "a": "LAND_FREIGHT__TRANSPORTATION_INVOICE_MAA",
             "b": "Zoyan Logistics"
           }

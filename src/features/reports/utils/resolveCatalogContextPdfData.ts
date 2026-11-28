@@ -16,6 +16,10 @@ import {
 } from './generateInvoiceFormatLayoutPdf';
 import { formatReportLayoutDate } from './formatReportLayoutDate';
 import { partyToFormatPdfLines } from './partyToFormatPdfLines';
+import {
+  applyReportCompanyBrandingToPdfData,
+  resolveReportCompanyBranding,
+} from './resolveReportCompanyBranding';
 
 /** Accept UUID v1–v8 (lib isUuid is v1–v5 only and skips modern v7 ids). */
 function isEntityId(value: string | undefined | null): value is string {
@@ -607,6 +611,15 @@ export async function resolveCatalogContextPdfData(
     errors.length
   ) {
     data.billToAddress = `Could not load live data (${errors[0]}). Showing layout demo.`;
+  }
+
+  // Always overlay tenant org letterhead (name / address / logo) when missing.
+  // From-job HBL draft and other measured faces otherwise fall back to "Company".
+  try {
+    const branding = await resolveReportCompanyBranding();
+    data = applyReportCompanyBrandingToPdfData(data, branding);
+  } catch {
+    /* leave company fields as-is when profile is unavailable */
   }
 
   return data;

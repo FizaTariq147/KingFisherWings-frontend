@@ -1,12 +1,12 @@
 # Phase 1 Pilot Findings
 
-Generated at: 2026-11-26T09:22:45.723Z
+Generated at: 2026-11-27T04:56:09.288Z
 
-## Phase 1.1 remediation (this run)
+## Phase 1.1 remediation (this lineage)
 
-- Baseline FAILs cleared: 7 → **0**.
-- Fresa demo-party leaks fixed on Formats **2 / 14 / 15 / 17** (renderer skip + same-column stamp).
-- Long-party assertion corrected to capacity-fitting stem (Formats **4 / 8**; Format **1** letterhead clips earlier).
+- Phase 1 baseline FAILs: **7 → 0** (invoice Formats 2/14/15/17 AL NASER; Formats 4/8 Trading Division).
+- Letterhead wrap restores extractable `Trading Division` on Formats 2/4/8 long_party.
+- Format 1 long_party suffix remains **unresolved** (narrow slot) — stem only.
 - See `PHASE1_1_DEFECT_TRIAGE.md`, `PHASE1_1_FIX_EVIDENCE.md`, `PHASE1_1_REGRESSION_RESULTS.md`.
 - Remaining: **FAIL 0 · WARNING 22 · REVIEW_REQUIRED 16 · GENERATION_FAILED 0**.
 

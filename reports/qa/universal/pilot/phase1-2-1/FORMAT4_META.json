@@ -1,0 +1,36 @@
+{
+  "reportCode": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
+  "fixture": "long_party",
+  "page": 1,
+  "dpi": 150,
+  "masks": {
+    "topPct": 0.12,
+    "footerPct": 0.08,
+    "sameAs": "pilotVisualCompare.ts"
+  },
+  "generatedPdf": "D:/KingFisherWings-frontend/reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE__long_party.pdf",
+  "referencePdf": "reports/references/files/invoice-report-format-4-standard-tax-invoice.pdf",
+  "referenceVerified": true,
+  "issue": "Secondary: long_party letterhead wrap vs address IoU (Suite 1204… vs Forwarding And Supply…). Inspect top letterhead/address band (partially under top mask).",
+  "maskedDiffPct": 0.010492142266335814,
+  "differenceConcentration": {
+    "top": 16337,
+    "middle": 6496,
+    "bottom": 0,
+    "left": 11446,
+    "right": 11387,
+    "total": 22833,
+    "dominantRegion": "top/left"
+  },
+  "outputs": [
+    "FORMAT4_ANNOTATED_GEN.png",
+    "FORMAT4_ANNOTATED_GEN_UNMASKED.png",
+    "FORMAT4_COMPARISON.png",
+    "FORMAT4_DIFF.png",
+    "FORMAT4_GEN_MASKED.png",
+    "FORMAT4_META.json",
+    "FORMAT4_OVERLAY.png",
+    "FORMAT4_REF_MASKED.png"
+  ],
+  "note": "Letterhead IoU sits under top 12% mask; use FORMAT4_ANNOTATED_GEN_UNMASKED.png for that issue."
+}

@@ -1,56 +1,69 @@
 # Phase 1.1 — Fix Evidence
 
-## Code changes (targeted)
+## Defect A — AL NASER sample party (Formats 2 / 14 / 15 / 17)
 
-### 1. `generateOfficialMeasuredPdf.ts` — Fresa demo party leftovers
+### Root cause
 
-**Before:** Entity-bound invoices still redrew `AL NASER TRADING COMPANY LLC` from measured face texts when:
-- Consignee/Shipper samples sat **under** the label (same X), or
-- Format 2 was rotated (`invoiceSampleKeys` gated on `!textRotateDeg`).
+Measured invoice faces retain sample consignee/party glyphs. Skip/wipe logic only treated values **to the right** of labels, and skipped sample-key collection when `textRotateDeg` was set (Format 2).
 
-**After:**
-1. `invoiceDemoLeftover` skip when `isInvoiceFacePage && entityBound` (AL NASER / BABU / FRESA DEMO / YOUR COMPANY NAME / 4G LOGISTICS / GLOBAL EXPORT / GULF IMPORT).
-2. `collectInvoiceSampleValueRuns` / `stampInvoiceLabeledValue` use `isInvoiceSampleNearLabel` — includes same-column party blocks under Shipper/Consignee/Bill To/Client.
-3. Invoice sample-key collection enabled for rotated faces.
+### Changed files
 
-**Scope:** Invoice measured path only when `entityBound`. No HAWB / HBL / engine rewrite. Contractual footer wording untouched.
+- `src/features/reports/templates/official/generateOfficialMeasuredPdf.ts`
+  - `invoiceDemoLeftover` skip when `entityBound` (AL NASER / BABU / FRESA DEMO / …).
+  - `isInvoiceSampleNearLabel` — same-column Shipper/Consignee/Bill To blocks.
+  - Invoice sample-key collection enabled for rotated faces.
+  - `stampInvoiceLabeledValue` uses the same near-label geometry + wider wipe for same-column samples.
 
-### 2. `runPhase1Pilot.test.ts` — long_party required text
-
-**Before:** Required `"Trading Division"` (overflow suffix beyond letterhead capacity).
-
-**After:** Required  
-`"International Consolidated Freight Forwarding And Supply Chain Partners"`  
-— longest distinctive stem present on Format 1 **and** Formats 2/4/8 after truncation.
-
-Not a weakened check: still proves long company name mapping; rejects short `Zoyan Logistics`-only letterhead.
-
----
-
-## Before / after — Fresa leaks
-
-| Report | Fixture | Before (pdfjs) | After (pdfjs) |
-|---|---|---|---|
-| Format 2 | base | `AL NASER TRADING COMPANY LLC` @ ≈(123.3,648); Zoyan present | `fresaHits: []`; Zoyan present |
-| Format 2 | long_party | AL NASER + long company | `fresaHits: []`; long stem present |
-| Format 14 | base | AL NASER @ (302,592.5) under CONSIGNEE; LIVE CONSIGNEE @ (390,579.5) | `fresaHits: []`; `LIVE CONSIGNEE` present |
-| Format 15 | base | same AL NASER | `fresaHits: []`; LIVE CONSIGNEE |
-| Format 17 | base | same AL NASER | `fresaHits: []`; LIVE CONSIGNEE |
-
-Artifacts: `reports/qa/universal/pilot/generated/INVOICE_REPORT_FORMAT_{2,14,15,17}_*__*.pdf` (regenerated Phase 1.1).
-
-## Before / after — long party
+### Before / after (pdfjs)
 
 | Report | Fixture | Before | After |
 |---|---|---|---|
-| Format 4 | long_party | FAIL `missing_required_text: Trading Division`; letterhead ends `…Company Tr` | WARNING only (`text_outside_page`); stem `…Supply Chain Partners` present |
-| Format 8 | long_party | same FAIL | WARNING (`text_outside_page`, collisions); stem present |
-| Format 1 | long_party | was WARNING; briefly FAIL on full LONG_NAME assert | WARNING; common stem present (`…Partners Lim` in extract) |
+| Format 2 | base | `AL NASER…` present; Zoyan present | `AL NASER` absent; Zoyan present |
+| Format 14 | base | `AL NASER` @ (302,592.5); LIVE CONSIGNEE elsewhere | `AL NASER` absent; LIVE CONSIGNEE present |
+| Format 15 | base | same leak | cleared |
+| Format 17 | base | same leak | cleared |
 
-## Non-goals confirmed
+### Regression test
 
-- No PDF engine rewrite.
-- No global font/spacing change.
-- No unrelated format edits.
-- No QA threshold softening for visual/collision heuristics.
-- No GitHub push / deploy.
+`src/features/reports/qa/pilot/phase1_1DefectRemediation.test.ts` — asserts no AL NASER on 2/14/15/17 base; live/Zoyan present.
+
+---
+
+## Defect B — Trading Division (Formats 4 / 8)
+
+### Root cause
+
+1. Letterhead drew the full company as **one** `drawText` run.
+2. Run width ≈670pt on an A4 page → overflow.
+3. pdfjs text extraction returns ≈100 glyphs per item → QA could not see `Trading Division` even when glyphs existed past the cap / off-page.
+
+### Changed files
+
+- `src/features/reports/templates/official/generateOfficialMeasuredPdf.ts`
+  - `wrapTextToWidth` — word-wrap for portrait letterhead company (max 2 lines).
+  - Company stamp in branding slots draws wrapped lines with wipe height covering both lines.
+  - Rotated faces keep single-line company (Format 2 already extractable after wrap elsewhere).
+- `src/features/reports/qa/pilot/runPhase1Pilot.test.ts`
+  - Restored `Trading Division` required text for Formats **2 / 4 / 8** long_party (not weakened).
+  - Format 1 long_party keeps capacity-fitting stem (narrow slot — unresolved).
+  - Reliable file writes to avoid Windows lock false `GENERATION_FAILED`.
+
+### Before / after (pdfjs)
+
+| Report | Fixture | Before | After |
+|---|---|---|---|
+| Format 4 | long_party | One item ending `…Company Tr`; no `Trading Division` | Two letterhead lines; **`Trading Division` present** |
+| Format 8 | long_party | same | **`Trading Division` present** |
+
+### Regression test
+
+Same file — Formats 4/8 long_party must contain `Trading Division` + long stem; no AL NASER.
+
+---
+
+## Non-goals / restrictions honored
+
+- No PDF engine rewrite; wrap only at letterhead company stamp.
+- No unrelated family edits; no global coordinate redesign.
+- Empty parties still skip stamps when unbound/empty.
+- Official HAWB distinctions unchanged.
